@@ -18,3 +18,4 @@ require_once CG_DIR . '/inc/setup.php';
 require_once CG_DIR . '/inc/hooks.php';
 require_once CG_DIR . '/inc/contact.php';
 require_once CG_DIR . '/inc/forms.php';
+require_once CG_DIR . '/inc/blog.php';
