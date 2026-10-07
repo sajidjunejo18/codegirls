@@ -4,6 +4,15 @@
 ( function () {
 	'use strict';
 
+	// File input label (hire form).
+	var file = document.querySelector( '.cg-form__file' );
+	if ( file ) {
+		file.addEventListener( 'change', function () {
+			var out = document.querySelector( '.cg-form__file-name' );
+			out.textContent = file.files.length ? file.files[ 0 ].name : 'No File Chosen';
+		} );
+	}
+
 	// Mobile menu toggle.
 	var header = document.getElementById( 'cg-header' );
 	if ( ! header ) {

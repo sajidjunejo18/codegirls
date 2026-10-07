@@ -37,7 +37,7 @@ function cg_render_footer() {
  * Full-bleed layout on the homepage (see body.cg-fullwidth in main.css).
  */
 function cg_body_class( $classes ) {
-	if ( is_front_page() ) {
+	if ( is_front_page() || ( is_singular( 'page' ) && 'true' === get_post_meta( get_the_ID(), '_generate-full-width-content', true ) ) ) {
 		$classes[] = 'cg-fullwidth';
 	}
 	return $classes;

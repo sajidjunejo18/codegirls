@@ -1098,3 +1098,152 @@ textarea:focus-visible {
 	.story__avatar-img { width: 117px; height: 117px; }
 	.story__link { margin-left: 8px; }
 }
+
+/* 16. Inner-page hero ----------------------------------------------------- */
+.page-hero {
+	padding: 50px 0 149px;
+	background: var(--cg-green);
+	color: var(--cg-white);
+	text-align: center;
+}
+
+.page-hero__crumbs {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.page-hero__crumbs a,
+.page-hero__crumb { color: var(--cg-white); text-decoration: none; }
+.page-hero__crumb--current { color: var(--cg-yellow); font-weight: 700; }
+
+.page-hero__title {
+	margin: 8px 0 0;
+	font: 600 clamp(34px, 1.5rem + 1.4vw, 50px) / 65px var(--cg-font-heading);
+	color: var(--cg-white);
+}
+
+/* 17. Hire stats card (overlaps the banner) -------------------------------- */
+.hire-stats { position: relative; z-index: 1; margin-top: -96px; }
+
+.hire-stats__list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 24px;
+	min-height: 181px;
+	margin: 0;
+	padding: 30px 70px 24px 96px;
+	background: var(--cg-white);
+	box-shadow: var(--cg-shadow-card);
+	list-style: none;
+}
+
+.hire-stats__item { display: flex; align-items: flex-start; gap: 20px; }
+.hire-stats__text { margin-top: 17px; }
+.hire-stats__icon { width: auto; height: 108px; }
+.hire-stats__num { font: 600 35px/52px var(--cg-font-heading); }
+.hire-stats__label { font-size: 20px; }
+.hire-stats__note { font-size: 12px; margin-top: 6px; }
+
+:where(.hire-stats) p, :where(.hire) p, :where(.companies) p { margin: 0; }
+:where(.hire-stats, .hire, .companies) ul { margin: 0; padding: 0; list-style: none; }
+:where(.hire-stats, .hire, .companies) img { max-width: 100%; }
+
+/* 18. Hire form ------------------------------------------------------------ */
+.hire { padding: 65px 0 0; }
+
+.hire__inner { display: grid; grid-template-columns: minmax(0, 436fr) minmax(0, 1111fr); gap: 49px; align-items: stretch; }
+
+.hire__photo { width: 100%; height: 100%; min-height: 420px; object-fit: cover; }
+
+.hire__title { margin: 0 0 12px; font: 600 30px/1.3 var(--cg-font-heading); }
+.hire__subtitle { margin-bottom: 40px; font-size: 20px; line-height: 1.5; }
+
+.cg-form--hire { gap: 26px; }
+.cg-form--hire .cg-form__row { gap: 35px; }
+.cg-form--hire .cg-form__field { position: relative; }
+.cg-form--hire .cg-form__field.is-required::after {
+	content: "*";
+	position: absolute;
+	top: 4px;
+	right: 0;
+	font-size: 20px;
+	line-height: 1;
+	color: #a9a9a9;
+}
+
+.cg-form--hire .cg-form__field.is-required:first-child:focus-within::after { color: var(--cg-navy); }
+
+.cg-form--hire select {
+	width: 100%;
+	height: 53px;
+	padding: 0 14px;
+	border: 1px solid var(--cg-input-border);
+	border-radius: 0;
+	background: var(--cg-white);
+	color: var(--cg-navy);
+	font: 400 16px/1.4 var(--cg-font-body);
+}
+
+.cg-form--hire select:focus { border-color: var(--cg-green); box-shadow: 0 0 0 1px var(--cg-green); outline: 0; }
+.cg-form--hire textarea { height: 86px; }
+
+.cg-form__actions { display: flex; align-items: center; gap: 21px; }
+.cg-form__file { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+
+.cg-form__file-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 44px;
+	padding: 0 35px;
+	border: 1px solid var(--cg-navy);
+	background: var(--cg-white);
+	font: 700 15px/1 var(--cg-font-body);
+	cursor: pointer;
+}
+
+.cg-form__file:focus-visible + .cg-form__file-btn { outline: 3px solid var(--cg-yellow); outline-offset: 2px; }
+.cg-form__file-name { color: #8b8b8b; font-size: 15px; }
+.cg-form--hire .cg-form__submit { margin-left: auto; align-self: auto; }
+
+/* 19. Top hiring companies ------------------------------------------------- */
+.companies { padding: 60px 0 70px; }
+
+.companies__card {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 32px 40px;
+	padding: 70px 86px;
+	background: var(--cg-white);
+	box-shadow: var(--cg-shadow-card);
+}
+
+.companies__intro { flex: 0 1 540px; display: flex; flex-direction: column; gap: 10px; }
+.companies__title { margin: 0; font: 600 34px/1.3 var(--cg-font-heading); }
+.companies__text { font-size: 20px; line-height: 35px; }
+
+.companies__logos { display: flex; flex-wrap: wrap; align-items: center; gap: 24px 50px; }
+.companies__logo { display: flex; align-items: center; }
+.companies__img { width: auto; height: 86px; max-width: 190px; object-fit: contain; }
+
+@media (max-width: 1100px) {
+	.hire__inner { grid-template-columns: minmax(0, 1fr); }
+	.hire__photo { height: 360px; }
+	.hire-stats__list { padding: 28px 32px; }
+	.companies__card { padding: 40px 32px; }
+}
+
+@media (max-width: 700px) {
+	.page-hero { padding: 40px 0 110px; }
+	.hire-stats__list { flex-direction: column; align-items: flex-start; }
+	.cg-form--hire .cg-form__row { flex-direction: column; gap: 30px; }
+	.cg-form__actions { flex-wrap: wrap; }
+}
