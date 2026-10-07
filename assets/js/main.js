@@ -13,6 +13,22 @@
 		} );
 	}
 
+	// "Copy bank details" buttons.
+	document.addEventListener( 'click', function ( e ) {
+		var btn = e.target.closest( '[data-copy]' );
+		if ( ! btn || ! navigator.clipboard ) {
+			return;
+		}
+		var src = btn.closest( 'article' ).querySelector( btn.getAttribute( 'data-copy' ) );
+		var label = btn.textContent;
+		navigator.clipboard.writeText( src.innerText.replace( /
+{2,}/g, '
+' ) ).then( function () {
+			btn.textContent = 'Copied!';
+			setTimeout( function () { btn.textContent = label; }, 1800 );
+		} );
+	} );
+
 	// Mobile menu toggle.
 	var header = document.getElementById( 'cg-header' );
 	if ( ! header ) {

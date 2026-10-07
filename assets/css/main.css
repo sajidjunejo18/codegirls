@@ -1520,3 +1520,88 @@ textarea:focus-visible {
 	.about-story, .people, .advisory, .sdgs, .manifesto, .industry, .roots, .next { padding: 56px 0; }
 	.story-text__p, .sec-head__text { font-size: 16px; line-height: 28px; }
 }
+
+/* 32. Support page ----------------------------------------------------------- */
+:where(.tiers, .impact, .ways, .journey) p { margin: 0; }
+:where(.tiers, .impact, .journey) ul, :where(.journey) ol { margin: 0; padding: 0; list-style: none; }
+:where(.tiers, .impact, .ways, .journey) img { max-width: 100%; }
+
+.about-hero--plain .about-hero__media { padding: 0; }
+.about-hero--plain .about-hero__media::after { display: none; }
+.about-hero--plain .about-hero__text { max-width: 760px; }
+.about-hero__buttons { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 12px; }
+
+.tiers { padding: 80px 0; }
+.tiers__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 37px; align-items: start; }
+
+.tier {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 14px;
+	padding: 40px 50px 50px;
+	background: var(--cg-white);
+	box-shadow: var(--cg-shadow-card);
+}
+
+.tier__badge { position: absolute; top: 16px; right: 20px; padding: 6px 14px; border-radius: 200px; background: var(--cg-yellow); font: 700 13px/17px var(--cg-font-body); }
+.tier__icon { width: 100px; height: auto; margin-bottom: 18px; }
+.tier__title { margin: 0; font: 700 20px/1.4 var(--cg-font-heading); }
+.tier__price { margin: 6px 0 0; font: 700 35px/1.2 var(--cg-font-heading); }
+.tier__meta { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.tier__clock { width: 16px; height: 16px; }
+.tier__text { font-size: 18px; line-height: 32px; }
+.tier__btn { width: 100%; margin-top: 10px; }
+
+.impact { padding: 80px 0; background: var(--cg-offwhite); }
+.impact__list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 30px; text-align: center; }
+.impact__item { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.impact__icon { width: 90px; height: auto; margin-bottom: 28px; }
+.impact__num { font: 700 35px/1.2 var(--cg-font-heading); }
+.impact__unit { font-size: 18px; }
+.impact__label { font-size: 18px; }
+
+.ways { padding: 80px 0; }
+.ways__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 50px; align-items: start; }
+.bank { padding: 36px 50px 50px; background: var(--cg-white); box-shadow: var(--cg-shadow-card); }
+.bank__head { display: flex; align-items: center; gap: 18px; margin-bottom: 44px; }
+.bank__flag { width: 32px; height: auto; }
+.bank__title { margin: 0; font: 600 20px/1.3 var(--cg-font-heading); }
+.bank__list { display: flex; flex-direction: column; gap: 20px; }
+.bank__row { display: grid; grid-template-columns: 205px minmax(0, 1fr); gap: 0; font-size: 18px; line-height: 32px; }
+.bank__label { font: 600 18px/32px var(--cg-font-heading); }
+.bank__note { display: flex; align-items: center; gap: 10px; margin: 28px 0 22px; font-size: 14px; }
+.bank__info { width: 16px; height: 16px; }
+.bank__actions { display: flex; flex-wrap: wrap; gap: 14px; }
+.bank__copy { min-height: 44px; padding: 0 30px; font-size: 14px; }
+
+.journey { padding: 80px 0; background: var(--cg-offwhite); }
+.journey__list { display: flex; justify-content: space-between; gap: 20px; }
+.journey__step { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.journey__step + .journey__step::before { content: ""; position: absolute; top: 72px; right: calc(50% + 100px); width: 124px; height: 2px; background: var(--cg-green); }
+.journey__icon { width: 134px; height: auto; margin-bottom: 14px; }
+.journey__title { margin: 0; font: 700 20px/1.3 var(--cg-font-heading); }
+.journey__text { font-size: 18px; }
+
+@media (max-width: 1280px) {
+	.tiers__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.tier { padding: 36px 32px 40px; }
+}
+
+@media (max-width: 1100px) {
+	.ways__grid { grid-template-columns: minmax(0, 1fr); }
+	.impact__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 20px; }
+	.journey__list { flex-wrap: wrap; row-gap: 40px; }
+	.journey__step { flex: 0 0 45%; }
+	.journey__step::before { display: none; }
+}
+
+@media (max-width: 640px) {
+	.tiers__grid { grid-template-columns: minmax(0, 1fr); }
+	.bank { padding: 28px 22px 36px; }
+	.bank__row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+	.tiers, .impact, .ways, .journey { padding: 56px 0; }
+}
+
+.about-hero--plain .about-hero__title { font-size: clamp(34px, 1.5rem + 1.4vw, 50px); }
