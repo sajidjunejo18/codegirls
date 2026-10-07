@@ -65,8 +65,8 @@
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["voice__role"]} -->
 <p class="gb-text voice__role">Senior SQA Engineer</p>
 <!-- /wp:generateblocks/text -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["voice__link"],"htmlAttributes":{"href":"/voices/ghulam-sakina/"}} -->
-<a class="gb-text voice__link" href="/voices/ghulam-sakina/">Discover her Voice</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["voice__link"],"htmlAttributes":{"href":"<?php echo esc_url( home_url( '/voices/ghulam-sakina/' ) ); ?>"}} -->
+<a class="gb-text voice__link" href="<?php echo esc_url( home_url( '/voices/ghulam-sakina/' ) ); ?>">Discover her Voice</a>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->

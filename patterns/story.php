@@ -63,8 +63,8 @@
 <!-- /wp:generateblocks/element -->
 </ul>
 <!-- /wp:generateblocks/element -->
-<!-- wp:generateblocks/element {"tagName":"a","globalClasses":["story__link"],"htmlAttributes":{"href":"#"}} -->
-<a class="story__link" href="#">
+<!-- wp:generateblocks/element {"tagName":"a","globalClasses":["story__link"],"htmlAttributes":{"href":"<?php echo esc_url( home_url( '/voices/' ) ); ?>"}} -->
+<a class="story__link" href="<?php echo esc_url( home_url( '/voices/' ) ); ?>">
 <!-- wp:generateblocks/media {"tagName":"img","globalClasses":["story__arrow"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/arrow-stories.svg' ) ); ?>","alt":"","width":"63","height":"12","loading":"lazy"}} -->
 <img class="story__arrow" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/arrow-stories.svg' ) ); ?>" alt="" width="63" height="12" loading="lazy"/>
 <!-- /wp:generateblocks/media -->

@@ -32,3 +32,9 @@ Breakpoints: 1200 / 1024 / 768 / 480.
 - WordPress caches theme patterns per theme Version: bump `Version` in style.css (or run `wp_get_theme()->delete_pattern_cache()`) after editing a pattern.
 - Header/footer: `parts/header.php`, `parts/footer.php`, swapped in via `inc/hooks.php`. Menu: Appearance → Menus → "Primary (header)".
 - Contact form: `[cg_contact_form]` (`inc/contact.php`), emails the Settings → General address.
+
+## Pages (all built from patterns in /patterns, except the blog)
+Home (front page), Hire a Codegirl, Become a Trainer, Our Courses, About, Support CodeGirls, Recognitions, Reports, In The Press, Voices (+ Ghulam Sakina story), Privacy Policy.
+Blog: `home.php` (index with author/category/date/search filters) and `single.php` render real WordPress posts, so it stays dynamic.
+Forms: `inc/forms.php` (config-driven: hire, trainer) and `inc/contact.php` (general contact). All email the Settings → General address.
+Menu: Appearance → Menus → "CodeGirls Primary" (assigned to "Primary (header)"), two levels deep.

@@ -1,7 +1,7 @@
 <?php
 /**
- * Title: Press Hero
- * Slug: codegirls/press-hero
+ * Title: Privacy Hero
+ * Slug: codegirls/privacy-hero
  * Categories: codegirls
  * Description: Short banner.
  */
@@ -19,12 +19,12 @@
 <span class="gb-text page-hero__sep" aria-hidden="true">&gt;</span>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"span","globalClasses":["page-hero__crumb page-hero__crumb--current"],"htmlAttributes":{"aria-current":"page"}} -->
-<span class="gb-text page-hero__crumb page-hero__crumb--current" aria-current="page">In The Press</span>
+<span class="gb-text page-hero__crumb page-hero__crumb--current" aria-current="page">Privacy Policy</span>
 <!-- /wp:generateblocks/text -->
 </nav>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/text {"tagName":"h1","globalClasses":["page-hero__title"]} -->
-<h1 class="gb-text page-hero__title">In The Press</h1>
+<h1 class="gb-text page-hero__title">Privacy Policy</h1>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->

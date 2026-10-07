@@ -12,8 +12,8 @@
 <div class="cg-wrap page-hero__inner">
 <!-- wp:generateblocks/element {"tagName":"nav","globalClasses":["page-hero__crumbs"],"htmlAttributes":{"aria-label":"Breadcrumb"}} -->
 <nav class="page-hero__crumbs" aria-label="Breadcrumb">
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["page-hero__crumb"],"htmlAttributes":{"href":"/"}} -->
-<a class="gb-text page-hero__crumb" href="/">Home</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["page-hero__crumb"],"htmlAttributes":{"href":"<?php echo esc_url( home_url( '/' ) ); ?>"}} -->
+<a class="gb-text page-hero__crumb" href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"span","globalClasses":["page-hero__sep"],"htmlAttributes":{"aria-hidden":"true"}} -->
 <span class="gb-text page-hero__sep" aria-hidden="true">&gt;</span>

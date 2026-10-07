@@ -22,11 +22,11 @@
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["involve__buttons"]} -->
 <div class="involve__buttons">
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn involve__btn"],"htmlAttributes":{"href":"#contact"}} -->
-<a class="gb-text cg-btn involve__btn" href="#contact">Sponsor a CodeGirl</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn involve__btn"],"htmlAttributes":{"href":"<?php echo esc_url( home_url( '/support-codegirls/' ) ); ?>"}} -->
+<a class="gb-text cg-btn involve__btn" href="<?php echo esc_url( home_url( '/support-codegirls/' ) ); ?>">Sponsor a CodeGirl</a>
 <!-- /wp:generateblocks/text -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn involve__btn"],"htmlAttributes":{"href":"#contact"}} -->
-<a class="gb-text cg-btn involve__btn" href="#contact">Hire a CodeGirl</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn involve__btn"],"htmlAttributes":{"href":"<?php echo esc_url( home_url( '/hire-a-codegirl/' ) ); ?>"}} -->
+<a class="gb-text cg-btn involve__btn" href="<?php echo esc_url( home_url( '/hire-a-codegirl/' ) ); ?>">Hire a CodeGirl</a>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->

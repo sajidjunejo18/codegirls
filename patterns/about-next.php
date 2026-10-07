@@ -21,17 +21,17 @@
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["next__buttons"]} -->
 <div class="next__buttons">
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn"],"htmlAttributes":{"href":"/become-a-trainer/"}} -->
-<a class="gb-text cg-btn" href="/become-a-trainer/">Become a Training Partner</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn"],"htmlAttributes":{"href":"<?php echo esc_url( home_url( '/become-a-trainer/' ) ); ?>"}} -->
+<a class="gb-text cg-btn" href="<?php echo esc_url( home_url( '/become-a-trainer/' ) ); ?>">Become a Training Partner</a>
 <!-- /wp:generateblocks/text -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn"],"htmlAttributes":{"href":"/hire-a-codegirl/"}} -->
-<a class="gb-text cg-btn" href="/hire-a-codegirl/">Become a Hiring Partner</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn"],"htmlAttributes":{"href":"<?php echo esc_url( home_url( '/hire-a-codegirl/' ) ); ?>"}} -->
+<a class="gb-text cg-btn" href="<?php echo esc_url( home_url( '/hire-a-codegirl/' ) ); ?>">Become a Hiring Partner</a>
 <!-- /wp:generateblocks/text -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn"],"htmlAttributes":{"href":"/support-codegirls/"}} -->
-<a class="gb-text cg-btn" href="/support-codegirls/">Become a Sponsor</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn"],"htmlAttributes":{"href":"<?php echo esc_url( home_url( '/support-codegirls/' ) ); ?>"}} -->
+<a class="gb-text cg-btn" href="<?php echo esc_url( home_url( '/support-codegirls/' ) ); ?>">Become a Sponsor</a>
 <!-- /wp:generateblocks/text -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn"],"htmlAttributes":{"href":"/reports/"}} -->
-<a class="gb-text cg-btn" href="/reports/">Impact Reports</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn"],"htmlAttributes":{"href":"<?php echo esc_url( home_url( '/reports/' ) ); ?>"}} -->
+<a class="gb-text cg-btn" href="<?php echo esc_url( home_url( '/reports/' ) ); ?>">Impact Reports</a>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->

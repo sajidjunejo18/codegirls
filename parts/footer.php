@@ -14,9 +14,9 @@ $img = static function ( $file ) {
 $links = array(
 	'Home'       => home_url( '/' ),
 	'About'      => home_url( '/about/' ),
-	'Impact'     => home_url( '/impact/' ),
+	'Impact'     => home_url( '/recognitions/' ),
 	'Courses'    => home_url( '/courses/' ),
-	'Partners'   => home_url( '/partners/' ),
+	'Partners'   => home_url( '/#partners' ),
 	'Contact Us' => home_url( '/#contact' ),
 );
 

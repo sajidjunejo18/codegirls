@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
 					'container'      => false,
 					'menu_class'     => 'cg-nav__list',
 					'fallback_cb'    => false,
-					'depth'          => 1,
+					'depth'          => 2,
 				)
 			);
 			?>

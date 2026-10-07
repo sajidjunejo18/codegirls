@@ -22,8 +22,8 @@
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["courses__all"],"htmlAttributes":{"href":"#"}} -->
-<a class="gb-text courses__all" href="#">View all courses</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["courses__all"],"htmlAttributes":{"href":"<?php echo esc_url( home_url( '/courses/' ) ); ?>"}} -->
+<a class="gb-text courses__all" href="<?php echo esc_url( home_url( '/courses/' ) ); ?>">View all courses</a>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
