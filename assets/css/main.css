@@ -1662,3 +1662,70 @@ textarea:focus-visible {
 
 @media (max-width: 1000px) { .reports__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px; } }
 @media (max-width: 600px) { .reports__grid { grid-template-columns: minmax(0, 1fr); } .reports { padding: 56px 0; } }
+
+/* 36. In The Press (reuses report cards) -------------------------------------- */
+.report__tile { padding: 17px 19px 0; line-height: 0; }
+.report--press .report__img { width: 100%; height: auto; }
+.report--press .report__body { padding: 24px 38px 34px; }
+.report--press .report__title { font-size: 18px; margin-bottom: 14px; }
+.report__when { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.report__clock { width: 14px; height: 14px; }
+.report__when .report__date { font-size: 14px; }
+
+/* 37. Voices of CodeGirls ------------------------------------------------------ */
+:where(.voice-featured, .voices, .vstory) p { margin: 0; }
+:where(.voices, .vstory) ul { margin: 0; padding: 0; list-style: none; }
+:where(.voice-featured, .voices, .vstory) img { max-width: 100%; }
+
+.voice-featured { padding: 50px 0 60px; }
+.voice-featured__inner { display: flex; align-items: center; gap: 56px; max-width: 1450px; }
+.voice-featured__img { flex: none; width: 365px; height: auto; }
+.voice-featured__body { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+.voice-featured__name { margin: 0; font: 600 40px/1.3 var(--cg-font-heading); }
+.voice-featured__text { font-size: 18px; line-height: 32px; margin-bottom: 8px; }
+
+.voices { padding: 60px 0 80px; background: var(--cg-offwhite); }
+.voices__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 30px; max-width: 1450px; margin-inline: auto; }
+.voice { display: flex; align-items: center; gap: 4px; }
+.voice__img { flex: none; width: 184px; height: auto; margin: -10px -26px -10px -22px; }
+.voice__body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.voice__name { margin: 0; font: 600 18px/1.3 var(--cg-font-heading); }
+.voice__role { font-size: 14px; line-height: 1.6; }
+.voice__link { color: var(--cg-navy); font: 700 14px/1.4 var(--cg-font-body); text-decoration: none; margin-top: 4px; }
+.voice__link::after { content: "\2197"; margin-left: 8px; }
+.voice__link:hover { color: var(--cg-green); }
+
+/* single story */
+.vstory { padding: 40px 0 90px; }
+.vstory__inner { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 56px; max-width: 1450px; align-items: start; }
+.vstory__photo { width: 280px; height: auto; }
+.vstory__name { margin: 0 0 14px; font: 600 40px/1.3 var(--cg-font-heading); }
+.vstory__meta { display: flex; flex-wrap: wrap; gap: 14px 40px; margin-bottom: 26px; }
+.vstory__meta-item { display: flex; align-items: center; gap: 10px; font: 600 16px/1.3 var(--cg-font-heading); }
+.vstory__meta-icon { width: 22px; height: auto; }
+.vstory__banner { display: block; width: 100%; height: auto; margin-bottom: 30px; }
+.vstory__article { font-size: 16px; line-height: 28px; }
+.vstory__article p { margin: 0 0 28px; }
+.vstory__article h2 { margin: 34px 0 14px; font: 600 28px/1.3 var(--cg-font-heading); }
+.vstory__article a { color: var(--cg-navy); }
+
+@media (max-width: 1100px) {
+	.voices__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.voice-featured__inner { flex-direction: column; text-align: left; align-items: flex-start; }
+	.vstory__inner { grid-template-columns: minmax(0, 1fr); }
+	.vstory__photo { width: 220px; }
+}
+
+@media (max-width: 640px) {
+	.voices__grid { grid-template-columns: minmax(0, 1fr); }
+	.voice-featured__img { width: 240px; }
+	.voice-featured__text { font-size: 16px; line-height: 28px; }
+	.vstory__name, .voice-featured__name { font-size: 30px; }
+}
+
+.vstory__inner { max-width: 1596px; grid-template-columns: 280px minmax(0, 1fr); gap: 80px; }
+.vstory__main { max-width: 1180px; }
+.vstory__article { font-size: 18px; line-height: 32px; }
+.vstory__meta-icon { width: 24px; }
+.vstory__meta-text { white-space: nowrap; }
+.voices__grid { max-width: 1596px; }
