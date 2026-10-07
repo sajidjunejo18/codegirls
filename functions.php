@@ -17,4 +17,4 @@ require_once CG_DIR . '/inc/enqueue.php';
 require_once CG_DIR . '/inc/setup.php';
 require_once CG_DIR . '/inc/hooks.php';
 require_once CG_DIR . '/inc/contact.php';
-require_once CG_DIR . '/inc/hire.php';
+require_once CG_DIR . '/inc/forms.php';

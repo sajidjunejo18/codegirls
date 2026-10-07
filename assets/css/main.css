@@ -1605,3 +1605,21 @@ textarea:focus-visible {
 }
 
 .about-hero--plain .about-hero__title { font-size: clamp(34px, 1.5rem + 1.4vw, 50px); }
+
+/* 33. Forms (config-driven) + Become a Trainer -------------------------------- */
+.page-hero--short { padding: 52px 0 56px; }
+.cg-form__field--full { flex: 1 1 100%; }
+.cg-form__filebox { display: flex; align-items: center; gap: 21px; min-height: 53px; }
+.cg-form__actions--end { justify-content: flex-end; }
+.cg-form--hire .cg-form__field > label { font-size: 16px; }
+.hire--trainer { padding: 80px 0; background: var(--cg-offwhite); }
+.hire--trainer .hire__photo { aspect-ratio: 436 / 694; height: auto; min-height: 0; align-self: start; }
+.hire--trainer .cg-form--hire input,
+.hire--trainer .cg-form--hire select { background: var(--cg-white); }
+
+@media (min-width: 1101px) {
+	.companies__card { flex-wrap: nowrap; }
+	.companies__intro { flex: 0 1 480px; }
+	.companies__logos { flex-wrap: nowrap; gap: 24px 40px; }
+	.companies__img { height: 72px; max-width: 150px; }
+}

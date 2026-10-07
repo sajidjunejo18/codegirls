@@ -6,8 +6,8 @@
  * Description: Photo plus employer enquiry form.
  */
 ?>
-<!-- wp:generateblocks/element {"tagName":"section","globalClasses":["hire"],"htmlAttributes":{"id":"hire"}} -->
-<section class="hire" id="hire">
+<!-- wp:generateblocks/element {"tagName":"section","globalClasses":["hire"],"htmlAttributes":{"id":"form"}} -->
+<section class="hire" id="form">
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["cg-wrap hire__inner"]} -->
 <div class="cg-wrap hire__inner">
 <!-- wp:generateblocks/media {"tagName":"img","globalClasses":["hire__photo"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/hire-photo.webp' ) ); ?>","alt":"CodeGirls trainees working at computers","width":"436","height":"914","loading":"lazy"}} -->
