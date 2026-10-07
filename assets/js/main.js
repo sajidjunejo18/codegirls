@@ -21,9 +21,7 @@
 		}
 		var src = btn.closest( 'article' ).querySelector( btn.getAttribute( 'data-copy' ) );
 		var label = btn.textContent;
-		navigator.clipboard.writeText( src.innerText.replace( /
-{2,}/g, '
-' ) ).then( function () {
+		navigator.clipboard.writeText( src.innerText.replace( /\n{2,}/g, '\n' ) ).then( function () {
 			btn.textContent = 'Copied!';
 			setTimeout( function () { btn.textContent = label; }, 1800 );
 		} );

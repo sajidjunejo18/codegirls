@@ -59,7 +59,7 @@ function cg_form_field_html( $form, $key, $f ) {
 		}
 		echo '</select>';
 	} elseif ( 'file' === $f[1] ) {
-		echo '<div class="cg-form__filebox"><input class="cg-form__file" id="' . esc_attr( $id ) . '" type="file" name="cg_file" accept=".doc,.docx"><label class="cg-form__file-btn" for="' . esc_attr( $id ) . '">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span></div>';
+		echo '<div class="cg-form__filebox"><input class="cg-form__file" id="' . esc_attr( $id ) . '" type="file" name="cg_file" accept=".doc,.docx"' . ( $req ? ' required' : '' ) . '><label class="cg-form__file-btn" for="' . esc_attr( $id ) . '">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span></div>';
 	} else {
 		echo '<input id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" type="' . esc_attr( $f[1] ) . '"' . ( $req ? ' required' : '' ) . '>';
 	}
@@ -173,6 +173,13 @@ function cg_handle_form() {
 	if ( ! empty( $cfg['textarea'] ) ) {
 		$desc    = isset( $_POST[ "cg_{$form}_description" ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ "cg_{$form}_description" ] ) ) : '';
 		$lines[] = "\nDescription:\n" . $desc;
+	}
+
+	// A required file field (e.g. the trainer resume) must actually be uploaded.
+	foreach ( $cfg['fields'] as $f ) {
+		if ( 'file' === $f[1] && ! empty( $f[2] ) && empty( $_FILES['cg_file']['name'] ) ) {
+			$ok = false;
+		}
 	}
 
 	$attachments = array();

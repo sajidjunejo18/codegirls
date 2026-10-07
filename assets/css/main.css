@@ -1723,7 +1723,8 @@ textarea:focus-visible {
 	.vstory__name, .voice-featured__name { font-size: 30px; }
 }
 
-.vstory__inner { max-width: 1596px; grid-template-columns: 280px minmax(0, 1fr); gap: 80px; }
+.vstory__inner { max-width: 1596px; }
+@media (min-width: 1101px) { .vstory__inner { grid-template-columns: 280px minmax(0, 1fr); gap: 80px; } }
 .vstory__main { max-width: 1180px; }
 .vstory__article { font-size: 18px; line-height: 32px; }
 .vstory__meta-icon { width: 24px; }
@@ -1868,4 +1869,19 @@ textarea:focus-visible {
 	.cg-nav .sub-menu { position: static; visibility: visible; opacity: 1; transform: none; min-width: 0; padding: 0 0 6px 16px; border: 0; box-shadow: none; }
 	.cg-nav__list > .menu-item-has-children > a::after { display: none; }
 	.cg-nav .sub-menu a { padding: 8px 0; font-size: 15px; }
+}
+
+/* 41. QA fixes ------------------------------------------------------------------ */
+/* Visually hidden file input: pinned inside its row so it can't widen the page. */
+.cg-form__actions, .cg-form__filebox { position: relative; }
+.cg-form__file { top: 0; left: 0; clip-path: inset(50%); }
+
+/* Footer logos wrap on narrow phones. */
+.cg-footer__logos { flex-wrap: wrap; }
+.cg-footer__logos img:first-child { max-width: 100%; }
+
+/* Story meta line wraps on phones. */
+@media (max-width: 640px) {
+	.vstory__meta { gap: 10px 24px; }
+	.vstory__meta-text { white-space: normal; }
 }
