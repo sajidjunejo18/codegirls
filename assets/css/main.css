@@ -1,0 +1,97 @@
+/* ==========================================================================
+   CodeGirls – main stylesheet
+   1. Fonts   2. Design tokens   3. Base   4. Buttons   (sections added per phase)
+   ========================================================================== */
+
+/* 1. Fonts (self-hosted variable woff2, latin subset) ---------------------- */
+@font-face {
+	font-family: "Parkinsans";
+	src: url("../fonts/parkinsans-variable.woff2") format("woff2");
+	font-weight: 300 800;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Onest";
+	src: url("../fonts/onest-variable.woff2") format("woff2");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* 2. Design tokens (from Figma "UI" frame) -------------------------------- */
+:root {
+	/* Colors */
+	--cg-green: #0a9d58;
+	--cg-yellow: #f2b41b;
+	--cg-navy: #223044;
+	--cg-white: #fff;
+	--cg-overlay: rgba(0, 0, 0, 0.1);
+	--cg-border: rgba(222, 222, 222, 0.5);
+
+	/* Typography */
+	--cg-font-heading: "Parkinsans", system-ui, sans-serif;
+	--cg-font-body: "Onest", system-ui, sans-serif;
+
+	--cg-fs-h1: clamp(2.75rem, 1.6rem + 4.4vw, 5rem);   /* 80px */
+	--cg-fs-stat: clamp(1.75rem, 1.4rem + 1.2vw, 2.1875rem); /* 35px */
+	--cg-fs-lg: 1.25rem;     /* 20px */
+	--cg-fs-md: 1rem;        /* 16px */
+	--cg-fs-sm: 0.9375rem;   /* 15px */
+	--cg-fs-xs: 0.75rem;     /* 12px */
+
+	/* Layout */
+	--cg-container: 1596px;
+	--cg-gutter: clamp(1rem, 8.4375vw, 162px); /* 162px at 1920 */
+	--cg-nav-h: 104px;
+
+	/* Shape + elevation */
+	--cg-radius-pill: 999px;
+	--cg-shadow-card: 0 24px 42px rgba(0, 0, 0, 0.04);
+
+	/* Breakpoints (reference only, CSS vars cannot be used in @media):
+	   1200 / 1024 / 768 / 480 */
+}
+
+/* 3. Base ----------------------------------------------------------------- */
+body {
+	font-family: var(--cg-font-body);
+	color: var(--cg-navy);
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--cg-font-heading);
+	font-weight: 600;
+}
+
+/* 4. Buttons -------------------------------------------------------------- */
+.cg-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 44px;
+	padding: 12px 35px;
+	border-radius: 0;
+	background: var(--cg-yellow);
+	color: var(--cg-navy);
+	font: 700 var(--cg-fs-sm)/1 var(--cg-font-body);
+	text-decoration: none;
+	transition: filter 0.2s ease;
+}
+
+.cg-btn:hover,
+.cg-btn:focus-visible {
+	filter: brightness(0.94);
+	color: var(--cg-navy);
+}
+
+.cg-btn--navy {
+	background: var(--cg-navy);
+	color: var(--cg-white);
+}
+
+.cg-btn--navy:hover,
+.cg-btn--navy:focus-visible {
+	color: var(--cg-white);
+}
