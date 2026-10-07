@@ -1623,3 +1623,42 @@ textarea:focus-visible {
 	.companies__logos { flex-wrap: nowrap; gap: 24px 40px; }
 	.companies__img { height: 72px; max-width: 150px; }
 }
+
+/* 34. Recognitions ------------------------------------------------------------ */
+.recogs { padding: 80px 0; background: var(--cg-offwhite); }
+.recogs__wrap { max-width: 1490px; }
+.recogs__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 49px; align-items: start; }
+.recog { background: var(--cg-white); box-shadow: var(--cg-shadow-card); }
+.recog__media { position: relative; line-height: 0; }
+.recog__img { width: 100%; height: auto; }
+.recog__badge { position: absolute; left: 50%; bottom: 0; width: 102px; height: auto; transform: translate(-50%, 50%); }
+.recog__body { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 78px 36px 40px; text-align: center; }
+.recog__title { margin: 0; font: 600 18px/1.45 var(--cg-font-heading); }
+:where(.recogs) img { max-width: 100%; }
+
+@media (max-width: 1000px) {
+	.recogs__grid { grid-template-columns: minmax(0, 1fr); max-width: 520px; margin-inline: auto; }
+}
+
+.recogs__grid { align-items: stretch; }
+.recog { display: flex; flex-direction: column; }
+.recog__body { flex: 1; justify-content: space-between; }
+
+/* 35. Report archive ---------------------------------------------------------- */
+.reports { padding: 80px 0; background: var(--cg-offwhite); }
+.reports__wrap { max-width: 1490px; }
+.reports__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 52px 48px; }
+.report { position: relative; display: flex; flex-direction: column; background: var(--cg-white); transition: box-shadow 0.25s ease; }
+.report--active, .report:hover { box-shadow: var(--cg-shadow-card); }
+.report__img { display: block; width: 100%; height: auto; }
+.report__body { position: relative; flex: 1; padding: 22px 38px 28px; }
+.report__title { margin: 0 0 10px; font: 600 20px/1.3 var(--cg-font-heading); }
+.report__title a { color: var(--cg-navy); text-decoration: none; }
+.report__title a::after { content: ""; position: absolute; inset: 0; }
+.report--active .report__title a, .report:hover .report__title a { color: var(--cg-green); }
+.report__date { font-size: 18px; }
+.report__body::after { content: "\2197"; position: absolute; right: 26px; bottom: 22px; font-size: 14px; }
+:where(.reports) p { margin: 0; }
+
+@media (max-width: 1000px) { .reports__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px; } }
+@media (max-width: 600px) { .reports__grid { grid-template-columns: minmax(0, 1fr); } .reports { padding: 56px 0; } }
