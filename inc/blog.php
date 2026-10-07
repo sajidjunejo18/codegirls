@@ -13,7 +13,8 @@ defined( 'ABSPATH' ) || exit;
 function cg_render_pattern( $slug ) {
 	$pattern = WP_Block_Patterns_Registry::get_instance()->get_registered( 'codegirls/' . $slug );
 	if ( $pattern ) {
-		echo do_blocks( $pattern['content'] ); // phpcs:ignore WordPress.Security.EscapeOutput
+		// do_blocks() alone leaves [shortcodes] (e.g. the contact form) unprocessed.
+		echo do_shortcode( do_blocks( $pattern['content'] ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 }
 
