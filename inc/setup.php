@@ -23,6 +23,11 @@ function cg_palette() {
 function cg_setup() {
 	add_theme_support( 'editor-color-palette', cg_palette() );
 	add_theme_support( 'responsive-embeds' );
+	register_nav_menus(
+		array(
+			'primary' => __( 'Primary (header)', 'generatepress-child' ),
+		)
+	);
 	add_image_size( 'cg-card', 980, 502, true );
 	add_image_size( 'cg-partner', 288, 124, false );
 }

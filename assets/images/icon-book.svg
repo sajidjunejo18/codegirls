@@ -1,0 +1,7 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon-book">
+<path id="Rectangle" d="M2 4.5C2 3.67157 2.67157 3 3.5 3H6.5C7.32843 3 8 3.67157 8 4.5V13.5C8 14.3284 7.32843 15 6.5 15H3.5C2.67157 15 2 14.3284 2 13.5V4.5Z" stroke="#223044" stroke-width="1.6"/>
+<path id="Rectangle_2" d="M10 4.5C10 3.67157 10.6716 3 11.5 3H15.5C16.3284 3 17 3.67157 17 4.5V13.5C17 14.3284 16.3284 15 15.5 15H11.5C10.6716 15 10 14.3284 10 13.5V4.5Z" stroke="#223044" stroke-width="1.6"/>
+<line id="Line" x1="9.5625" y1="3.00015" x2="-2.4375" y2="3.00022" stroke="#223044" stroke-width="1.125"/>
+</g>
+</svg>

@@ -28,4 +28,7 @@ Breakpoints: 1200 / 1024 / 768 / 480.
 
 ## Decisions
 - No `theme.json`: GeneratePress manages global colors and typography, and a theme.json would compete with them. The palette is registered in `inc/setup.php` instead.
-- Patterns use GenerateBlocks v2 blocks only, with BEM class names.
+- Patterns use GenerateBlocks v2 blocks only (element, text, media), BEM class names, styles in main.css. Generated markup is saved as patterns/*.php.
+- WordPress caches theme patterns per theme Version: bump `Version` in style.css (or run `wp_get_theme()->delete_pattern_cache()`) after editing a pattern.
+- Header/footer: `parts/header.php`, `parts/footer.php`, swapped in via `inc/hooks.php`. Menu: Appearance → Menus → "Primary (header)".
+- Contact form: `[cg_contact_form]` (`inc/contact.php`), emails the Settings → General address.
