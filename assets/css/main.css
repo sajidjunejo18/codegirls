@@ -1885,3 +1885,9 @@ textarea:focus-visible {
 	.vstory__meta { gap: 10px 24px; }
 	.vstory__meta-text { white-space: normal; }
 }
+
+/* 42. Homepage-only demo mode: paused links keep their look but do nothing. */
+a.is-paused { cursor: default; }
+.cg-nav__list a.is-paused:hover { color: var(--cg-navy); }
+a.cg-btn.is-paused:hover { filter: none; }
+.cg-footer a.is-paused:hover { color: var(--cg-navy); }
