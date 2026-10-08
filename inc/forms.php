@@ -192,9 +192,12 @@ function cg_handle_form() {
 	$ok = isset( $_POST['cg_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cg_nonce'] ) ), 'cg_form_' . $form );
 	$ok = $ok && empty( $_POST['cg_website'] ); // Honeypot.
 
-	$lines = array();
-	$name  = '';
-	$email = '';
+	$lines  = array();
+	$pairs  = array();
+	$name   = '';
+	$email  = '';
+	$phone  = '';
+	$course = '';
 	foreach ( $cfg['fields'] as $key => $f ) {
 		if ( 'file' === $f[1] ) {
 			continue;
@@ -215,7 +218,14 @@ function cg_handle_form() {
 		if ( 'email' === $key ) {
 			$email = sanitize_email( $val );
 		}
-		$lines[] = rtrim( $f[0], ':' ) . ': ' . $val;
+		if ( 'phone' === $key ) {
+			$phone = $val;
+		}
+		if ( 'course' === $key ) {
+			$course = $val;
+		}
+		$lines[]                      = rtrim( $f[0], ':' ) . ': ' . $val;
+		$pairs[ rtrim( $f[0], ':' ) ] = $val;
 	}
 	$ok = $ok && is_email( $email );
 
@@ -258,21 +268,36 @@ function cg_handle_form() {
 		}
 	}
 
-	$sent = false;
+	$saved = 0;
+	$sent  = false;
 	if ( $ok ) {
+		// Keep the upload in the private folder (admins download it from the entry screen).
+		$file_rel = '';
+		if ( $uploaded && file_exists( $uploaded ) ) {
+			$private = trailingslashit( cg_private_dir() ) . wp_generate_password( 12, false ) . '-' . sanitize_file_name( basename( $uploaded ) );
+			if ( copy( $uploaded, $private ) ) {
+				$file_rel = basename( $private );
+			}
+		}
+		$saved = cg_save_entry( $form, $pairs, $name, $email, $phone, $course, $file_rel );
+
 		$sent = wp_mail(
 			get_option( 'admin_email' ),
 			sprintf( '[%s] %s from %s', wp_specialchars_decode( get_bloginfo( 'name' ) ), $cfg['subject'], $name ),
-			implode( "\n", $lines ),
+			implode( "
+", $lines ),
 			array( 'Reply-To: ' . $name . ' <' . $email . '>' ),
 			$attachments
 		);
+		if ( $saved && $sent ) {
+			update_post_meta( $saved, '_cg_mailed', 1 );
+		}
 	}
 	if ( $uploaded && file_exists( $uploaded ) ) {
-		wp_delete_file( $uploaded ); // Not kept on the server once emailed.
+		wp_delete_file( $uploaded ); // The public copy is removed; the private one stays with the entry.
 	}
 
-	wp_safe_redirect( add_query_arg( array( 'cg_form' => $sent ? 'sent' : 'error', 'cg_id' => $form ), $redirect ) . '#' . ( isset( $cfg['anchor'] ) ? $cfg['anchor'] : 'form' ) );
+	wp_safe_redirect( add_query_arg( array( 'cg_form' => $saved ? 'sent' : 'error', 'cg_id' => $form ), $redirect ) . '#' . ( isset( $cfg['anchor'] ) ? $cfg['anchor'] : 'form' ) );
 	exit;
 }
 add_action( 'admin_post_nopriv_cg_form', 'cg_handle_form' );

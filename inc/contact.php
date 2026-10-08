@@ -58,18 +58,26 @@ function cg_handle_contact() {
 	$email   = isset( $_POST['cg_email'] ) ? sanitize_email( wp_unslash( $_POST['cg_email'] ) ) : '';
 	$message = isset( $_POST['cg_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['cg_message'] ) ) : '';
 
-	$sent = false;
+	$saved = 0;
 	if ( $ok && $name && is_email( $email ) && $message ) {
-		$body = "Name: $name\nPhone: $phone\nEmail: $email\n\n$message";
-		$sent = wp_mail(
+		$saved = cg_save_entry( 'contact', array( 'Name' => $name, 'Phone' => $phone, 'Email' => $email, 'Message' => $message ), $name, $email, $phone );
+		$body  = "Name: $name
+Phone: $phone
+Email: $email
+
+$message";
+		$sent  = wp_mail(
 			get_option( 'admin_email' ),
 			sprintf( '[%s] New contact message from %s', wp_specialchars_decode( get_bloginfo( 'name' ) ), $name ),
 			$body,
 			array( 'Reply-To: ' . $name . ' <' . $email . '>' )
 		);
+		if ( $saved && $sent ) {
+			update_post_meta( $saved, '_cg_mailed', 1 );
+		}
 	}
 
-	wp_safe_redirect( add_query_arg( 'cg_contact', $sent ? 'sent' : 'error', $redirect ) . '#contact' );
+	wp_safe_redirect( add_query_arg( 'cg_contact', $saved ? 'sent' : 'error', $redirect ) . '#contact' );
 	exit;
 }
 add_action( 'admin_post_nopriv_cg_contact', 'cg_handle_contact' );

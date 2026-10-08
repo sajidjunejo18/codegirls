@@ -44,3 +44,7 @@ Menu: Appearance → Menus → "CodeGirls Primary" (assigned to "Primary (header
 
 ## Course popups
 "Enroll Now" (data-cg-enroll) and "Notify Me" (data-cg-notify) open native <dialog> popups from parts/enroll-modals.php; forms "enroll" and "notify" in inc/forms.php email the Settings -> General address. Slots and course name come from data attributes on each button (see patterns/courses*.php). Dropdown choices: cg_education_options() / cg_relation_options() (education/relationship lists are assumed, confirm with the client).
+
+## Admin-managed content
+- **Courses** (admin menu): each course = title, excerpt, illustration (featured image) + the "Course details" box (status, phase, start date, duration, mode, schedule slots, what you will learn). Cards on the homepage and Courses page are rendered by the `[cg_courses]` shortcode (inc/courses.php); the Enroll popup reads the slots from here.
+- **Form Entries** (admin menu): every form submission (contact, enroll, notify, hire, trainer) is saved first (inc/entries.php), then emailed best-effort. Filter by form, view details, download uploaded files (private folder), export CSV.

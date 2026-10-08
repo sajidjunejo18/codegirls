@@ -2038,3 +2038,16 @@ dialog.cg-modal .cg-modal__close:focus-visible { outline: 3px solid var(--cg-yel
 	.cg-header__cta { gap: 10px; }
 	.cg-header__cta .cg-btn { padding-inline: 18px; }
 }
+
+/* 46. Admin-driven course cards: expandable "What you'll learn" + empty state. */
+.course__learn { width: 100%; }
+.course__learn > summary { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; }
+.course__learn > summary::-webkit-details-marker { display: none; }
+.course__learn-link span { color: var(--cg-navy); font: 700 20px/32px var(--cg-font-body); text-decoration: underline; }
+.course__learn-icon { width: 16px; height: 20px; transition: transform 0.2s ease; }
+.course__learn[open] .course__learn-icon { transform: rotate(180deg); }
+.course__learn-list { margin: 12px 0 4px; padding-left: 22px; font-size: 16px; line-height: 28px; }
+.course__learn-list li { margin-bottom: 6px; }
+.cg-empty { padding: 30px 0; text-align: center; font-size: 18px; }
+.course__cta { align-self: flex-start; }
+.upcoming__media .course__tag, .course__media .course__tag { z-index: 1; }
