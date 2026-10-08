@@ -25,6 +25,14 @@
 }
 
 @font-face {
+	font-family: "Poppins";
+	src: url("../fonts/poppins-600.woff2") format("woff2");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
 	font-family: "Nanum Pen Script";
 	src: url("../fonts/nanum-pen-script.woff2") format("woff2");
 	font-weight: 400;
@@ -215,7 +223,7 @@ textarea:focus-visible {
 
 .cg-nav__list a {
 	color: var(--cg-navy);
-	font: 600 15px/23px var(--cg-font-body);
+	font: 600 15px/23px "Poppins", var(--cg-font-body);
 	text-decoration: none;
 }
 
@@ -1891,3 +1899,21 @@ a.is-paused { cursor: default; }
 .cg-nav__list a.is-paused:hover { color: var(--cg-navy); }
 a.cg-btn.is-paused:hover { filter: none; }
 .cg-footer a.is-paused:hover { color: var(--cg-navy); }
+
+/* 43. Hero pause-icon from Figma (decorative until a hero video exists). */
+.hero__badge { position: absolute; top: 50px; right: 30px; z-index: 2; width: 52px; height: 52px; pointer-events: none; }
+@media (max-width: 1100px) { .hero__badge { top: 24px; right: 20px; width: 44px; height: 44px; } }
+
+/* 44. Spacing fidelity vs Figma (removes GeneratePress default margins). */
+.story__lead { line-height: 26px; }
+.story__quote { margin: 10px 0 0; }
+.cg-form__field { line-height: 1.2; }
+.cg-footer p { margin: 0; }
+.cg-footer h2 { line-height: 45px; }
+
+@media (min-width: 1100px) {
+	.cg-footer__sdgs { flex-wrap: nowrap; gap: 35px; }
+	.cg-footer__sdgs img { flex: 0 1 auto; min-width: 0; max-width: 100%; height: auto; }
+}
+.cg-footer__links li { margin: 0; line-height: 22px; }
+.cg-footer__links a { display: block; }

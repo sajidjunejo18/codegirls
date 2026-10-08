@@ -38,3 +38,6 @@ Home (front page), Hire a Codegirl, Become a Trainer, Our Courses, About, Suppor
 Blog: `home.php` (index with author/category/date/search filters) and `single.php` render real WordPress posts, so it stays dynamic.
 Forms: `inc/forms.php` (config-driven: hire, trainer) and `inc/contact.php` (general contact). All email the Settings → General address.
 Menu: Appearance → Menus → "CodeGirls Primary" (assigned to "Primary (header)"), two levels deep.
+
+## Demo mode
+`CG_HOMEPAGE_ONLY` in functions.php: true = only the homepage is live (other URLs redirect home, their links are inert). Set to false to restore all pages.
