@@ -15,7 +15,7 @@ define( 'CG_URI', get_stylesheet_directory_uri() );
 
 // Demo mode: only the homepage is live; other pages redirect home and their links are inert.
 // Set to false to make every page live again. Nothing is deleted.
-define( 'CG_HOMEPAGE_ONLY', true );
+define( 'CG_HOMEPAGE_ONLY', false );
 
 require_once CG_DIR . '/inc/enqueue.php';
 require_once CG_DIR . '/inc/setup.php';
@@ -23,4 +23,5 @@ require_once CG_DIR . '/inc/hooks.php';
 require_once CG_DIR . '/inc/contact.php';
 require_once CG_DIR . '/inc/forms.php';
 require_once CG_DIR . '/inc/blog.php';
+require_once CG_DIR . '/inc/enroll.php';
 require_once CG_DIR . '/inc/homepage-only.php';

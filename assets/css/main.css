@@ -1917,3 +1917,124 @@ a.cg-btn.is-paused:hover { filter: none; }
 }
 .cg-footer__links li { margin: 0; line-height: 22px; }
 .cg-footer__links a { display: block; }
+
+/* 45. Course popups (Enroll Now / Notify Me) + result toast ---------------------- */
+dialog.cg-modal {
+	width: min(1128px, calc(100vw - 32px));
+	max-height: calc(100vh - 32px);
+	padding: 0;
+	border: 0;
+	background: var(--cg-white);
+	color: var(--cg-navy);
+	box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+	overflow: auto;
+}
+
+dialog.cg-modal::backdrop { background: rgba(34, 48, 68, 0.6); }
+.cg-modal-open { overflow: hidden; }
+
+.cg-modal__head { position: relative; padding: 36px 56px 30px; text-align: center; border-bottom: 1px solid #eee; }
+.cg-modal__head p { margin: 0; }
+.cg-modal__eyebrow { font-size: 15px; }
+.cg-modal__title { margin: 10px 0 0; font: 600 clamp(26px, 1.2rem + 1.2vw, 40px) / 1.3 var(--cg-font-heading); color: var(--cg-navy); }
+.cg-modal__sub { margin-top: 14px !important; font-size: 20px; }
+
+.cg-modal__close {
+	position: absolute;
+	top: 22px;
+	right: 28px;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	border: 2px solid var(--cg-navy);
+	border-radius: 50%;
+	background: transparent;
+	cursor: pointer;
+}
+
+.cg-modal__close::before,
+.cg-modal__close::after { content: ""; position: absolute; top: 50%; left: 50%; width: 12px; height: 2px; background: var(--cg-navy); }
+.cg-modal__close::before { transform: translate(-50%, -50%) rotate(45deg); }
+.cg-modal__close::after { transform: translate(-50%, -50%) rotate(-45deg); }
+.cg-modal__close:hover { background: var(--cg-navy); }
+.cg-modal__close:hover::before, .cg-modal__close:hover::after { background: var(--cg-white); }
+
+.cg-modal__body { padding: 36px 56px 44px; }
+.cg-modal__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 28px; margin-bottom: 22px; }
+.cg-modal__grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; margin-bottom: 26px; }
+.cg-modal__field { display: flex; flex-direction: column; gap: 10px; min-width: 0; margin: 0; padding: 0; border: 0; font-size: 16px; line-height: 1.2; }
+.cg-modal__field label, .cg-modal__field legend { padding: 0; font-size: 16px; }
+
+.cg-modal__field input:not([type="radio"]),
+.cg-modal__field select {
+	width: 100%;
+	height: 48px;
+	padding: 0 14px;
+	border: 1px solid var(--cg-input-border);
+	border-radius: 0;
+	background: var(--cg-white);
+	color: var(--cg-navy);
+	font: 400 16px/1.4 var(--cg-font-body);
+}
+
+.cg-modal__field input:focus, .cg-modal__field select:focus { border-color: var(--cg-green); box-shadow: 0 0 0 1px var(--cg-green); outline: 0; }
+.cg-modal__radio { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 28px; min-height: 48px; }
+.cg-modal__radio legend { float: left; width: 100%; margin-bottom: 10px; }
+.cg-modal__radio label { display: inline-flex; align-items: center; gap: 8px; }
+.cg-modal__radio input { accent-color: var(--cg-navy); width: 18px; height: 18px; }
+
+.cg-modal__emergency { margin: 0 0 26px; padding: 22px 24px 8px; border: 0; background: #fafafa; }
+.cg-modal__emergency legend { padding: 0; font: 700 16px/1.3 var(--cg-font-body); margin-bottom: 14px; float: left; width: 100%; }
+.cg-modal__emergency .cg-modal__grid { clear: both; margin-bottom: 14px; }
+.cg-modal__actions { display: flex; justify-content: flex-end; }
+.cg-modal__actions .cg-btn { min-height: 48px; padding-inline: 38px; font-size: 16px; }
+
+.cg-toast {
+	position: fixed;
+	left: 50%;
+	bottom: 28px;
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	max-width: min(560px, calc(100vw - 32px));
+	padding: 16px 20px;
+	background: var(--cg-navy);
+	color: var(--cg-white);
+	border-left: 6px solid var(--cg-green);
+	box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+	transform: translateX(-50%);
+	font-size: 16px;
+	line-height: 1.4;
+}
+
+.cg-toast[hidden] { display: none; }
+.cg-toast--error { border-left-color: #e5484d; }
+.cg-toast__close { position: relative; flex: none; width: 24px; height: 24px; border: 0; background: transparent; cursor: pointer; }
+.cg-toast__close::before, .cg-toast__close::after { content: ""; position: absolute; top: 50%; left: 50%; width: 14px; height: 2px; background: var(--cg-white); }
+.cg-toast__close::before { transform: translate(-50%, -50%) rotate(45deg); }
+.cg-toast__close::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+@media (max-width: 900px) {
+	.cg-modal__head { padding: 28px 52px 22px 24px; }
+	.cg-modal__body { padding: 24px; }
+	.cg-modal__grid, .cg-modal__grid--2 { grid-template-columns: minmax(0, 1fr); }
+	.cg-modal__close { top: 16px; right: 16px; }
+}
+
+/* Popup close button: beat GeneratePress's button:focus background. */
+dialog.cg-modal .cg-modal__close,
+dialog.cg-modal .cg-modal__close:focus { background: transparent; border-color: var(--cg-navy); }
+dialog.cg-modal .cg-modal__close:hover { background: var(--cg-navy); }
+dialog.cg-modal .cg-modal__close:focus-visible { outline: 3px solid var(--cg-yellow); outline-offset: 2px; }
+
+/* Header at laptop widths (1281-1500px): keep the nav on one line and the buttons unbroken. */
+.cg-header__cta .cg-btn { white-space: nowrap; }
+@media (min-width: 1281px) and (max-width: 1500px) {
+	.cg-header { padding: 0 20px; gap: 16px; }
+	.cg-header__logo img { width: 250px; }
+	.cg-nav__list { flex-wrap: nowrap; gap: 12px 26px; }
+	.cg-nav__list a { white-space: nowrap; }
+	.cg-header__cta { gap: 10px; }
+	.cg-header__cta .cg-btn { padding-inline: 18px; }
+}

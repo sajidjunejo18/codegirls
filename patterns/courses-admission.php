@@ -86,8 +86,8 @@
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn cg-btn--navy course__cta"],"htmlAttributes":{"href":"#contact"}} -->
-<a class="gb-text cg-btn cg-btn--navy course__cta" href="#contact">Enroll Now</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn cg-btn--navy course__cta"],"htmlAttributes":{"href":"#contact","data-cg-enroll":"","data-course":"Generative Engine Optimization (GEO)","data-slots":"Fri 10:00 AM - 01:00 PM|Sat 10:00 AM - 02:00 PM","data-phase":"Phase 1"}} -->
+<a class="gb-text cg-btn cg-btn--navy course__cta" href="#contact" data-cg-enroll="" data-course="Generative Engine Optimization (GEO)" data-slots="Fri 10:00 AM - 01:00 PM|Sat 10:00 AM - 02:00 PM" data-phase="Phase 1">Enroll Now</a>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
@@ -164,8 +164,8 @@
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn cg-btn--navy course__cta"],"htmlAttributes":{"href":"#contact"}} -->
-<a class="gb-text cg-btn cg-btn--navy course__cta" href="#contact">Enroll Now</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn cg-btn--navy course__cta"],"htmlAttributes":{"href":"#contact","data-cg-enroll":"","data-course":"Java","data-slots":"Wed & Thu 9:00 AM - 11:30 AM","data-phase":"Phase 1"}} -->
+<a class="gb-text cg-btn cg-btn--navy course__cta" href="#contact" data-cg-enroll="" data-course="Java" data-slots="Wed &amp; Thu 9:00 AM - 11:30 AM" data-phase="Phase 1">Enroll Now</a>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
@@ -242,8 +242,8 @@
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn cg-btn--navy course__cta"],"htmlAttributes":{"href":"#contact"}} -->
-<a class="gb-text cg-btn cg-btn--navy course__cta" href="#contact">Enroll Now</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn cg-btn--navy course__cta"],"htmlAttributes":{"href":"#contact","data-cg-enroll":"","data-course":".NET","data-slots":"Tue & Fri 9:00 AM - 12:00 PM","data-phase":"Phase 1"}} -->
+<a class="gb-text cg-btn cg-btn--navy course__cta" href="#contact" data-cg-enroll="" data-course=".NET" data-slots="Tue &amp; Fri 9:00 AM - 12:00 PM" data-phase="Phase 1">Enroll Now</a>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->

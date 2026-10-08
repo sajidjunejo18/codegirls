@@ -11,6 +11,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/** Dropdown choices shared by the popup forms (markup) and the handler (validation). */
+function cg_education_options() {
+	return array( 'Matric', 'Intermediate (12th grade)', 'Bachelors in CS', 'Bachelors (other field)', 'Masters', 'Other' );
+}
+
+function cg_relation_options() {
+	return array( 'Father', 'Mother', 'Brother', 'Sister', 'Husband', 'Other' );
+}
+
 function cg_forms_config() {
 	return array(
 		'hire'    => array(
@@ -30,6 +39,40 @@ function cg_forms_config() {
 			'textarea' => 'Job Description or Upload Document ( Max 2MB ) ( doc,docx ):',
 			'file'     => true,
 			'thanks'   => 'Thank you! We have received your request and will be in touch soon.',
+		),
+		// Popup forms opened from the course cards (markup lives in parts/enroll-modals.php).
+		'enroll'  => array(
+			'subject' => 'Enrollment application',
+			'anchor'  => 'courses',
+			'thanks'  => 'Thank you! Your application has been received. Our team will contact you soon.',
+			'fields'  => array(
+				'course'      => array( 'Course:', 'text', false ),
+				'name'        => array( 'Your Name:', 'text', true ),
+				'age'         => array( 'Age:', 'text', true ),
+				'city'        => array( 'City/Country:', 'text', true ),
+				'phone'       => array( 'Contact No.:', 'tel', true ),
+				'email'       => array( 'Email:', 'email', true ),
+				'education'   => array( 'Highest Education:', 'select', true, cg_education_options() ),
+				'slot'        => array( 'Available Slot:', 'select', true ),
+				'computer'    => array( 'Basic computer usage awareness:', 'radio', true ),
+				'ec_name'     => array( 'Emergency Contact Name:', 'text', true ),
+				'ec_relation' => array( 'Emergency Contact Relationship:', 'select', true, cg_relation_options() ),
+				'referral'    => array( 'Referral Source:', 'text', false ),
+			),
+		),
+		'notify'  => array(
+			'subject' => 'Course notification request',
+			'anchor'  => 'upcoming',
+			'thanks'  => 'Thank you! We will notify you as soon as admissions open.',
+			'fields'  => array(
+				'course'    => array( 'Course:', 'text', false ),
+				'name'      => array( 'Your Name:', 'text', true ),
+				'age'       => array( 'Age:', 'text', true ),
+				'city'      => array( 'City/Country:', 'text', true ),
+				'phone'     => array( 'Contact No.:', 'tel', true ),
+				'email'     => array( 'Email:', 'email', true ),
+				'education' => array( 'Highest Education:', 'select', true, cg_education_options() ),
+			),
 		),
 		'trainer' => array(
 			'subject' => 'Trainer application',
@@ -160,6 +203,12 @@ function cg_handle_form() {
 		if ( ! empty( $f[2] ) && '' === $val ) {
 			$ok = false;
 		}
+		if ( 'select' === $f[1] && ! empty( $f[3] ) && '' !== $val && ! in_array( $val, $f[3], true ) ) {
+			$ok = false; // Value is not one of the offered choices.
+		}
+		if ( 'radio' === $f[1] && '' !== $val && ! in_array( $val, array( 'Yes', 'No' ), true ) ) {
+			$ok = false;
+		}
 		if ( 'name' === $key ) {
 			$name = $val;
 		}
@@ -223,7 +272,7 @@ function cg_handle_form() {
 		wp_delete_file( $uploaded ); // Not kept on the server once emailed.
 	}
 
-	wp_safe_redirect( add_query_arg( array( 'cg_form' => $sent ? 'sent' : 'error', 'cg_id' => $form ), $redirect ) . '#form' );
+	wp_safe_redirect( add_query_arg( array( 'cg_form' => $sent ? 'sent' : 'error', 'cg_id' => $form ), $redirect ) . '#' . ( isset( $cfg['anchor'] ) ? $cfg['anchor'] : 'form' ) );
 	exit;
 }
 add_action( 'admin_post_nopriv_cg_form', 'cg_handle_form' );

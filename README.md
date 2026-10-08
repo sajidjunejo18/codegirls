@@ -41,3 +41,6 @@ Menu: Appearance → Menus → "CodeGirls Primary" (assigned to "Primary (header
 
 ## Demo mode
 `CG_HOMEPAGE_ONLY` in functions.php: true = only the homepage is live (other URLs redirect home, their links are inert). Set to false to restore all pages.
+
+## Course popups
+"Enroll Now" (data-cg-enroll) and "Notify Me" (data-cg-notify) open native <dialog> popups from parts/enroll-modals.php; forms "enroll" and "notify" in inc/forms.php email the Settings -> General address. Slots and course name come from data attributes on each button (see patterns/courses*.php). Dropdown choices: cg_education_options() / cg_relation_options() (education/relationship lists are assumed, confirm with the client).

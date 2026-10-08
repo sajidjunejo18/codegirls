@@ -45,8 +45,8 @@
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["upcoming__text"]} -->
 <p class="gb-text upcoming__text">Learn to design intuitive, user-centered digital products using Figma and industry…</p>
 <!-- /wp:generateblocks/text -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn cg-btn--outline"],"htmlAttributes":{"href":"#contact"}} -->
-<a class="gb-text cg-btn cg-btn--outline" href="#contact">Notify Me</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn cg-btn--outline"],"htmlAttributes":{"href":"#contact","data-cg-notify":"","data-course":"UI/UX Design & Research"}} -->
+<a class="gb-text cg-btn cg-btn--outline" href="#contact" data-cg-notify="" data-course="UI/UX Design &amp; Research">Notify Me</a>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
@@ -82,8 +82,8 @@
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["upcoming__text"]} -->
 <p class="gb-text upcoming__text">Learn to design intuitive, user-centered digital products using Figma and industry…</p>
 <!-- /wp:generateblocks/text -->
-<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn cg-btn--outline"],"htmlAttributes":{"href":"#contact"}} -->
-<a class="gb-text cg-btn cg-btn--outline" href="#contact">Notify Me</a>
+<!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn cg-btn--outline"],"htmlAttributes":{"href":"#contact","data-cg-notify":"","data-course":"UI/UX Design & Research"}} -->
+<a class="gb-text cg-btn cg-btn--outline" href="#contact" data-cg-notify="" data-course="UI/UX Design &amp; Research">Notify Me</a>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
