@@ -2051,3 +2051,26 @@ dialog.cg-modal .cg-modal__close:focus-visible { outline: 3px solid var(--cg-yel
 .cg-empty { padding: 30px 0; text-align: center; font-size: 18px; }
 .course__cta { align-self: flex-start; }
 .upcoming__media .course__tag, .course__media .course__tag { z-index: 1; }
+
+/* 47. "What you'll learn" (admin field) – Figma layout: chevron + underlined title, then check-icon points. */
+.course__learn { display: block; width: 100%; }
+.course__learn > summary { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; }
+.course__learn-link span { white-space: nowrap; }
+.course__learn-list { display: grid; gap: 14px; margin: 18px 0 6px; padding: 0; list-style: none; }
+.course__learn-list li {
+	position: relative;
+	margin: 0;
+	padding-left: 34px;
+	font-size: 18px;
+	line-height: 26px;
+	color: var(--cg-navy);
+}
+.course__learn-list li::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 3px;
+	width: 20px;
+	height: 20px;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none' stroke='%230a9d58' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='10' r='8.6'/%3E%3Cpath d='M6.3 10.3l2.6 2.6 4.8-5.2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
