@@ -63,6 +63,7 @@ function cg_course_box( $post ) {
 	};
 	?>
 	<style>.cg-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px}.cg-fields .full{grid-column:1/-1}.cg-fields label{display:block;font-weight:600;margin-bottom:4px}.cg-fields input[type=text],.cg-fields input[type=date],.cg-fields select,.cg-fields textarea{width:100%}.cg-fields p.description{margin:4px 0 0}</style>
+	<style>.cg-point{display:flex;gap:8px;margin-bottom:8px}.cg-point input{flex:1}.cg-point__remove{font-size:18px;line-height:1;padding:0 12px}</style>
 	<div class="cg-fields">
 		<div>
 			<label for="cg_status"><?php esc_html_e( 'Status', 'generatepress-child' ); ?></label>
@@ -96,11 +97,53 @@ function cg_course_box( $post ) {
 			<p class="description"><?php esc_html_e( 'Each line is shown on the card and offered as a choice in the enrollment popup, e.g. "Fri 10:00 AM - 01:00 PM".', 'generatepress-child' ); ?></p>
 		</div>
 		<div class="full">
-			<label for="cg_learn"><?php esc_html_e( 'What you’ll learn (one point per line)', 'generatepress-child' ); ?></label>
-			<textarea id="cg_learn" name="cg_learn" rows="5"><?php echo esc_textarea( $v( 'learn' ) ); ?></textarea>
-			<p class="description"><?php esc_html_e( 'Shown when a visitor opens “What you’ll learn” on the card. Leave empty to hide that row.', 'generatepress-child' ); ?></p>
+			<label><?php esc_html_e( 'What you’ll learn', 'generatepress-child' ); ?></label>
+			<div id="cg-learn-list" class="cg-points">
+				<?php
+				$points = cg_course_lines( $post->ID, 'learn' );
+				if ( ! $points ) {
+					$points = array( '' );
+				}
+				foreach ( $points as $pt ) :
+					?>
+					<div class="cg-point">
+						<input type="text" name="cg_learn[]" value="<?php echo esc_attr( $pt ); ?>" placeholder="<?php esc_attr_e( 'e.g. Build REST APIs with ASP.NET Core', 'generatepress-child' ); ?>">
+						<button type="button" class="button cg-point__remove" aria-label="<?php esc_attr_e( 'Remove point', 'generatepress-child' ); ?>">&times;</button>
+					</div>
+				<?php endforeach; ?>
+			</div>
+			<p><button type="button" class="button button-secondary" id="cg-add-point">+ <?php esc_html_e( 'Add Point', 'generatepress-child' ); ?></button></p>
+			<template id="cg-point-tpl">
+				<div class="cg-point">
+					<input type="text" name="cg_learn[]" value="" placeholder="<?php esc_attr_e( 'e.g. Build REST APIs with ASP.NET Core', 'generatepress-child' ); ?>">
+					<button type="button" class="button cg-point__remove" aria-label="<?php esc_attr_e( 'Remove point', 'generatepress-child' ); ?>">&times;</button>
+				</div>
+			</template>
+			<p class="description"><?php esc_html_e( 'Each point shows with a check icon when a visitor opens “What you’ll learn” on the card. Leave all points empty to hide that row.', 'generatepress-child' ); ?></p>
 		</div>
 	</div>
+	<script>
+	( function () {
+		var list = document.getElementById( 'cg-learn-list' ), tpl = document.getElementById( 'cg-point-tpl' ), add = document.getElementById( 'cg-add-point' );
+		if ( ! list || ! tpl || ! add ) { return; }
+		function addRow() {
+			list.appendChild( tpl.content.cloneNode( true ) );
+			var inputs = list.querySelectorAll( 'input' );
+			inputs[ inputs.length - 1 ].focus();
+		}
+		add.addEventListener( 'click', addRow );
+		list.addEventListener( 'click', function ( e ) {
+			var rm = e.target.closest( '.cg-point__remove' );
+			if ( ! rm ) { return; }
+			var rows = list.querySelectorAll( '.cg-point' );
+			if ( rows.length > 1 ) { rm.closest( '.cg-point' ).remove(); } else { rows[ 0 ].querySelector( 'input' ).value = ''; }
+		} );
+		// Enter adds the next point instead of submitting the whole course form.
+		list.addEventListener( 'keydown', function ( e ) {
+			if ( 'Enter' === e.key && e.target.matches( 'input' ) ) { e.preventDefault(); addRow(); }
+		} );
+	}() );
+	</script>
 	<p class="description" style="margin-top:14px"><?php esc_html_e( 'The title is the course name, the Excerpt is the short text on Upcoming / Completed cards, and the Course illustration (right side) is the picture. Use “Order” in Page Attributes to arrange cards.', 'generatepress-child' ); ?></p>
 	<?php
 }
@@ -118,9 +161,11 @@ add_action(
 		}
 		$start = isset( $_POST['cg_start'] ) ? sanitize_text_field( wp_unslash( $_POST['cg_start'] ) ) : '';
 		update_post_meta( $post_id, '_cg_start', preg_match( '/^\d{4}-\d{2}-\d{2}$/', $start ) ? $start : '' );
-		foreach ( array( 'schedule', 'learn' ) as $k ) {
-			update_post_meta( $post_id, '_cg_' . $k, isset( $_POST[ 'cg_' . $k ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ 'cg_' . $k ] ) ) : '' );
-		}
+		update_post_meta( $post_id, '_cg_schedule', isset( $_POST['cg_schedule'] ) ? sanitize_textarea_field( wp_unslash( $_POST['cg_schedule'] ) ) : '' );
+
+		$points = isset( $_POST['cg_learn'] ) ? (array) wp_unslash( $_POST['cg_learn'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		$points = array_values( array_filter( array_map( 'sanitize_text_field', $points ) ) );
+		update_post_meta( $post_id, '_cg_learn', implode( "\n", $points ) );
 	}
 );
 
