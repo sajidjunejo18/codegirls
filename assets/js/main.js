@@ -101,22 +101,21 @@
 		}
 	}
 
-	// Pathway: fill the line and light up the steps once the section scrolls into view.
+	// Pathway: fill the line and light up all five steps each time the section scrolls into view;
+	// reset once it has fully left the screen so it can play again.
 	var pathway = document.querySelector( '.pathway' );
 	if ( pathway ) {
-		var reveal = function () {
-			pathway.classList.add( 'is-in' );
-		};
 		if ( 'IntersectionObserver' in window && ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
-			var io = new IntersectionObserver( function ( entries ) {
-				if ( entries[ 0 ].isIntersecting ) {
-					reveal();
-					io.disconnect();
+			new IntersectionObserver( function ( entries ) {
+				var e = entries[ entries.length - 1 ];
+				if ( e.isIntersecting && e.intersectionRatio >= 0.4 ) {
+					pathway.classList.add( 'is-in' );
+				} else if ( ! e.isIntersecting ) {
+					pathway.classList.remove( 'is-in' );
 				}
-			}, { threshold: 0.4 } );
-			io.observe( pathway );
+			}, { threshold: [ 0, 0.4 ] } ).observe( pathway );
 		} else {
-			reveal();
+			pathway.classList.add( 'is-in' );
 		}
 	}
 

@@ -155,6 +155,60 @@ add_action(
 	}
 );
 
+/**
+ * Separate sidebar links per form (Enrollments, Course notify, …) under Form Entries.
+ */
+add_action(
+	'admin_menu',
+	function () {
+		foreach ( cg_entry_forms() as $k => $label ) {
+			add_submenu_page(
+				'edit.php?post_type=cg_entry',
+				$label,
+				$label,
+				'edit_posts',
+				'edit.php?post_type=cg_entry&cg_form=' . $k
+			);
+		}
+	}
+);
+
+add_filter(
+	'submenu_file',
+	function ( $submenu_file ) {
+		global $typenow;
+		if ( 'cg_entry' === $typenow && ! empty( $_GET['cg_form'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return 'edit.php?post_type=cg_entry&cg_form=' . sanitize_key( wp_unslash( $_GET['cg_form'] ) );
+		}
+		return $submenu_file;
+	}
+);
+
+/**
+ * Per-form tabs (with counts) above the list table.
+ */
+add_filter(
+	'views_edit-cg_entry',
+	function ( $views ) {
+		global $wpdb;
+		$cur    = isset( $_GET['cg_form'] ) ? sanitize_key( wp_unslash( $_GET['cg_form'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$counts = $wpdb->get_results( "SELECT pm.meta_value f, COUNT(*) n FROM {$wpdb->postmeta} pm JOIN {$wpdb->posts} p ON p.ID = pm.post_id WHERE pm.meta_key = '_cg_form' AND p.post_type = 'cg_entry' AND p.post_status = 'publish' GROUP BY pm.meta_value", OBJECT_K ); // phpcs:ignore WordPress.DB
+		if ( $cur && isset( $views['all'] ) ) {
+			$views['all'] = str_replace( 'class="current"', '', $views['all'] );
+		}
+		foreach ( cg_entry_forms() as $k => $label ) {
+			$views[ 'cg_' . $k ] = sprintf(
+				'<a href="%s"%s>%s <span class="count">(%d)</span></a>',
+				esc_url( admin_url( 'edit.php?post_type=cg_entry&cg_form=' . $k ) ),
+				$cur === $k ? ' class="current" aria-current="page"' : '',
+				esc_html( $label ),
+				isset( $counts[ $k ] ) ? (int) $counts[ $k ]->n : 0
+			);
+		}
+		return $views;
+	}
+);
+
 add_action(
 	'pre_get_posts',
 	function ( $q ) {

@@ -2111,3 +2111,25 @@ dialog.cg-modal .cg-modal__close:focus-visible { outline: 3px solid var(--cg-yel
 	.pathway__num, .pathway__content, .cg-js .pathway__steps::after { transition: none; }
 }
 .pathway__step { z-index: 1; } /* number boxes sit above the connecting line, as in Figma */
+
+/* 49. Pathway v2: all five steps fill, and the animation replays every time the section re-enters the screen.
+   Transitions only exist while revealed, so leaving the screen resets instantly (nothing animates backwards). */
+.pathway .pathway__step--upcoming .pathway__num { background: var(--cg-green); color: var(--cg-white); }
+.pathway .pathway__step--upcoming .pathway__content { color: var(--cg-navy); }
+.pathway__step:nth-child(4) { --d: 1.9s; }
+.pathway__step:nth-child(5) { --d: 2.5s; }
+
+.pathway__num, .pathway__content { transition: none; }
+.cg-js .pathway.is-in .pathway__num { transition: background-color 0.5s ease var(--d, 0s), color 0.5s ease var(--d, 0s); }
+.cg-js .pathway.is-in .pathway__content { transition: color 0.5s ease var(--d, 0s); }
+
+/* "Not yet revealed" = every step grey, including 04 and 05. */
+.cg-js .pathway:not(.is-in) .pathway__step .pathway__num { background: #fafafa; color: rgba(34, 48, 68, 0.5); }
+.cg-js .pathway:not(.is-in) .pathway__step .pathway__content { color: rgba(34, 48, 68, 0.25); }
+
+/* Green line runs from step 01 to step 05. */
+.pathway__steps::before { right: 300px; background: rgba(34, 48, 68, 0.12); }
+.cg-js .pathway__steps::after { width: calc(100% - 389px); transition: none; }
+.cg-js .pathway.is-in .pathway__steps::after { transition: transform 2.4s linear 0.1s; }
+.pathway:not(.cg-js) .pathway__steps::before,
+html:not(.cg-js) .pathway__steps::before { background: var(--cg-green); }
