@@ -2148,10 +2148,3 @@ html:not(.cg-js) .pathway__steps::before { background: var(--cg-green); }
 /* Slightly bolder track + fill so the line visibly "draws" (Figma: 2px track). */
 .pathway__steps::before, .cg-js .pathway__steps::after { height: 3px; top: 45px; }
 .pathway__steps::before { background: rgba(34, 48, 68, 0.14); }
-
-/* 51. Course cards: equal height per row, Enroll Now pinned to the bottom whatever the content length. */
-.courses__grid { align-items: stretch; }
-.course { height: 100%; }
-.course__body { flex: 1; }
-.course__cta { margin-top: auto; align-self: flex-start; }
-.course__learn { margin-bottom: 5px; }
