@@ -328,7 +328,7 @@ function cg_courses_shortcode( $atts ) {
 		} else {
 			?>
 			<article class="done<?php echo 0 === $i ? ' done--active' : ''; ?>">
-				<?php echo cg_course_img( $id, 'done__icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+				<?php echo cg_icon( 0 === $i ? 'course-done-1.webp' : 'course-done-2.webp', 'done__icon', 132, 144 ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 				<h3 class="done__title"><?php echo esc_html( $title ); ?></h3>
 				<p class="done__text"><?php echo esc_html( get_the_excerpt() ); ?></p>
 				<a class="done__link" href="#contact" data-cg-notify data-course="<?php echo esc_attr( $title ); ?>"><?php esc_html_e( 'I’m Interested', 'generatepress-child' ); ?></a>
