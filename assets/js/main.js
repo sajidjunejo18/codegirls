@@ -101,6 +101,25 @@
 		}
 	}
 
+	// Pathway: fill the line and light up the steps once the section scrolls into view.
+	var pathway = document.querySelector( '.pathway' );
+	if ( pathway ) {
+		var reveal = function () {
+			pathway.classList.add( 'is-in' );
+		};
+		if ( 'IntersectionObserver' in window && ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+			var io = new IntersectionObserver( function ( entries ) {
+				if ( entries[ 0 ].isIntersecting ) {
+					reveal();
+					io.disconnect();
+				}
+			}, { threshold: 0.4 } );
+			io.observe( pathway );
+		} else {
+			reveal();
+		}
+	}
+
 	// Mobile menu toggle.
 	var header = document.getElementById( 'cg-header' );
 	if ( ! header ) {

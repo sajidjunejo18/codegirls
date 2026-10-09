@@ -2074,3 +2074,40 @@ dialog.cg-modal .cg-modal__close:focus-visible { outline: 3px solid var(--cg-yel
 	height: 20px;
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none' stroke='%230a9d58' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='10' r='8.6'/%3E%3Cpath d='M6.3 10.3l2.6 2.6 4.8-5.2'/%3E%3C/svg%3E") center / contain no-repeat;
 }
+
+/* 48. Pathway: scroll-in animation (progressive enhancement).
+   Without JS (or with reduced motion) the final Figma state shows immediately. */
+.pathway__num { transition: background-color 0.5s ease var(--d, 0s), color 0.5s ease var(--d, 0s); }
+.pathway__content { transition: color 0.5s ease var(--d, 0s); }
+.pathway__step:nth-child(1) { --d: 0.1s; }
+.pathway__step:nth-child(2) { --d: 0.7s; }
+.pathway__step:nth-child(3) { --d: 1.3s; }
+
+.cg-js .pathway__steps::before { background: rgba(34, 48, 68, 0.12); }
+
+.cg-js .pathway__steps::after {
+	content: "";
+	position: absolute;
+	top: 46px;
+	left: 89px;
+	width: calc((100% - 330px) * 0.667); /* green stretches to the 3rd step, as in Figma */
+	height: 2px;
+	background: var(--cg-green);
+	transform: scaleX(0);
+	transform-origin: left center;
+	transition: transform 1.8s linear 0.1s;
+}
+
+/* Before it scrolls into view the "done" steps look like the upcoming ones. */
+.cg-js .pathway:not(.is-in) .pathway__step:not(.pathway__step--upcoming) .pathway__num { background: #fafafa; color: rgba(34, 48, 68, 0.5); }
+.cg-js .pathway:not(.is-in) .pathway__step:not(.pathway__step--upcoming) .pathway__content { color: rgba(34, 48, 68, 0.25); }
+.cg-js .pathway.is-in .pathway__steps::after { transform: scaleX(1); }
+
+@media (max-width: 1200px) {
+	.cg-js .pathway__steps::after { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pathway__num, .pathway__content, .cg-js .pathway__steps::after { transition: none; }
+}
+.pathway__step { z-index: 1; } /* number boxes sit above the connecting line, as in Figma */

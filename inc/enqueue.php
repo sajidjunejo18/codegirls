@@ -53,3 +53,12 @@ function cg_editor_assets() {
 	);
 }
 add_action( 'enqueue_block_editor_assets', 'cg_editor_assets' );
+
+/**
+ * Flag JS-capable browsers early so scroll animations can start from their "before" state
+ * without a flash (see "Pathway" in main.css). Without JS the final state is shown.
+ */
+function cg_js_flag() {
+	echo "<script>document.documentElement.className+=' cg-js';</script>\n";
+}
+add_action( 'wp_head', 'cg_js_flag', 0 );
