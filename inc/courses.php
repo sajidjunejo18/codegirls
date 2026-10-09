@@ -21,6 +21,11 @@ function cg_course_statuses() {
 	);
 }
 
+/** Allowed values for "Mode of teaching" (stored and shown exactly as written). */
+function cg_course_modes() {
+	return array( 'On Site', 'Online' );
+}
+
 function cg_register_courses() {
 	register_post_type(
 		'cg_course',
@@ -89,7 +94,11 @@ function cg_course_box( $post ) {
 		</div>
 		<div>
 			<label for="cg_mode"><?php esc_html_e( 'Mode of teaching', 'generatepress-child' ); ?></label>
-			<input type="text" id="cg_mode" name="cg_mode" value="<?php echo esc_attr( $v( 'mode', 'On Site' ) ); ?>">
+			<select id="cg_mode" name="cg_mode">
+				<?php foreach ( cg_course_modes() as $m ) : ?>
+					<option value="<?php echo esc_attr( $m ); ?>" <?php selected( $v( 'mode', 'On Site' ), $m ); ?>><?php echo esc_html( $m ); ?></option>
+				<?php endforeach; ?>
+			</select>
 		</div>
 		<div class="full">
 			<label for="cg_schedule"><?php esc_html_e( 'Class schedule (one slot per line)', 'generatepress-child' ); ?></label>
@@ -156,9 +165,12 @@ add_action(
 		}
 		$status = isset( $_POST['cg_status'] ) ? sanitize_key( wp_unslash( $_POST['cg_status'] ) ) : 'open';
 		update_post_meta( $post_id, '_cg_status', array_key_exists( $status, cg_course_statuses() ) ? $status : 'open' );
-		foreach ( array( 'phase', 'duration', 'mode' ) as $k ) {
+		foreach ( array( 'phase', 'duration' ) as $k ) {
 			update_post_meta( $post_id, '_cg_' . $k, isset( $_POST[ 'cg_' . $k ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'cg_' . $k ] ) ) : '' );
 		}
+		$mode = isset( $_POST['cg_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['cg_mode'] ) ) : '';
+		update_post_meta( $post_id, '_cg_mode', in_array( $mode, cg_course_modes(), true ) ? $mode : 'On Site' );
+
 		$start = isset( $_POST['cg_start'] ) ? sanitize_text_field( wp_unslash( $_POST['cg_start'] ) ) : '';
 		update_post_meta( $post_id, '_cg_start', preg_match( '/^\d{4}-\d{2}-\d{2}$/', $start ) ? $start : '' );
 		update_post_meta( $post_id, '_cg_schedule', isset( $_POST['cg_schedule'] ) ? sanitize_textarea_field( wp_unslash( $_POST['cg_schedule'] ) ) : '' );
