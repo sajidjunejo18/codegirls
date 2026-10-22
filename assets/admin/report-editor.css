@@ -1,0 +1,32 @@
+/* Reports edit screen: extras on top of voice-editor.css (shared form look). */
+.cgr-date { margin-top: 18px; }
+.cgr-date input[type=date] { width: 100%; max-width: 220px; padding: 8px 12px; border: 1px solid #c3c4c7; border-radius: 8px; }
+
+/* Cover: show it at the card's 426 : 332 shape */
+.cgr-cover .cgv-image__preview { max-width: 426px; aspect-ratio: 426 / 332; background: #fff; border: 1px dashed #b5d9c6; }
+.cgr-cover .cgv-image__preview img { width: 100%; height: 100%; object-fit: contain; }
+
+/* PDF row */
+.cgr-file { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border: 1px dashed #c3c4c7; border-radius: 10px; background: #fafafa; }
+.cgr-file.has-file { border-style: solid; border-color: #b5d9c6; background: #f4fbf7; }
+.cgr-file__icon { display: grid; place-items: center; flex: none; width: 44px; height: 52px; border-radius: 6px; background: #d63638; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+.cgr-file:not(.has-file) .cgr-file__icon { background: #c3c4c7; }
+.cgr-file__info { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.cgr-file__info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cgr-file__info span { color: #646970; font-size: 12.5px; }
+
+/* Live card preview (sidebar) */
+.cgr-card { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 10px 10px 30px; border-radius: 8px; background: #fff; box-shadow: 0 6px 20px rgba(0, 0, 0, .09); }
+.cgr-card img, .cgr-card__empty { display: block; width: 100%; aspect-ratio: 426 / 332; margin-bottom: 8px; object-fit: contain; background: #f6f7f7; }
+.cgr-card__empty { display: grid; place-items: center; color: #8c8f94; font-size: 12px; }
+.cgr-card strong { padding: 0 6px; color: #223044; font-size: 14px; line-height: 1.3; }
+.cgr-card span { padding: 0 6px; color: #3c434a; font-size: 12.5px; }
+.cgr-card i { position: absolute; right: 12px; bottom: 8px; font-style: normal; font-size: 13px; }
+#cg_report_settings .inside, #cg_report_preview .inside { margin: 0; padding: 18px; }
+.cgv-screen #cg_report_settings, .cgv-screen #cg_report_preview { border: 0; border-radius: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, .05), 0 6px 20px rgba(0, 0, 0, .04); }
+.cgv-screen #cg_report_settings .postbox-header, .cgv-screen #cg_report_preview .postbox-header { display: none; }
+.cgr-card [hidden], .cgr-card__empty[hidden] { display: none !important; }
+.cgr-file [hidden] { display: none !important; }
+
+.cgr-portrait .cgv-image__preview { max-width: 240px; aspect-ratio: 368 / 524; }
+.cgr-portrait .cgv-image__preview img { width: 100%; height: 100%; object-fit: contain; }

@@ -19,11 +19,11 @@
 <!-- /wp:generateblocks/media -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["hire-stats__text"]} -->
 <div class="hire-stats__text">
-<!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hire-stats__num"]} -->
-<p class="gb-text hire-stats__num">2000+</p>
-<!-- /wp:generateblocks/text -->
+<!-- wp:shortcode -->
+[cg_stat_number key="trainings" class="gb-text hire-stats__num"]
+<!-- /wp:shortcode -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hire-stats__label"]} -->
-<p class="gb-text hire-stats__label">Total Trainings</p>
+<p class="gb-text hire-stats__label">[cg_stat_label key="trainings"]</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
@@ -36,11 +36,11 @@
 <!-- /wp:generateblocks/media -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["hire-stats__text"]} -->
 <div class="hire-stats__text">
-<!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hire-stats__num"]} -->
-<p class="gb-text hire-stats__num">70%</p>
-<!-- /wp:generateblocks/text -->
+<!-- wp:shortcode -->
+[cg_stat_number key="placement" class="gb-text hire-stats__num"]
+<!-- /wp:shortcode -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hire-stats__label"]} -->
-<p class="gb-text hire-stats__label">Placement Rate</p>
+<p class="gb-text hire-stats__label">[cg_stat_label key="placement"]</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
@@ -53,15 +53,15 @@
 <!-- /wp:generateblocks/media -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["hire-stats__text"]} -->
 <div class="hire-stats__text">
-<!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hire-stats__num"]} -->
-<p class="gb-text hire-stats__num">55K+</p>
-<!-- /wp:generateblocks/text -->
+<!-- wp:shortcode -->
+[cg_stat_number key="salary" class="gb-text hire-stats__num"]
+<!-- /wp:shortcode -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hire-stats__label"]} -->
-<p class="gb-text hire-stats__label">Average Monthly Salary</p>
+<p class="gb-text hire-stats__label">[cg_stat_label key="salary"]</p>
 <!-- /wp:generateblocks/text -->
-<!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hire-stats__note"]} -->
-<p class="gb-text hire-stats__note">*Reported in 2025</p>
-<!-- /wp:generateblocks/text -->
+<!-- wp:shortcode -->
+[cg_stat_note key="salary" class="gb-text hire-stats__note"]
+<!-- /wp:shortcode -->
 </div>
 <!-- /wp:generateblocks/element -->
 </li>

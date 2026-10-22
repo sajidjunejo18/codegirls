@@ -89,21 +89,62 @@ function cg_private_dir() {
 }
 
 /**
+ * Which submitted field to show in the "Course" column when the form has no course
+ * (only Enrollment and Course notify ask for one). The key is the field's label exactly
+ * as cg_forms_config() writes it into _cg_fields.
+ */
+function cg_entry_course_fallback_field( $form ) {
+	$map = array(
+		'hire'    => 'Company Name',
+		'trainer' => 'Organization / Institute',
+	);
+	return isset( $map[ $form ] ) ? $map[ $form ] : '';
+}
+
+/** "Course" column text for one entry: the real course, else the form's stand-in field, else "—". */
+function cg_entry_course_display( $id ) {
+	$course = get_post_meta( $id, '_cg_course', true );
+	if ( $course ) {
+		return $course;
+	}
+	$field = cg_entry_course_fallback_field( get_post_meta( $id, '_cg_form', true ) );
+	if ( $field ) {
+		$pairs = json_decode( (string) get_post_meta( $id, '_cg_fields', true ), true );
+		if ( ! empty( $pairs[ $field ] ) ) {
+			return $pairs[ $field ];
+		}
+	}
+	return '';
+}
+
+/**
  * Admin list columns.
  */
 add_filter(
 	'manage_cg_entry_posts_columns',
 	function () {
-		return array(
+		$cols = array(
 			'cb'       => '<input type="checkbox" />',
 			'title'    => __( 'Entry', 'generatepress-child' ),
 			'cg_form'  => __( 'Form', 'generatepress-child' ),
 			'cg_email' => __( 'Email', 'generatepress-child' ),
 			'cg_phone' => __( 'Phone', 'generatepress-child' ),
-			'cg_course' => __( 'Course', 'generatepress-child' ),
-			'cg_mail'  => __( 'Emailed', 'generatepress-child' ),
+			'cg_course' => __( 'Course / Org', 'generatepress-child' ),
+			'cg_file'  => __( 'Attachment', 'generatepress-child' ),
 			'date'     => __( 'Date', 'generatepress-child' ),
 		);
+		// On a single form's tab, drop columns that form never collects.
+		$cur = isset( $_GET['cg_form'] ) ? sanitize_key( wp_unslash( $_GET['cg_form'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$cfg = cg_forms_config();
+		if ( $cur ) {
+			if ( isset( $cfg[ $cur ] ) && ! isset( $cfg[ $cur ]['fields']['phone'] ) ) {
+				unset( $cols['cg_phone'] );
+			}
+			if ( empty( $cfg[ $cur ]['file'] ) ) {
+				unset( $cols['cg_file'] );
+			}
+		}
+		return $cols;
 	}
 );
 
@@ -124,10 +165,16 @@ add_action(
 				echo esc_html( get_post_meta( $id, '_cg_phone', true ) ?: '—' );
 				break;
 			case 'cg_course':
-				echo esc_html( get_post_meta( $id, '_cg_course', true ) ?: '—' );
+				echo esc_html( cg_entry_course_display( $id ) ?: '—' );
 				break;
-			case 'cg_mail':
-				echo get_post_meta( $id, '_cg_mailed', true ) ? '✔' : '—';
+			case 'cg_file':
+				$file = get_post_meta( $id, '_cg_file', true );
+				if ( $file && current_user_can( 'manage_options' ) ) {
+					$url = wp_nonce_url( admin_url( 'admin-post.php?action=cg_entry_file&id=' . $id ), 'cg_entry_file_' . $id );
+					printf( '<a href="%s">%s</a>', esc_url( $url ), esc_html( preg_replace( '/^[A-Za-z0-9]{12}-/', '', basename( $file ) ) ) );
+				} else {
+					echo '—';
+				}
 				break;
 		}
 	},
@@ -237,7 +284,7 @@ add_action(
 				$file = get_post_meta( $post->ID, '_cg_file', true );
 				if ( $file ) {
 					$url = wp_nonce_url( admin_url( 'admin-post.php?action=cg_entry_file&id=' . $post->ID ), 'cg_entry_file_' . $post->ID );
-					printf( '<tr><th>%s</th><td><a href="%s">%s</a></td></tr>', esc_html__( 'Attachment', 'generatepress-child' ), esc_url( $url ), esc_html( preg_replace( '/^[a-f0-9]+-/', '', basename( $file ) ) ) );
+					printf( '<tr><th>%s</th><td><a href="%s">%s</a></td></tr>', esc_html__( 'Attachment', 'generatepress-child' ), esc_url( $url ), esc_html( preg_replace( '/^[A-Za-z0-9]{12}-/', '', basename( $file ) ) ) );
 				}
 				printf( '<tr><th>%s</th><td>%s</td></tr>', esc_html__( 'Email sent to admin', 'generatepress-child' ), get_post_meta( $post->ID, '_cg_mailed', true ) ? 'Yes' : 'No (check mail settings; the data is safe here)' );
 				echo '</tbody></table>';
@@ -266,7 +313,7 @@ add_action(
 		}
 		nocache_headers();
 		header( 'Content-Type: application/octet-stream' );
-		header( 'Content-Disposition: attachment; filename="' . rawurlencode( preg_replace( '/^[a-f0-9]+-/', '', basename( $path ) ) ) . '"' );
+		header( 'Content-Disposition: attachment; filename="' . rawurlencode( preg_replace( '/^[A-Za-z0-9]{12}-/', '', basename( $path ) ) ) . '"' );
 		header( 'Content-Length: ' . filesize( $path ) );
 		readfile( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 		exit;

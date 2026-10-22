@@ -13,6 +13,19 @@
 		} );
 	}
 
+	// "/#contact" links: scroll to this page's own contact section when it has one,
+	// instead of jumping to the homepage.
+	document.addEventListener( 'click', function ( e ) {
+		var link = e.target.closest( 'a[href$="#contact"]' );
+		var target = document.getElementById( 'contact' );
+		if ( ! link || ! target || link.hasAttribute( 'data-cg-enroll' ) || link.hasAttribute( 'data-cg-notify' ) ) {
+			return;
+		}
+		e.preventDefault();
+		target.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+		history.replaceState( null, '', '#contact' );
+	} );
+
 	// "Copy bank details" buttons.
 	document.addEventListener( 'click', function ( e ) {
 		var btn = e.target.closest( '[data-copy]' );
@@ -148,4 +161,86 @@
 			setOpen( false );
 		}
 	} );
+}() );
+
+// Homepage hero video ([cg_hero_media]): the round button pauses / plays it.
+// Visitors who ask for reduced motion get it paused from the start.
+( function () {
+	var video = document.querySelector( '[data-cg-hero-video]' ), btn = document.querySelector( '[data-cg-hero-toggle]' );
+	if ( ! video || ! btn ) {
+		return;
+	}
+	function sync() {
+		var paused = video.paused;
+		btn.classList.toggle( 'is-paused', paused );
+		btn.setAttribute( 'aria-pressed', String( paused ) );
+		btn.setAttribute( 'aria-label', btn.getAttribute( paused ? 'data-label-play' : 'data-label-pause' ) );
+	}
+	if ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+		video.removeAttribute( 'autoplay' );
+		video.pause();
+	}
+	btn.addEventListener( 'click', function () {
+		if ( video.paused ) {
+			var p = video.play();
+			if ( p && p.catch ) { p.catch( sync ); }
+		} else {
+			video.pause();
+		}
+	} );
+	video.addEventListener( 'play', sync );
+	video.addEventListener( 'pause', sync );
+	sync();
+}() );
+
+// Site Stats numbers (2000+, 70%, 55K+ — managed in Settings → Site Stats) count up from 0
+// when they come into view, like the live site. Anything printed with cg_stat_number_html()
+// gets the shared .cg-counter class, so this runs on both the homepage hero and the
+// Hire a Codegirl page stats. Without JavaScript, or for visitors who ask for reduced
+// motion, the final numbers are simply shown.
+( function () {
+	var nums = document.querySelectorAll( '.cg-counter' );
+	if ( ! nums.length || ! window.requestAnimationFrame || ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) ) {
+		return;
+	}
+	var DURATION = 4000;
+	function setup( el ) {
+		var m = /^(\D*)([\d,.]+)(.*)$/.exec( el.textContent.trim() );
+		if ( ! m ) { return null; }
+		var final = el.textContent.trim(), end = parseFloat( m[ 2 ].replace( /,/g, '' ) ), shown = document.createElement( 'span' ), sr = document.createElement( 'span' );
+		if ( isNaN( end ) ) { return null; }
+		// Screen readers get the final number once; the animated digits are hidden from them.
+		sr.className = 'screen-reader-text';
+		sr.textContent = final;
+		shown.setAttribute( 'aria-hidden', 'true' );
+		shown.textContent = m[ 1 ] + '0' + m[ 3 ];
+		el.textContent = '';
+		el.appendChild( shown );
+		el.appendChild( sr );
+		return { shown: shown, pre: m[ 1 ], post: m[ 3 ], end: end, decimals: ( m[ 2 ].split( '.' )[ 1 ] || '' ).length, final: final };
+	}
+	function run( s ) {
+		var t0 = null;
+		function tick( t ) {
+			if ( null === t0 ) { t0 = t; }
+			var p = Math.min( 1, ( t - t0 ) / DURATION ), eased = 1 - Math.pow( 1 - p, 3 ), v = s.end * eased;
+			s.shown.textContent = 1 === p ? s.final : s.pre + v.toFixed( s.decimals ) + s.post;
+			if ( p < 1 ) { window.requestAnimationFrame( tick ); }
+		}
+		window.requestAnimationFrame( tick );
+	}
+	var jobs = [];
+	nums.forEach( function ( el ) { var s = setup( el ); if ( s ) { jobs.push( { el: el, s: s } ); } } );
+	if ( 'IntersectionObserver' in window ) {
+		var io = new IntersectionObserver( function ( entries ) {
+			entries.forEach( function ( e ) {
+				if ( ! e.isIntersecting ) { return; }
+				io.unobserve( e.target );
+				jobs.forEach( function ( j ) { if ( j.el === e.target ) { run( j.s ); } } );
+			} );
+		}, { threshold: 0.4 } );
+		jobs.forEach( function ( j ) { io.observe( j.el ); } );
+	} else {
+		jobs.forEach( function ( j ) { run( j.s ); } );
+	}
 }() );

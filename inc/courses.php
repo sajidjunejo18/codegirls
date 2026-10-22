@@ -21,6 +21,11 @@ function cg_course_statuses() {
 	);
 }
 
+/** Allowed values for the phase tag (stored and shown exactly as written). */
+function cg_course_phases() {
+	return array( 'Phase 1', 'Phase 2', 'Phase 3' );
+}
+
 /** Allowed values for "Mode of teaching" (stored and shown exactly as written). */
 function cg_course_modes() {
 	return array( 'On Site', 'Online' );
@@ -68,6 +73,7 @@ function cg_course_box( $post ) {
 	};
 	?>
 	<style>.cg-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px}.cg-fields .full{grid-column:1/-1}.cg-fields label{display:block;font-weight:600;margin-bottom:4px}.cg-fields input[type=text],.cg-fields input[type=date],.cg-fields select,.cg-fields textarea{width:100%}.cg-fields p.description{margin:4px 0 0}</style>
+	<style>.cg-weeks{display:flex;align-items:center;gap:8px}.cg-fields .cg-weeks input{width:90px}.cg-weeks span{font-weight:600}</style>
 	<style>.cg-point{display:flex;gap:8px;margin-bottom:8px}.cg-point input{flex:1}.cg-point__remove{font-size:18px;line-height:1;padding:0 12px}</style>
 	<div class="cg-fields">
 		<div>
@@ -80,17 +86,25 @@ function cg_course_box( $post ) {
 			<p class="description"><?php esc_html_e( 'Decides where the course appears: Admission Open, Upcoming or Completed.', 'generatepress-child' ); ?></p>
 		</div>
 		<div>
-			<label for="cg_phase"><?php esc_html_e( 'Phase label', 'generatepress-child' ); ?></label>
-			<input type="text" id="cg_phase" name="cg_phase" value="<?php echo esc_attr( $v( 'phase', 'Phase 1' ) ); ?>">
-			<p class="description"><?php esc_html_e( 'Yellow tag on the card, e.g. Phase 1.', 'generatepress-child' ); ?></p>
+			<label for="cg_phase"><?php esc_html_e( 'Phase', 'generatepress-child' ); ?></label>
+			<select id="cg_phase" name="cg_phase">
+				<?php foreach ( cg_course_phases() as $p ) : ?>
+					<option value="<?php echo esc_attr( $p ); ?>" <?php selected( $v( 'phase', 'Phase 1' ), $p ); ?>><?php echo esc_html( $p ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<p class="description"><?php esc_html_e( 'Yellow tag on the card.', 'generatepress-child' ); ?></p>
 		</div>
 		<div>
 			<label for="cg_start"><?php esc_html_e( 'Starting from', 'generatepress-child' ); ?></label>
 			<input type="date" id="cg_start" name="cg_start" value="<?php echo esc_attr( $v( 'start' ) ); ?>">
+			<p class="description"><?php esc_html_e( 'An Upcoming course moves to Admission Open automatically on this date.', 'generatepress-child' ); ?></p>
 		</div>
 		<div>
 			<label for="cg_duration"><?php esc_html_e( 'Duration', 'generatepress-child' ); ?></label>
-			<input type="text" id="cg_duration" name="cg_duration" value="<?php echo esc_attr( $v( 'duration', '12 weeks' ) ); ?>">
+			<div class="cg-weeks">
+				<input type="text" id="cg_duration" name="cg_duration" inputmode="numeric" pattern="[0-9]*" maxlength="3" value="<?php echo esc_attr( (string) absint( $v( 'duration', '12' ) ) ?: '' ); ?>">
+				<span><?php esc_html_e( 'Weeks', 'generatepress-child' ); ?></span>
+			</div>
 		</div>
 		<div>
 			<label for="cg_mode"><?php esc_html_e( 'Mode of teaching', 'generatepress-child' ); ?></label>
@@ -133,7 +147,14 @@ function cg_course_box( $post ) {
 	</div>
 	<script>
 	( function () {
-		var list = document.getElementById( 'cg-learn-list' ), tpl = document.getElementById( 'cg-point-tpl' ), add = document.getElementById( 'cg-add-point' );
+		// Duration takes digits only (typed or pasted).
+		var weeks = document.getElementById( 'cg_duration' );
+		if ( weeks ) {
+			weeks.addEventListener( 'input', function () { weeks.value = weeks.value.replace( /\D+/g, '' ); } );
+		}
+	}() );
+	( function () {
+		var list =document.getElementById( 'cg-learn-list' ), tpl = document.getElementById( 'cg-point-tpl' ), add = document.getElementById( 'cg-add-point' );
 		if ( ! list || ! tpl || ! add ) { return; }
 		function addRow() {
 			list.appendChild( tpl.content.cloneNode( true ) );
@@ -165,9 +186,12 @@ add_action(
 		}
 		$status = isset( $_POST['cg_status'] ) ? sanitize_key( wp_unslash( $_POST['cg_status'] ) ) : 'open';
 		update_post_meta( $post_id, '_cg_status', array_key_exists( $status, cg_course_statuses() ) ? $status : 'open' );
-		foreach ( array( 'phase', 'duration' ) as $k ) {
-			update_post_meta( $post_id, '_cg_' . $k, isset( $_POST[ 'cg_' . $k ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'cg_' . $k ] ) ) : '' );
-		}
+		$phase = isset( $_POST['cg_phase'] ) ? sanitize_text_field( wp_unslash( $_POST['cg_phase'] ) ) : '';
+		update_post_meta( $post_id, '_cg_phase', in_array( $phase, cg_course_phases(), true ) ? $phase : 'Phase 1' );
+
+		// Stored as "12 weeks" so the cards print it as-is.
+		$weeks = isset( $_POST['cg_duration'] ) ? absint( preg_replace( '/\D+/', '', wp_unslash( $_POST['cg_duration'] ) ) ) : 0; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		update_post_meta( $post_id, '_cg_duration', $weeks ? sprintf( _n( '%d week', '%d weeks', $weeks, 'generatepress-child' ), $weeks ) : '' );
 		$mode = isset( $_POST['cg_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['cg_mode'] ) ) : '';
 		update_post_meta( $post_id, '_cg_mode', in_array( $mode, cg_course_modes(), true ) ? $mode : 'On Site' );
 
@@ -180,6 +204,53 @@ add_action(
 		update_post_meta( $post_id, '_cg_learn', implode( "\n", $points ) );
 	}
 );
+
+/**
+ * Cron: once an Upcoming course's start date arrives (site timezone), switch it to
+ * Admission Open so it leaves the Upcoming section and shows with the Enroll Now cards.
+ */
+add_action(
+	'init',
+	function () {
+		if ( ! wp_next_scheduled( 'cg_open_due_courses' ) ) {
+			wp_schedule_event( time(), 'hourly', 'cg_open_due_courses' );
+		}
+	}
+);
+
+add_action(
+	'switch_theme',
+	function () {
+		wp_clear_scheduled_hook( 'cg_open_due_courses' );
+	}
+);
+
+function cg_open_due_courses() {
+	$ids = get_posts(
+		array(
+			'post_type'      => 'cg_course',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'meta_query'     => array(
+				array(
+					'key'   => '_cg_status',
+					'value' => 'upcoming',
+				),
+				array(
+					'key'     => '_cg_start',
+					'value'   => wp_date( 'Y-m-d' ),
+					'compare' => '<=',
+					'type'    => 'DATE',
+				),
+			),
+		)
+	);
+	foreach ( $ids as $id ) {
+		update_post_meta( $id, '_cg_status', 'open' );
+	}
+}
+add_action( 'cg_open_due_courses', 'cg_open_due_courses' );
 
 /**
  * Admin list: useful columns, default order = Order field.
@@ -246,6 +317,45 @@ function cg_course_img( $id, $class ) {
 	return has_post_thumbnail( $id ) ? get_the_post_thumbnail( $id, 'large', array( 'class' => $class, 'alt' => '', 'loading' => 'lazy' ) ) : '';
 }
 
+/**
+ * SVG filter #cg-green, applied to a course illustration on hover. It turns the illustration's
+ * light-gray fills (#dedede) brand green and leaves black line art and white untouched, which
+ * reproduces the green hover artwork in Figma from the one Course illustration.
+ */
+function cg_green_filter() {
+	// Gray level (0-255) => share of green it takes on, measured against the Figma hover artwork.
+	$stops = array( 0 => 0, 205 => 0, 212 => 0.45, 217 => 1, 227 => 1, 232 => 0.6, 238 => 0.3, 243 => 0.1, 246 => 0, 255 => 0 );
+	$green = array( 15, 154, 90 );
+	$keys  = array_keys( $stops );
+	$table = array( array(), array(), array() );
+	for ( $v = 0; $v <= 255; $v += 5 ) {
+		for ( $k = 1; $v > $keys[ $k ]; ++$k ) {} // phpcs:ignore Generic.CodeAnalysis.EmptyStatement
+		$a = $keys[ $k - 1 ];
+		$b = $keys[ $k ];
+		$w = $stops[ $a ] + ( $stops[ $b ] - $stops[ $a ] ) * ( $v - $a ) / ( $b - $a );
+		foreach ( $green as $c => $g ) {
+			$table[ $c ][] = round( ( ( 1 - $w ) * $v + $w * $g ) / 255, 4 );
+		}
+	}
+	$funcs = '';
+	foreach ( array( 'R', 'G', 'B' ) as $c => $ch ) {
+		$funcs .= '<feFunc' . $ch . ' type="table" tableValues="' . implode( ' ', $table[ $c ] ) . '"/>';
+	}
+	return '<svg class="cg-svg-defs" width="0" height="0" aria-hidden="true" focusable="false"><filter id="cg-green" color-interpolation-filters="sRGB"><feComponentTransfer>' . $funcs . '</feComponentTransfer></filter></svg>';
+}
+
+/**
+ * Inline copy of a navy line icon drawn in currentColor, so CSS can turn it green on hover.
+ */
+function cg_svg_icon( $file, $class ) {
+	static $cache = array();
+	if ( ! isset( $cache[ $file ] ) ) {
+		$svg            = (string) file_get_contents( CG_DIR . '/assets/images/' . $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		$cache[ $file ] = str_replace( '#223044', 'currentColor', $svg );
+	}
+	return preg_replace( '/<svg\b/', '<svg class="' . esc_attr( $class ) . '" aria-hidden="true" focusable="false"', $cache[ $file ], 1 );
+}
+
 function cg_icon( $file, $class, $w, $h ) {
 	return sprintf( '<img class="%s" src="%s" alt="" width="%d" height="%d" loading="lazy">', esc_attr( $class ), esc_url( CG_URI . '/assets/images/' . $file ), $w, $h );
 }
@@ -273,7 +383,12 @@ function cg_courses_shortcode( $atts ) {
 	}
 
 	ob_start();
-	$grid = array( 'open' => 'courses__grid', 'upcoming' => 'upcoming-courses__grid', 'completed' => 'completed__grid' );
+	static $filter_done = false;
+	if ( ! $filter_done && 'completed' !== $st ) {
+		echo cg_green_filter(); // phpcs:ignore WordPress.Security.EscapeOutput
+		$filter_done = true;
+	}
+	$grid =array( 'open' => 'courses__grid', 'upcoming' => 'upcoming-courses__grid', 'completed' => 'completed__grid' );
 	echo '<div class="' . esc_attr( isset( $grid[ $st ] ) ? $grid[ $st ] : 'courses__grid' ) . '">';
 	$i = 0;
 	while ( $q->have_posts() ) {
@@ -295,10 +410,10 @@ function cg_courses_shortcode( $atts ) {
 				<div class="course__body">
 					<h3 class="course__title"><?php echo esc_html( $title ); ?></h3>
 					<ul class="course__meta-list">
-						<?php if ( $start ) : ?><li class="course__meta"><?php echo cg_icon( 'icon-calendar.svg', 'course__meta-icon', 18, 18 ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Starting From', 'generatepress-child' ); ?></strong> <?php echo esc_html( $start ); ?></p></li><?php endif; ?>
-						<?php if ( get_post_meta( $id, '_cg_duration', true ) ) : ?><li class="course__meta"><?php echo cg_icon( 'icon-clock.svg', 'course__meta-icon', 18, 18 ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Duration', 'generatepress-child' ); ?></strong> <?php echo esc_html( get_post_meta( $id, '_cg_duration', true ) ); ?></p></li><?php endif; ?>
-						<?php if ( get_post_meta( $id, '_cg_mode', true ) ) : ?><li class="course__meta"><?php echo cg_icon( 'icon-book.svg', 'course__meta-icon', 18, 18 ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Mode of Teaching', 'generatepress-child' ); ?></strong> <?php echo esc_html( get_post_meta( $id, '_cg_mode', true ) ); ?></p></li><?php endif; ?>
-						<?php if ( $slots ) : ?><li class="course__meta"><?php echo cg_icon( 'icon-schedule.svg', 'course__meta-icon', 18, 18 ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Class Schedule', 'generatepress-child' ); ?></strong> <?php echo esc_html( implode( '  |  ', $slots ) ); ?></p></li><?php endif; ?>
+						<?php if ( $start ) : ?><li class="course__meta"><?php echo cg_svg_icon( 'icon-calendar.svg', 'course__meta-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Starting From', 'generatepress-child' ); ?></strong> <?php echo esc_html( $start ); ?></p></li><?php endif; ?>
+						<?php if ( get_post_meta( $id, '_cg_duration', true ) ) : ?><li class="course__meta"><?php echo cg_svg_icon( 'icon-clock.svg', 'course__meta-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Duration', 'generatepress-child' ); ?></strong> <?php echo esc_html( get_post_meta( $id, '_cg_duration', true ) ); ?></p></li><?php endif; ?>
+						<?php if ( get_post_meta( $id, '_cg_mode', true ) ) : ?><li class="course__meta"><?php echo cg_svg_icon( 'icon-book.svg', 'course__meta-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Mode of Teaching', 'generatepress-child' ); ?></strong> <?php echo esc_html( get_post_meta( $id, '_cg_mode', true ) ); ?></p></li><?php endif; ?>
+						<?php if ( $slots ) : ?><li class="course__meta"><?php echo cg_svg_icon( 'icon-schedule.svg', 'course__meta-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Class Schedule', 'generatepress-child' ); ?></strong> <?php echo esc_html( implode( "\u{00A0} | \u{00A0}", $slots ) ); ?></p></li><?php endif; ?>
 					</ul>
 					<?php if ( $learn ) : ?>
 						<details class="course__learn">
@@ -319,7 +434,7 @@ function cg_courses_shortcode( $atts ) {
 				</div>
 				<div class="upcoming__body">
 					<h3 class="upcoming__title"><?php echo esc_html( $title ); ?></h3>
-					<?php if ( $start ) : ?><div class="upcoming__date"><?php echo cg_icon( 'icon-calendar.svg', 'course__meta-icon', 18, 18 ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Starting From', 'generatepress-child' ); ?></strong> <?php echo esc_html( $start ); ?></p></div><?php endif; ?>
+					<?php if ( $start ) : ?><div class="upcoming__date"><?php echo cg_svg_icon( 'icon-calendar.svg', 'course__meta-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Starting From', 'generatepress-child' ); ?></strong> <?php echo esc_html( $start ); ?></p></div><?php endif; ?>
 					<p class="upcoming__text"><?php echo esc_html( get_the_excerpt() ); ?></p>
 					<a class="cg-btn cg-btn--outline" href="#contact" data-cg-notify data-course="<?php echo esc_attr( $title ); ?>"><?php esc_html_e( 'Notify Me', 'generatepress-child' ); ?></a>
 				</div>
@@ -328,7 +443,9 @@ function cg_courses_shortcode( $atts ) {
 		} else {
 			?>
 			<article class="done<?php echo 0 === $i ? ' done--active' : ''; ?>">
-				<?php echo cg_icon( 0 === $i ? 'course-done-1.webp' : 'course-done-2.webp', 'done__icon', 132, 144 ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+				<span class="done__icons">
+					<?php echo cg_icon( 'course-done-2.webp', 'done__icon', 132, 144 ) . cg_icon( 'course-done-1.webp', 'done__icon done__icon--active', 132, 144 ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+				</span>
 				<h3 class="done__title"><?php echo esc_html( $title ); ?></h3>
 				<p class="done__text"><?php echo esc_html( get_the_excerpt() ); ?></p>
 				<a class="done__link" href="#contact" data-cg-notify data-course="<?php echo esc_attr( $title ); ?>"><?php esc_html_e( 'I’m Interested', 'generatepress-child' ); ?></a>

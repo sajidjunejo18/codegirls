@@ -2,7 +2,8 @@
 /**
  * Config-driven enquiry forms (no plugin): [cg_hire_form], [cg_trainer_form].
  * Submissions are emailed to the site admin address (Settings → General).
- * Optional file upload: doc/docx, max 2MB, attached to the email and then deleted.
+ * Optional file upload, max 2MB: doc/docx by default, or the form's own 'file_types'
+ * (Become a Trainer accepts PDF only). Attached to the email and kept privately for admins.
  *
  * Field spec: key => [ label, type (text|email|tel|url|date|select|file), required, options|null, full-width? ]
  *
@@ -30,10 +31,10 @@ function cg_forms_config() {
 				'website'     => array( 'Company Website:', 'url', true ),
 				'email'       => array( 'Work Email Address:', 'email', true ),
 				'phone'       => array( 'Work Phone Number:', 'tel', true ),
-				'arrangement' => array( 'Work Arrangement:', 'select', true, array( 'On Site', 'Hybrid', 'Remote' ) ),
+				'arrangement' => array( 'Work Arrangement:', 'text', true ),
 				'job_title'   => array( 'Job Title:', 'text', true ),
 				'skills'      => array( 'Required Skills:', 'text', true ),
-				'education'   => array( 'Minimum Education:', 'select', true, array( 'Intermediate', 'Bachelor’s', 'Master’s' ) ),
+				'education'   => array( 'Minimum Education:', 'text', true ),
 				'apply_by'    => array( 'Apply By Date:', 'date', true ),
 			),
 			'textarea' => 'Job Description or Upload Document ( Max 2MB ) ( doc,docx ):',
@@ -82,11 +83,12 @@ function cg_forms_config() {
 				'org'      => array( 'Organization / Institute:', 'text', true, null, true ),
 				'role'     => array( 'Designation:', 'text', true ),
 				'city'     => array( 'City:', 'text', true ),
-				'position' => array( 'Position Applied For:', 'text', true ),
-				'resume'   => array( 'Upload your resume ( Max 2MB ) ( doc,docx ):', 'file', true ),
+				'position' => array( 'Position Applied For:', 'select', true, array( 'Tech Trainer', 'Core Skills Trainer', 'Guest Speaker' ) ),
+				'resume'   => array( 'Upload your resume ( Max 2MB ) ( pdf ):', 'file', true ),
 			),
-			'file'    => true,
-			'thanks'  => 'Thank you! We have received your application and will be in touch soon.',
+			'file'       => true,
+			'file_types' => array( 'pdf' => 'application/pdf' ),
+			'thanks'     => 'Thank you! We have received your application and will be in touch soon.',
 		),
 	);
 }
@@ -102,11 +104,25 @@ function cg_form_field_html( $form, $key, $f ) {
 		}
 		echo '</select>';
 	} elseif ( 'file' === $f[1] ) {
-		echo '<div class="cg-form__filebox"><input class="cg-form__file" id="' . esc_attr( $id ) . '" type="file" name="cg_file" accept=".doc,.docx"' . ( $req ? ' required' : '' ) . '><label class="cg-form__file-btn" for="' . esc_attr( $id ) . '">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span></div>';
+		echo '<div class="cg-form__filebox"><input class="cg-form__file" id="' . esc_attr( $id ) . '" type="file" name="cg_file" accept="' . esc_attr( cg_form_file_accept( $form ) ) . '"' . ( $req ? ' required' : '' ) . '><label class="cg-form__file-btn" for="' . esc_attr( $id ) . '">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span></div>';
 	} else {
 		echo '<input id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" type="' . esc_attr( $f[1] ) . '"' . ( $req ? ' required' : '' ) . '>';
 	}
 	echo '</div>';
+}
+
+/** Allowed upload types for a form: extension => MIME type. */
+function cg_form_file_types( $form ) {
+	$cfg = cg_forms_config()[ $form ] ?? array();
+	return ! empty( $cfg['file_types'] ) ? $cfg['file_types'] : array(
+		'doc'  => 'application/msword',
+		'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+	);
+}
+
+/** ".pdf" / ".doc,.docx" for the file input's accept attribute. */
+function cg_form_file_accept( $form ) {
+	return '.' . implode( ',.', array_keys( cg_form_file_types( $form ) ) );
 }
 
 function cg_form_render( $form ) {
@@ -119,7 +135,7 @@ function cg_form_render( $form ) {
 	if ( $only === $form && 'sent' === $status ) {
 		echo '<p class="cg-form__notice" role="status">' . esc_html( $cfg['thanks'] ) . '</p>';
 	} elseif ( $only === $form && 'error' === $status ) {
-		echo '<p class="cg-form__notice cg-form__notice--error" role="alert">' . esc_html__( 'Sorry, we could not send your message. Please check the fields (and that any file is a .doc/.docx under 2MB) and try again.', 'generatepress-child' ) . '</p>';
+		echo '<p class="cg-form__notice cg-form__notice--error" role="alert">' . esc_html( sprintf( /* translators: %s: allowed file types */ __( 'Sorry, we could not send your message. Please check the fields (and that any file is a %s under 2MB) and try again.', 'generatepress-child' ), implode( '/', explode( ',', cg_form_file_accept( $form ) ) ) ) ) . '</p>';
 	}
 	?>
 	<form class="cg-form cg-form--hire" method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -155,7 +171,7 @@ function cg_form_render( $form ) {
 
 		if ( ! empty( $cfg['textarea'] ) ) {
 			echo '<div class="cg-form__field is-required"><label for="cg_' . esc_attr( $form ) . '_description">' . esc_html( $cfg['textarea'] ) . '</label><textarea id="cg_' . esc_attr( $form ) . '_description" name="cg_' . esc_attr( $form ) . '_description"></textarea></div>';
-			echo '<div class="cg-form__actions"><input class="cg-form__file" id="cg_' . esc_attr( $form ) . '_file" type="file" name="cg_file" accept=".doc,.docx"><label class="cg-form__file-btn" for="cg_' . esc_attr( $form ) . '_file">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span><button class="cg-btn cg-form__submit" type="submit">' . esc_html__( 'Submit', 'generatepress-child' ) . '</button></div>';
+			echo '<div class="cg-form__actions"><input class="cg-form__file" id="cg_' . esc_attr( $form ) . '_file" type="file" name="cg_file" accept="' . esc_attr( cg_form_file_accept( $form ) ) . '"><label class="cg-form__file-btn" for="cg_' . esc_attr( $form ) . '_file">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span><button class="cg-btn cg-form__submit" type="submit">' . esc_html__( 'Submit', 'generatepress-child' ) . '</button></div>';
 		} else {
 			echo '<div class="cg-form__actions cg-form__actions--end"><button class="cg-btn cg-form__submit" type="submit">' . esc_html__( 'Submit', 'generatepress-child' ) . '</button></div>';
 		}
@@ -192,7 +208,6 @@ function cg_handle_form() {
 	$ok = isset( $_POST['cg_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cg_nonce'] ) ), 'cg_form_' . $form );
 	$ok = $ok && empty( $_POST['cg_website'] ); // Honeypot.
 
-	$lines  = array();
 	$pairs  = array();
 	$name   = '';
 	$email  = '';
@@ -224,14 +239,12 @@ function cg_handle_form() {
 		if ( 'course' === $key ) {
 			$course = $val;
 		}
-		$lines[]                      = rtrim( $f[0], ':' ) . ': ' . $val;
 		$pairs[ rtrim( $f[0], ':' ) ] = $val;
 	}
 	$ok = $ok && is_email( $email );
 
 	if ( ! empty( $cfg['textarea'] ) ) {
 		$desc    = isset( $_POST[ "cg_{$form}_description" ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ "cg_{$form}_description" ] ) ) : '';
-		$lines[] = "\nDescription:\n" . $desc;
 	}
 
 	// A required file field (e.g. the trainer resume) must actually be uploaded.
@@ -253,10 +266,7 @@ function cg_handle_form() {
 				$file,
 				array(
 					'test_form' => false,
-					'mimes'     => array(
-						'doc'  => 'application/msword',
-						'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-					),
+					'mimes'     => cg_form_file_types( $form ),
 				)
 			);
 			if ( ! empty( $res['file'] ) ) {
@@ -281,12 +291,20 @@ function cg_handle_form() {
 		}
 		$saved = cg_save_entry( $form, $pairs, $name, $email, $phone, $course, $file_rel );
 
-		$sent = wp_mail(
-			get_option( 'admin_email' ),
+		$mail_pairs = $pairs;
+		if ( isset( $desc ) ) {
+			$mail_pairs['Description'] = $desc;
+		}
+		if ( $attachments ) {
+			$mail_pairs['Attachment'] = preg_replace( '/^[A-Za-z0-9]{12}-/', '', basename( $file_rel ? $file_rel : $attachments[0] ) );
+		}
+		$sent = cg_mail_admin(
 			sprintf( '[%s] %s from %s', wp_specialchars_decode( get_bloginfo( 'name' ) ), $cfg['subject'], $name ),
-			implode( "
-", $lines ),
-			array( 'Reply-To: ' . $name . ' <' . $email . '>' ),
+			sprintf( 'New %s', strtolower( $cfg['subject'] ) ),
+			$mail_pairs,
+			$name,
+			$email,
+			$saved,
 			$attachments
 		);
 		if ( $saved && $sent ) {

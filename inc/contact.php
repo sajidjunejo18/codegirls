@@ -61,16 +61,13 @@ function cg_handle_contact() {
 	$saved = 0;
 	if ( $ok && $name && is_email( $email ) && $message ) {
 		$saved = cg_save_entry( 'contact', array( 'Name' => $name, 'Phone' => $phone, 'Email' => $email, 'Message' => $message ), $name, $email, $phone );
-		$body  = "Name: $name
-Phone: $phone
-Email: $email
-
-$message";
-		$sent  = wp_mail(
-			get_option( 'admin_email' ),
+		$sent  = cg_mail_admin(
 			sprintf( '[%s] New contact message from %s', wp_specialchars_decode( get_bloginfo( 'name' ) ), $name ),
-			$body,
-			array( 'Reply-To: ' . $name . ' <' . $email . '>' )
+			__( 'New contact message', 'generatepress-child' ),
+			array( 'Name' => $name, 'Phone' => $phone, 'Email' => $email, 'Message' => $message ),
+			$name,
+			$email,
+			$saved
 		);
 		if ( $saved && $sent ) {
 			update_post_meta( $saved, '_cg_mailed', 1 );

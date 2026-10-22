@@ -37,16 +37,9 @@
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
-<!-- wp:generateblocks/element {"tagName":"div","globalClasses":["involve__collage"]} -->
-<div class="involve__collage">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["involve__card involve__card--a"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/get-involved.webp' ) ); ?>","alt":"CodeGirls Impact Report 2026 cover","width":"368","height":"524","loading":"lazy"}} -->
-<img class="involve__card involve__card--a" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/get-involved.webp' ) ); ?>" alt="CodeGirls Impact Report 2026 cover" width="368" height="524" loading="lazy"/>
-<!-- /wp:generateblocks/media -->
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["involve__card involve__card--b"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/get-involved.webp' ) ); ?>","alt":"","width":"368","height":"524","loading":"lazy"}} -->
-<img class="involve__card involve__card--b" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/get-involved.webp' ) ); ?>" alt="" width="368" height="524" loading="lazy"/>
-<!-- /wp:generateblocks/media -->
-</div>
-<!-- /wp:generateblocks/element -->
+<!-- wp:shortcode -->
+[cg_latest_report]
+<!-- /wp:shortcode -->
 </div>
 <!-- /wp:generateblocks/element -->
 </section>

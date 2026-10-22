@@ -1,0 +1,21 @@
+/* Recognitions edit screen: extras on top of voice-editor.css (shared form look). */
+.cgr-date input[type=text] { width: 100%; }
+.cgr-card__empty { display: grid; place-items: center; width: 100%; aspect-ratio: 464 / 302; background: #f6f7f7; color: #8c8f94; font-size: 12px; }
+.cgr-card__empty[hidden], .cgrc-card [hidden] { display: none !important; }
+
+/* Award picture is shown at the card's 464 : 302 shape; the badge as a small round logo */
+.cgrc-award .cgv-image__preview { max-width: 464px; aspect-ratio: 464 / 302; background: #fff; border: 1px dashed #b5d9c6; }
+.cgrc-award .cgv-image__preview img { width: 100%; height: 100%; object-fit: cover; }
+.cgrc-badge .cgv-image__preview { width: 102px; min-height: 0; aspect-ratio: 1; margin: 0 0 10px; border-radius: 50%; background: #fff; border: 1px dashed #b5d9c6; }
+.cgrc-badge .cgv-image__preview img { width: 100%; height: 100%; object-fit: contain; }
+
+/* Live card preview (sidebar) */
+.cgrc-card { display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 14px; border-radius: 8px; background: #fff; box-shadow: 0 6px 20px rgba(0, 0, 0, .09); text-align: center; }
+.cgrc-card__media { position: relative; width: 100%; margin-bottom: 26px; }
+.cgrc-card__media > img:first-child { display: block; width: 100%; aspect-ratio: 464 / 302; object-fit: cover; border-radius: 8px 8px 0 0; }
+.cgrc-card__badge { position: absolute; left: 50%; bottom: 0; width: 44px; height: 44px; border-radius: 50%; object-fit: contain; background: #fff; transform: translate(-50%, 50%); box-shadow: 0 2px 6px rgba(0, 0, 0, .12); }
+.cgrc-card strong { padding: 0 12px; color: #223044; font-size: 13px; line-height: 1.4; }
+.cgrc-card__btn { padding: 6px 12px; border-radius: 3px; background: #223044; color: #fff; font-size: 11px; font-weight: 700; }
+#cg_recognition_settings .inside, #cg_recognition_preview .inside { margin: 0; padding: 18px; }
+.cgv-screen #cg_recognition_settings, .cgv-screen #cg_recognition_preview { border: 0; border-radius: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, .05), 0 6px 20px rgba(0, 0, 0, .04); }
+.cgv-screen #cg_recognition_settings .postbox-header, .cgv-screen #cg_recognition_preview .postbox-header { display: none; }

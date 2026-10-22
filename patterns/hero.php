@@ -71,41 +71,38 @@
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["hero__side"]} -->
 <div class="hero__side">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["hero__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/hero.webp' ) ); ?>","alt":"Two women working on laptops in an office","width":"960","height":"678"}} -->
-<img class="hero__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/hero.webp' ) ); ?>" alt="Two women working on laptops in an office" width="960" height="678"/>
-<!-- /wp:generateblocks/media -->
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["hero__badge"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/hero-badge.svg' ) ); ?>","alt":"","width":"52","height":"52"}} -->
-<img class="hero__badge" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/hero-badge.svg' ) ); ?>" alt="" width="52" height="52"/>
-<!-- /wp:generateblocks/media -->
+<!-- wp:shortcode -->
+[cg_hero_media]
+<!-- /wp:shortcode -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["hero__stats"]} -->
 <div class="hero__stats">
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["hero__stat"]} -->
 <div class="hero__stat">
-<!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hero__stat-num"]} -->
-<p class="gb-text hero__stat-num">2000+</p>
-<!-- /wp:generateblocks/text -->
+<!-- wp:shortcode -->
+[cg_stat_number key="trainings" class="gb-text hero__stat-num"]
+<!-- /wp:shortcode -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hero__stat-label"]} -->
-<p class="gb-text hero__stat-label">Total Trainings</p>
+<p class="gb-text hero__stat-label">[cg_stat_label key="trainings"]</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["hero__stat"]} -->
 <div class="hero__stat">
-<!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hero__stat-num"]} -->
-<p class="gb-text hero__stat-num">70%</p>
-<!-- /wp:generateblocks/text -->
+<!-- wp:shortcode -->
+[cg_stat_number key="placement" class="gb-text hero__stat-num"]
+<!-- /wp:shortcode -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hero__stat-label"]} -->
-<p class="gb-text hero__stat-label">Placement Rate</p>
+<p class="gb-text hero__stat-label">[cg_stat_label key="placement"]</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["hero__stat"]} -->
 <div class="hero__stat">
-<!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hero__stat-num"]} -->
-<p class="gb-text hero__stat-num">55K+</p>
-<!-- /wp:generateblocks/text -->
+<!-- wp:shortcode -->
+[cg_stat_number key="salary" class="gb-text hero__stat-num"]
+<!-- /wp:shortcode -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["hero__stat-label"]} -->
-<p class="gb-text hero__stat-label">Average Monthly Salary</p>
+<p class="gb-text hero__stat-label">[cg_stat_label key="salary"]</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->

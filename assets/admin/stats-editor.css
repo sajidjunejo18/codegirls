@@ -1,0 +1,7 @@
+/* Site Stats settings page (Settings → Site Stats): extras on top of voice-editor.css. */
+.cgs-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+.cgs-row--note { grid-template-columns: minmax(0, 1fr); margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--cgv-line); }
+.cgv-screen .cgv { margin-top: 18px; }
+.cgv-screen .cgv-btn { margin-top: 4px; }
+
+@media (max-width: 900px) { .cgs-row { grid-template-columns: minmax(0, 1fr); } }
