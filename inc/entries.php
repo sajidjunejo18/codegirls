@@ -39,7 +39,20 @@ function cg_register_entries() {
 			'menu_position'   => 26,
 			'supports'        => false,
 			'capability_type' => 'post',
-			'capabilities'    => array( 'create_posts' => 'do_not_allow' ),
+			// Entries hold applicants' personal data: administrators only.
+			'capabilities'    => array(
+				'create_posts'           => 'do_not_allow',
+				'edit_posts'             => 'manage_options',
+				'edit_others_posts'      => 'manage_options',
+				'edit_published_posts'   => 'manage_options',
+				'edit_private_posts'     => 'manage_options',
+				'publish_posts'          => 'manage_options',
+				'read_private_posts'     => 'manage_options',
+				'delete_posts'           => 'manage_options',
+				'delete_others_posts'    => 'manage_options',
+				'delete_published_posts' => 'manage_options',
+				'delete_private_posts'   => 'manage_options',
+			),
 			'map_meta_cap'    => true,
 		)
 	);
@@ -213,7 +226,7 @@ add_action(
 				'edit.php?post_type=cg_entry',
 				$label,
 				$label,
-				'edit_posts',
+				'manage_options',
 				'edit.php?post_type=cg_entry&cg_form=' . $k
 			);
 		}
