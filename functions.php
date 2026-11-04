@@ -35,3 +35,4 @@ require_once CG_DIR . '/inc/press.php';
 require_once CG_DIR . '/inc/stats.php';
 require_once CG_DIR . '/inc/hero-video.php';
 require_once CG_DIR . '/inc/homepage-only.php';
+require_once CG_DIR . '/inc/content-fixes.php';

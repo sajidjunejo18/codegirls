@@ -33,7 +33,7 @@
 <h3 class="gb-text why__card-title">In-demand Course Outlines</h3>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["why__card-text"]} -->
-<p class="gb-text why__card-text">Curriculam designed by industry experts to match current global market needs.</p>
+<p class="gb-text why__card-text">Curriculum designed by industry experts to match current global market needs.</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->

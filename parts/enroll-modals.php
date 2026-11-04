@@ -27,7 +27,7 @@ $field = static function ( $form, $key, $label, $type = 'text', $req = true, $at
 		esc_html( $label ),
 		esc_attr( $type ),
 		$req ? ' required' : '',
-		$attrs // phpcs:ignore WordPress.Security.EscapeOutput -- fixed literals only.
+		$attrs // phpcs:ignore WordPress.Security.EscapeOutput -- fixed literals and cg_phone_attrs() only.
 	);
 };
 
@@ -63,9 +63,9 @@ $hidden = static function ( $form ) use ( $redirect ) {
 			<div class="cg-modal__grid">
 				<?php
 				$field( 'enroll', 'name', 'Your Name:', 'text', true, 'autocomplete="name" autofocus' );
-				$field( 'enroll', 'age', 'Age', 'number', true, 'min="10" max="80" inputmode="numeric"' );
+				$field( 'enroll', 'age', 'Age', 'number', true, 'min="18" max="80" inputmode="numeric"' );
 				$field( 'enroll', 'city', 'City/Country', 'text', true, 'autocomplete="address-level2"' );
-				$field( 'enroll', 'phone', 'Contact No.', 'tel', true, 'autocomplete="tel"' );
+				$field( 'enroll', 'phone', 'Contact No.', 'tel', true, 'autocomplete="tel" ' . cg_phone_attrs() );
 				$field( 'enroll', 'email', 'Email', 'email', true, 'autocomplete="email"' );
 				$select( 'enroll', 'education', 'Highest Education', $education, 'Select your education' );
 				?>
@@ -110,9 +110,9 @@ $hidden = static function ( $form ) use ( $redirect ) {
 			<div class="cg-modal__grid">
 				<?php
 				$field( 'notify', 'name', 'Your Name:', 'text', true, 'autocomplete="name" autofocus' );
-				$field( 'notify', 'age', 'Age', 'number', true, 'min="10" max="80" inputmode="numeric"' );
+				$field( 'notify', 'age', 'Age', 'number', true, 'min="18" max="80" inputmode="numeric"' );
 				$field( 'notify', 'city', 'City/Country', 'text', true, 'autocomplete="address-level2"' );
-				$field( 'notify', 'phone', 'Contact No.', 'tel', true, 'autocomplete="tel"' );
+				$field( 'notify', 'phone', 'Contact No.', 'tel', true, 'autocomplete="tel" ' . cg_phone_attrs() );
 				$field( 'notify', 'email', 'Email', 'email', true, 'autocomplete="email"' );
 				$select( 'notify', 'education', 'Highest Education', $education, 'Select your education' );
 				?>

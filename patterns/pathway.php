@@ -26,7 +26,7 @@
 <h3 class="gb-text pathway__step-title">Apply</h3>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["pathway__step-text"]} -->
-<p class="gb-text pathway__step-text">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+<p class="gb-text pathway__step-text">Submit your application online for the next cohort.</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
@@ -43,7 +43,7 @@
 <h3 class="gb-text pathway__step-title">Learn</h3>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["pathway__step-text"]} -->
-<p class="gb-text pathway__step-text">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+<p class="gb-text pathway__step-text">Build in-demand tech skills with hands-on training.</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
@@ -60,7 +60,7 @@
 <h3 class="gb-text pathway__step-title">Project &amp; Viva</h3>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["pathway__step-text"]} -->
-<p class="gb-text pathway__step-text">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+<p class="gb-text pathway__step-text">Apply your skills to a real project and present it in a viva.</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
@@ -77,7 +77,7 @@
 <h3 class="gb-text pathway__step-title">Graduate</h3>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["pathway__step-text"]} -->
-<p class="gb-text pathway__step-text">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+<p class="gb-text pathway__step-text">Earn your certificate and celebrate with your cohort.</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->
@@ -94,7 +94,7 @@
 <h3 class="gb-text pathway__step-title">Stay tuned</h3>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["pathway__step-text"]} -->
-<p class="gb-text pathway__step-text">Lorem ipsum dolor sit amet, consectetur adipiscing.</p>
+<p class="gb-text pathway__step-text">Stay connected for placements, events and new opportunities.</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->

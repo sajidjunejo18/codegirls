@@ -9,6 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 function cg_contact_form_shortcode() {
+	global $wp;
 	$status = isset( $_GET['cg_contact'] ) ? sanitize_key( wp_unslash( $_GET['cg_contact'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 	ob_start();
@@ -21,7 +22,7 @@ function cg_contact_form_shortcode() {
 	?>
 	<form class="cg-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 		<input type="hidden" name="action" value="cg_contact">
-		<input type="hidden" name="cg_redirect" value="<?php echo esc_url( home_url( '/' ) ); ?>">
+		<input type="hidden" name="cg_redirect" value="<?php echo esc_url( trailingslashit( home_url( $wp->request ) ) ); // Back to this page. ?>">
 		<?php wp_nonce_field( 'cg_contact', 'cg_nonce' ); ?>
 		<div class="cg-form__hp" aria-hidden="true"><label>Leave empty<input type="text" name="cg_website" tabindex="-1" autocomplete="off"></label></div>
 
@@ -30,7 +31,7 @@ function cg_contact_form_shortcode() {
 				<input type="text" name="cg_name" required autocomplete="name">
 			</label>
 			<label class="cg-form__field">Phone:
-				<input type="tel" name="cg_phone" autocomplete="tel">
+				<input type="tel" name="cg_phone" autocomplete="tel" <?php echo cg_phone_attrs(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped. ?>>
 			</label>
 		</div>
 		<label class="cg-form__field">Email Address:
@@ -59,7 +60,7 @@ function cg_handle_contact() {
 	$message = isset( $_POST['cg_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['cg_message'] ) ) : '';
 
 	$saved = 0;
-	if ( $ok && $name && is_email( $email ) && $message ) {
+	if ( $ok && $name && is_email( $email ) && $message && ( '' === $phone || cg_is_phone( $phone ) ) ) {
 		$saved = cg_save_entry( 'contact', array( 'Name' => $name, 'Phone' => $phone, 'Email' => $email, 'Message' => $message ), $name, $email, $phone );
 		$sent  = cg_mail_admin(
 			sprintf( '[%s] New contact message from %s', wp_specialchars_decode( get_bloginfo( 'name' ) ), $name ),

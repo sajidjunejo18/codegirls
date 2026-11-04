@@ -204,3 +204,86 @@ function cg_press_shortcode() {
 	return ob_get_clean();
 }
 add_shortcode( 'cg_press', 'cg_press_shortcode' );
+
+/**
+ * Press article layout (Figma "In The Press – Detail"): the text before the first heading is a full-width
+ * intro; each <h2> starts a section. A section with pictures (or the Tech Tracks card) becomes a two-column
+ * row, text beside media, alternating sides with a grey band on every other row; text after the media runs
+ * full width below it. Editors only write headings, paragraphs and images, and this arranges them.
+ */
+function cg_press_layout( $html ) {
+	if ( '' === trim( $html ) || ! class_exists( 'DOMDocument' ) ) {
+		return $html;
+	}
+	$doc  = new DOMDocument();
+	$prev = libxml_use_internal_errors( true );
+	$doc->loadHTML( '<?xml encoding="utf-8"?><div id="cg-root">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+	libxml_clear_errors();
+	libxml_use_internal_errors( $prev );
+	$root = $doc->getElementById( 'cg-root' );
+	if ( ! $root ) {
+		return $html;
+	}
+
+	$is_media = function ( DOMNode $n ) {
+		if ( ! $n instanceof DOMElement ) {
+			return false;
+		}
+		$tag = strtolower( $n->tagName );
+		if ( 'figure' === $tag || 'img' === $tag || false !== strpos( ' ' . $n->getAttribute( 'class' ) . ' ', ' press-tracks ' ) ) {
+			return true;
+		}
+		// A paragraph holding only images (what the editor makes when a picture is inserted).
+		return 'p' === $tag && $n->getElementsByTagName( 'img' )->length && '' === trim( $n->textContent );
+	};
+
+	// Split into [ heading node|null, [nodes...] ].
+	$sections = array( array( null, array() ) );
+	foreach ( iterator_to_array( $root->childNodes ) as $n ) {
+		if ( $n instanceof DOMText && '' === trim( $n->textContent ) ) {
+			continue;
+		}
+		if ( $n instanceof DOMElement && 'h2' === strtolower( $n->tagName ) ) {
+			$sections[] = array( $n, array() );
+		} else {
+			$sections[ count( $sections ) - 1 ][1][] = $n;
+		}
+	}
+
+	$out  = '';
+	$rows = 0;
+	$save = fn( $nodes ) => implode( '', array_map( fn( $n ) => $doc->saveHTML( $n ), $nodes ) );
+	foreach ( $sections as $i => list( $head, $nodes ) ) {
+		$text  = array();
+		$media = array();
+		$after = array();
+		foreach ( $nodes as $n ) {
+			if ( $is_media( $n ) ) {
+				$media[] = $n;
+			} elseif ( $media ) {
+				$after[] = $n; // Text after the pictures: full width below the row.
+			} else {
+				$text[] = $n;
+			}
+		}
+		$h = $head ? $doc->saveHTML( $head ) : '';
+		if ( ! $media ) {
+			if ( $h || $text ) {
+				$out .= '<section class="press-sec' . ( 0 === $i ? ' press-sec--intro' : '' ) . '"><div class="cg-wrap press-sec__text">' . $h . $save( $text ) . $save( $after ) . '</div></section>';
+			}
+			continue;
+		}
+		$flip  = 1 === $rows % 2;
+		$cls   = 'press-sec press-sec--row' . ( $flip ? ' press-sec--flip press-sec--alt' : '' );
+		$grid  = count( $media ) > 1 ? ' press-media--grid' : '';
+		$out  .= '<section class="' . $cls . '"><div class="cg-wrap">';
+		$out  .= '<div class="press-row"><div class="press-row__text">' . $h . $save( $text ) . '</div>';
+		$out  .= '<div class="press-row__media press-media' . $grid . '">' . $save( $media ) . '</div></div>';
+		if ( $after ) {
+			$out .= '<div class="press-sec__after">' . $save( $after ) . '</div>';
+		}
+		$out .= '</div></section>';
+		++$rows;
+	}
+	return $out;
+}

@@ -28,7 +28,7 @@
 <p class="gb-text story-text__p">Around that time, one of Shamim's business client, <strong>Dr. Hasnain Walji,</strong> Executive Director of United Global Initiative, approached her with a simple question:</p>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["story-text__p"]} -->
-<p class="gb-text story-text__p"><strong>'How can we make 100 more women tech professionals like you?'</strong></p>
+<p class="gb-text story-text__p"><strong>“How can we make 100 more women tech professionals like you?”</strong></p>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["story-text__p"]} -->
 <p class="gb-text story-text__p">That question could have remained just a conversation. Instead, Shamim decided to do something about it.</p>

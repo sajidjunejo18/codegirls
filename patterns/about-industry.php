@@ -50,7 +50,7 @@
 <p class="gb-text phase__label">Phase 2</p>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"h3","globalClasses":["phase__title"]} -->
-<h3 class="gb-text phase__title">Advanced Tracks</h3>
+<h3 class="gb-text phase__title">Advanced Technology Tracks</h3>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["phase__text"]} -->
 <p class="gb-text phase__text">Developing specialized technical skills.</p>
@@ -69,7 +69,7 @@
 <h3 class="gb-text phase__title">Freelancing</h3>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["phase__text"]} -->
-<p class="gb-text phase__text">Turn skills into professional opportunities.</p>
+<p class="gb-text phase__text">Learning how to turn skills into professional opportunities.</p>
 <!-- /wp:generateblocks/text -->
 </li>
 <!-- /wp:generateblocks/element -->
@@ -84,7 +84,7 @@
 <h2 class="gb-text workshops__title">Four Workshops in Each Phase</h2>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["workshops__text"]} -->
-<p class="gb-text workshops__text">Soft-skills workshops are built into the program to help students communicate effectively, work in teams, present their ideas, and navigate professional environments with confidence.</p>
+<p class="gb-text workshops__text">Soft-skills workshops are built into the program to help students communicate effectively, work in teams, present their ideas, and navigate professional environments with confidence. <strong>Completing these workshops is mandatory to receive a CodeGirls certificate.</strong></p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->

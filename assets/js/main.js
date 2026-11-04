@@ -11,6 +11,16 @@
 			var out = document.querySelector( '.cg-form__file-name' );
 			out.textContent = file.files.length ? file.files[ 0 ].name : 'No File Chosen';
 		} );
+
+		// Hire form: a job description or an uploaded document is required.
+		var desc = document.querySelector( '.cg-form--hire textarea' );
+		if ( desc ) {
+			var syncDesc = function () {
+				desc.required = ! file.files.length;
+			};
+			syncDesc();
+			file.addEventListener( 'change', syncDesc );
+		}
 	}
 
 	// "/#contact" links: scroll to this page's own contact section when it has one,

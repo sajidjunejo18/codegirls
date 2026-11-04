@@ -93,6 +93,18 @@ function cg_forms_config() {
 	);
 }
 
+/**
+ * Phone numbers: digits, spaces and + ( ) -, 7-20 characters. The HTML pattern escapes
+ * the brackets and dash because browsers compile it with the regex "v" flag.
+ */
+function cg_phone_attrs() {
+	return 'pattern="[0-9\+\(\)\-\s]{7,20}" title="' . esc_attr__( 'Please enter a valid phone number (digits, spaces, + ( ) - only).', 'generatepress-child' ) . '"';
+}
+
+function cg_is_phone( $val ) {
+	return (bool) preg_match( '/^[0-9+()\-\s]{7,20}$/', $val );
+}
+
 function cg_form_field_html( $form, $key, $f ) {
 	$id  = "cg_{$form}_{$key}";
 	$req = ! empty( $f[2] );
@@ -106,7 +118,7 @@ function cg_form_field_html( $form, $key, $f ) {
 	} elseif ( 'file' === $f[1] ) {
 		echo '<div class="cg-form__filebox"><input class="cg-form__file" id="' . esc_attr( $id ) . '" type="file" name="cg_file" accept="' . esc_attr( cg_form_file_accept( $form ) ) . '"' . ( $req ? ' required' : '' ) . '><label class="cg-form__file-btn" for="' . esc_attr( $id ) . '">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span></div>';
 	} else {
-		echo '<input id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" type="' . esc_attr( $f[1] ) . '"' . ( $req ? ' required' : '' ) . '>';
+		echo '<input id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" type="' . esc_attr( $f[1] ) . '"' . ( $req ? ' required' : '' ) . ( 'tel' === $f[1] ? ' ' . cg_phone_attrs() : '' ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput -- cg_phone_attrs() is escaped.
 	}
 	echo '</div>';
 }
@@ -227,6 +239,12 @@ function cg_handle_form() {
 		if ( 'radio' === $f[1] && '' !== $val && ! in_array( $val, array( 'Yes', 'No' ), true ) ) {
 			$ok = false;
 		}
+		if ( 'tel' === $f[1] && '' !== $val && ! cg_is_phone( $val ) ) {
+			$ok = false;
+		}
+		if ( 'age' === $key && '' !== $val && ( ! ctype_digit( $val ) || (int) $val < 18 || (int) $val > 80 ) ) {
+			$ok = false; // Courses are for ages 18+ (see the Courses hero).
+		}
 		if ( 'name' === $key ) {
 			$name = $val;
 		}
@@ -245,6 +263,9 @@ function cg_handle_form() {
 
 	if ( ! empty( $cfg['textarea'] ) ) {
 		$desc    = isset( $_POST[ "cg_{$form}_description" ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ "cg_{$form}_description" ] ) ) : '';
+		if ( '' === $desc && empty( $_FILES['cg_file']['name'] ) ) {
+			$ok = false; // A job description or an uploaded document is required.
+		}
 	}
 
 	// A required file field (e.g. the trainer resume) must actually be uploaded.
