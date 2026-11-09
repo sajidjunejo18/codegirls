@@ -209,7 +209,8 @@ add_shortcode( 'cg_press', 'cg_press_shortcode' );
  * Press article layout (Figma "In The Press – Detail"): the text before the first heading is a full-width
  * intro; each <h2> starts a section. A section with pictures (or the Tech Tracks card) becomes a two-column
  * row, text beside media, alternating sides with a grey band on every other row; text after the media runs
- * full width below it. Editors only write headings, paragraphs and images, and this arranges them.
+ * full width below it. A section that alternates text and pictures more than once becomes a zig-zag photo
+ * story instead. Editors only write headings, paragraphs and images, and this arranges them.
  */
 function cg_press_layout( $html ) {
 	if ( '' === trim( $html ) || ! class_exists( 'DOMDocument' ) ) {
@@ -250,6 +251,17 @@ function cg_press_layout( $html ) {
 		}
 	}
 
+	// Old-site speaker lists put each person's photo just before their name: a section ending in a picture,
+	// followed by a person card (name, then a role line) without its own picture, hands that picture over.
+	foreach ( array_keys( $sections ) as $i ) {
+		$next = $sections[ $i + 1 ] ?? null;
+		$last = end( $sections[ $i ][1] );
+		if ( $next && $last && $is_media( $last ) && $next[1] && $next[1][0] instanceof DOMElement
+			&& in_array( strtolower( $next[1][0]->tagName ), array( 'h3', 'h4' ), true ) && ! array_filter( $next[1], $is_media ) ) {
+			$sections[ $i + 1 ][1][] = array_pop( $sections[ $i ][1] );
+		}
+	}
+
 	$out  = '';
 	$rows = 0;
 	$save = fn( $nodes ) => implode( '', array_map( fn( $n ) => $doc->saveHTML( $n ), $nodes ) );
@@ -257,9 +269,16 @@ function cg_press_layout( $html ) {
 		$text  = array();
 		$media = array();
 		$after = array();
+		$seen  = array();
 		foreach ( $nodes as $n ) {
 			if ( $is_media( $n ) ) {
-				$media[] = $n;
+				$img = 'img' === strtolower( $n->tagName ) ? $n : $n->getElementsByTagName( 'img' )->item( 0 );
+				$src = $img ? $img->getAttribute( 'src' ) : spl_object_hash( $n );
+				if ( isset( $seen[ $src ] ) ) {
+					continue; // The same picture twice (old-site galleries).
+				}
+				$seen[ $src ] = true;
+				$media[]      = $n;
 			} elseif ( $media ) {
 				$after[] = $n; // Text after the pictures: full width below the row.
 			} else {
@@ -267,10 +286,51 @@ function cg_press_layout( $html ) {
 			}
 		}
 		$h = $head ? $doc->saveHTML( $head ) : '';
+
+		// Photo story (text, picture, text, picture...): each text block sits beside its own picture, zig-zag.
+		$chunks = array( array( array(), array() ) );
+		foreach ( $nodes as $n ) {
+			$last = count( $chunks ) - 1;
+			if ( $is_media( $n ) ) {
+				$chunks[ $last ][1][] = $n;
+			} elseif ( $chunks[ $last ][1] ) {
+				$chunks[] = array( array( $n ), array() );
+			} else {
+				$chunks[ $last ][0][] = $n;
+			}
+		}
+		if ( count( array_filter( $chunks, fn( $c ) => $c[1] ) ) > 1 ) {
+			$out .= '<section class="press-sec press-sec--story' . ( 1 === $rows % 2 ? ' press-sec--alt' : '' ) . '"><div class="cg-wrap">';
+			$out .= $h ? '<div class="press-story__head">' . $h . '</div>' : '';
+			foreach ( $chunks as $k => $c ) {
+				if ( ! $c[1] ) {
+					$out .= '<div class="press-sec__after">' . $save( $c[0] ) . '</div>'; // Closing text without a picture.
+				} elseif ( ! $c[0] ) {
+					$out .= '<div class="press-story__row press-story__row--solo press-media' . ( count( $c[1] ) > 1 ? ' press-media--grid' : '' ) . '">' . $save( $c[1] ) . '</div>';
+				} else {
+					$out .= '<div class="press-story__row' . ( 1 === $k % 2 ? ' press-story__row--flip' : '' ) . '"><div class="press-story__text">' . $save( $c[0] ) . '</div>';
+					$out .= '<div class="press-story__media press-media' . ( count( $c[1] ) > 1 ? ' press-media--grid' : '' ) . '">' . $save( $c[1] ) . '</div></div>';
+				}
+			}
+			$out .= '</div></section>';
+			++$rows;
+			continue;
+		}
+
 		if ( ! $media ) {
 			if ( $h || $text ) {
 				$out .= '<section class="press-sec' . ( 0 === $i ? ' press-sec--intro' : '' ) . '"><div class="cg-wrap press-sec__text">' . $h . $save( $text ) . $save( $after ) . '</div></section>';
 			}
+			continue;
+		}
+		if ( count( $media ) >= 5 ) {
+			// Photo gallery: text full width, pictures in a grid below it.
+			$out .= '<section class="press-sec press-sec--gallery' . ( 1 === $rows % 2 ? ' press-sec--alt' : '' ) . '"><div class="cg-wrap">';
+			$out .= $h || $text ? '<div class="press-sec__text">' . $h . $save( $text ) . '</div>' : '';
+			$out .= '<div class="press-gallery press-media">' . $save( $media ) . '</div>';
+			$out .= $after ? '<div class="press-sec__after">' . $save( $after ) . '</div>' : '';
+			$out .= '</div></section>';
+			++$rows;
 			continue;
 		}
 		$flip  = 1 === $rows % 2;
