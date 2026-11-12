@@ -37,12 +37,27 @@ function cg_render_footer() {
  * Full-bleed layout on the homepage (see body.cg-fullwidth in main.css).
  */
 function cg_body_class( $classes ) {
-	if ( is_front_page() || ( is_singular( 'page' ) && 'true' === get_post_meta( get_the_ID(), '_generate-full-width-content', true ) ) ) {
+	if ( is_front_page() || is_404() || ( is_singular( 'page' ) && 'true' === get_post_meta( get_the_ID(), '_generate-full-width-content', true ) ) ) {
 		$classes[] = 'cg-fullwidth';
 	}
 	return $classes;
 }
 add_filter( 'body_class', 'cg_body_class' );
+
+// The branded 404 page (404.php) has no sidebar.
+add_filter( 'generate_sidebar_layout', fn( $layout ) => is_404() ? 'no-sidebar' : $layout );
+
+/**
+ * Descriptive homepage <title> ("Codegirls – Empowering Women…") while the Settings → General
+ * tagline is empty. No SEO plugin is active; filling in the tagline there overrides this.
+ */
+function cg_front_page_title( $parts ) {
+	if ( is_front_page() && empty( $parts['tagline'] ) ) {
+		$parts['tagline'] = __( 'Empowering Women Through IT & Business Training', 'generatepress-child' );
+	}
+	return $parts;
+}
+add_filter( 'document_title_parts', 'cg_front_page_title' );
 
 /**
  * Menu items that point at an in-page anchor (/#contact) share the homepage URL,

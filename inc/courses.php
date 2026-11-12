@@ -299,11 +299,11 @@ add_action(
 );
 
 /**
- * 2026-09-11 -> "11-Sept-2026" (the design writes September as "Sept").
+ * 2026-09-11 -> "11-Sep-2026" (3-letter month everywhere).
  */
 function cg_course_date( $ymd ) {
 	$ts = strtotime( $ymd );
-	return $ts ? str_replace( '-Sep-', '-Sept-', gmdate( 'd-M-Y', $ts ) ) : '';
+	return $ts ? gmdate( 'd-M-Y', $ts ) : '';
 }
 
 /**

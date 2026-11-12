@@ -17,57 +17,57 @@
 <ul class="partners__track">
 <!-- wp:generateblocks/element {"tagName":"li","globalClasses":["partners__logo"]} -->
 <li class="partners__logo">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-1.webp' ) ); ?>","alt":"Partner logo 1","width":"144","height":"62","loading":"lazy"}} -->
-<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-1.webp' ) ); ?>" alt="Partner logo 1" width="144" height="62" loading="lazy"/>
+<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-1.webp' ) ); ?>","alt":"Jaffer Family Foundation","width":"144","height":"62","loading":"lazy"}} -->
+<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-1.webp' ) ); ?>" alt="Jaffer Family Foundation" width="144" height="62" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 </li>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"li","globalClasses":["partners__logo"]} -->
 <li class="partners__logo">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-2.webp' ) ); ?>","alt":"Partner logo 2","width":"144","height":"62","loading":"lazy"}} -->
-<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-2.webp' ) ); ?>" alt="Partner logo 2" width="144" height="62" loading="lazy"/>
+<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-2.webp' ) ); ?>","alt":"Contour Software","width":"144","height":"62","loading":"lazy"}} -->
+<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-2.webp' ) ); ?>" alt="Contour Software" width="144" height="62" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 </li>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"li","globalClasses":["partners__logo"]} -->
 <li class="partners__logo">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-3.webp' ) ); ?>","alt":"Partner logo 3","width":"144","height":"62","loading":"lazy"}} -->
-<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-3.webp' ) ); ?>" alt="Partner logo 3" width="144" height="62" loading="lazy"/>
+<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-3.webp' ) ); ?>","alt":"TPS","width":"144","height":"62","loading":"lazy"}} -->
+<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-3.webp' ) ); ?>" alt="TPS" width="144" height="62" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 </li>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"li","globalClasses":["partners__logo"]} -->
 <li class="partners__logo">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-4.webp' ) ); ?>","alt":"Partner logo 4","width":"144","height":"62","loading":"lazy"}} -->
-<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-4.webp' ) ); ?>" alt="Partner logo 4" width="144" height="62" loading="lazy"/>
+<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-4.webp' ) ); ?>","alt":"Genetech","width":"144","height":"62","loading":"lazy"}} -->
+<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-4.webp' ) ); ?>" alt="Genetech" width="144" height="62" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 </li>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"li","globalClasses":["partners__logo"]} -->
 <li class="partners__logo">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-5.webp' ) ); ?>","alt":"Partner logo 5","width":"144","height":"62","loading":"lazy"}} -->
-<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-5.webp' ) ); ?>" alt="Partner logo 5" width="144" height="62" loading="lazy"/>
+<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-5.webp' ) ); ?>","alt":"National Incubation Center Karachi","width":"144","height":"62","loading":"lazy"}} -->
+<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-5.webp' ) ); ?>" alt="National Incubation Center Karachi" width="144" height="62" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 </li>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"li","globalClasses":["partners__logo"]} -->
 <li class="partners__logo">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-6.webp' ) ); ?>","alt":"Partner logo 6","width":"144","height":"62","loading":"lazy"}} -->
-<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-6.webp' ) ); ?>" alt="Partner logo 6" width="144" height="62" loading="lazy"/>
+<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-6.webp' ) ); ?>","alt":"S\u0026P Global","width":"144","height":"62","loading":"lazy"}} -->
+<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-6.webp' ) ); ?>" alt="S&amp;P Global" width="144" height="62" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 </li>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"li","globalClasses":["partners__logo"]} -->
 <li class="partners__logo">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-7.webp' ) ); ?>","alt":"Partner logo 7","width":"144","height":"62","loading":"lazy"}} -->
-<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-7.webp' ) ); ?>" alt="Partner logo 7" width="144" height="62" loading="lazy"/>
+<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-7.webp' ) ); ?>","alt":"Kiran Foundation","width":"144","height":"62","loading":"lazy"}} -->
+<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-7.webp' ) ); ?>" alt="Kiran Foundation" width="144" height="62" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 </li>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"li","globalClasses":["partners__logo"]} -->
 <li class="partners__logo">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-8.webp' ) ); ?>","alt":"Partner logo 8","width":"144","height":"62","loading":"lazy"}} -->
-<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-8.webp' ) ); ?>" alt="Partner logo 8" width="144" height="62" loading="lazy"/>
+<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["partners__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-8.webp' ) ); ?>","alt":"InspirePakistan","width":"144","height":"62","loading":"lazy"}} -->
+<img class="partners__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/partner-8.webp' ) ); ?>" alt="InspirePakistan" width="144" height="62" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 </li>
 <!-- /wp:generateblocks/element -->

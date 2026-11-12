@@ -86,3 +86,34 @@ function cg_mail_admin( $subject, $heading, $pairs, $reply_name, $reply_email, $
 		$attachments
 	);
 }
+
+/**
+ * Send all site mail through SMTP when the server is configured for it (QA-04: staging has no
+ * working PHP mail()). Add these to wp-config.php on each server — credentials never live in the theme:
+ *   define( 'CG_SMTP_HOST', 'smtp.example.com' );
+ *   define( 'CG_SMTP_PORT', 587 );             // 465 for SSL
+ *   define( 'CG_SMTP_SECURE', 'tls' );         // 'tls', 'ssl' or ''
+ *   define( 'CG_SMTP_USER', 'user@example.com' );
+ *   define( 'CG_SMTP_PASS', '...' );
+ *   define( 'CG_SMTP_FROM', 'user@example.com' ); // optional, defaults to CG_SMTP_USER
+ * Without CG_SMTP_HOST nothing changes (WordPress keeps using PHP mail()).
+ */
+function cg_smtp( $phpmailer ) {
+	if ( ! defined( 'CG_SMTP_HOST' ) || ! CG_SMTP_HOST ) {
+		return;
+	}
+	$phpmailer->isSMTP();
+	$phpmailer->Host       = CG_SMTP_HOST;
+	$phpmailer->Port       = defined( 'CG_SMTP_PORT' ) ? (int) CG_SMTP_PORT : 587;
+	$phpmailer->SMTPSecure = defined( 'CG_SMTP_SECURE' ) ? CG_SMTP_SECURE : 'tls';
+	$phpmailer->SMTPAuth   = defined( 'CG_SMTP_USER' ) && CG_SMTP_USER;
+	if ( $phpmailer->SMTPAuth ) {
+		$phpmailer->Username = CG_SMTP_USER;
+		$phpmailer->Password = defined( 'CG_SMTP_PASS' ) ? CG_SMTP_PASS : '';
+	}
+	$from = defined( 'CG_SMTP_FROM' ) ? CG_SMTP_FROM : ( defined( 'CG_SMTP_USER' ) ? CG_SMTP_USER : '' );
+	if ( is_email( $from ) ) {
+		$phpmailer->setFrom( $from, wp_specialchars_decode( get_bloginfo( 'name' ) ), false ); // Most SMTP hosts reject a From that isn't the login.
+	}
+}
+add_action( 'phpmailer_init', 'cg_smtp' );

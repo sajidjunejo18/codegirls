@@ -54,7 +54,7 @@ function cg_forms_config() {
 				'phone'       => array( 'Contact No.:', 'tel', true ),
 				'email'       => array( 'Email:', 'email', true ),
 				'education'   => array( 'Highest Education:', 'select', true, cg_education_options() ),
-				'slot'        => array( 'Available Slot:', 'select', true ),
+				'slot'        => array( 'Available Slot:', 'select', false ), // Required in the browser only when the course lists a schedule.
 				'computer'    => array( 'Basic computer usage awareness:', 'radio', true ),
 				'ec_name'     => array( 'Emergency Contact Name:', 'text', true ),
 				'ec_relation' => array( 'Emergency Contact Relationship:', 'select', true, cg_relation_options() ),

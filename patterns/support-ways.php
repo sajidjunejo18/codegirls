@@ -69,7 +69,7 @@
 <p class="gb-text bank__label">Account No.:</p>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["bank__value"]} -->
-<p class="gb-text bank__value">1008008103301015</p>
+<p class="gb-text bank__value">10080081003301015</p>
 <!-- /wp:generateblocks/text -->
 </div>
 <!-- /wp:generateblocks/element -->

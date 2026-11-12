@@ -20,16 +20,21 @@ $links = array(
 	'Contact Us' => home_url( '/#contact' ),
 );
 
+// TODO(content): Skardu and South Africa reuse Karachi's address ("Tipu Sultan Rd, Block 7/8"),
+// and Skardu also reuses Karachi's email and phone. Replace with the real details from the client.
 $locations = array(
 	array( 'Karachi', 'Tipu Sultan Rd, Block 7/8', 'info@consulnet.net', '0333-3654348' ),
-	array( 'Skardu', 'Tipu Sultan Rd, Block 7/8', 'info@consulnet.net', '0333-3654348' ),
-	array( 'South Africa', 'Tipu Sultan Rd, Block 7/8', 'info@codegirls.pro', '+2781 451 5347' ),
+	array( 'Skardu', 'Tipu Sultan Rd, Block 7/8', 'info@consulnet.net', '0333-3654348' ), // TODO(content): real Skardu address, email, phone.
+	array( 'South Africa', 'Tipu Sultan Rd, Block 7/8', 'info@codegirls.pro', '+2781 451 5347' ), // TODO(content): real South Africa address.
 );
 
+// Facebook and LinkedIn taken from the old site (codegirls.consulnet.net).
+// TODO(content): replace the remaining '#' with the real Instagram URL and WhatsApp as https://wa.me/<number>.
+// Real URLs open in a new tab automatically.
 $social = array(
-	'Facebook'  => array( '#', 'social-facebook.svg' ),
+	'Facebook'  => array( 'https://www.facebook.com/CodeGirlsbyConsulNetCorp/', 'social-facebook.svg' ),
 	'Instagram' => array( '#', 'social-instagram.svg' ),
-	'Linkedin'  => array( '#', 'social-linkedin.svg' ),
+	'Linkedin'  => array( 'https://www.linkedin.com/company/codegirlskhi/', 'social-linkedin.svg' ),
 	'Whatsapp'  => array( '#', 'social-whatsapp.svg' ),
 );
 ?>
@@ -80,7 +85,7 @@ $social = array(
 			<h2><?php esc_html_e( 'Social', 'generatepress-child' ); ?></h2>
 			<ul class="cg-footer__social">
 				<?php foreach ( $social as $label => $s ) : ?>
-					<li><a href="<?php echo esc_url( $s[0] ); ?>"><img src="<?php echo $img( $s[1] ); ?>" alt="" width="26" height="26" loading="lazy"><?php echo esc_html( $label ); ?></a></li>
+					<li><a href="<?php echo esc_url( $s[0] ); ?>"<?php echo '#' !== $s[0] ? ' target="_blank" rel="noopener"' : ''; ?>><img src="<?php echo $img( $s[1] ); ?>" alt="" width="26" height="26" loading="lazy"><?php echo esc_html( $label ); ?></a></li>
 				<?php endforeach; ?>
 			</ul>
 		</div>

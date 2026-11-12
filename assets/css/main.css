@@ -524,8 +524,10 @@ textarea:focus-visible {
 	transition: box-shadow 0.25s ease;
 }
 
-.why__card--featured,
-.why__card:hover {
+/* Figma: the first card (--active) is highlighted by default; --featured (also on the last card) adds nothing. */
+.why__card--active,
+.why__card:hover,
+.why__card:focus-within {
 	box-shadow: var(--cg-shadow-card);
 }
 
@@ -547,7 +549,8 @@ textarea:focus-visible {
 }
 
 .why__card--active .why__card-title,
-.why__card:hover .why__card-title {
+.why__card:hover .why__card-title,
+.why__card:focus-within .why__card-title {
 	color: var(--cg-green);
 }
 
@@ -672,7 +675,7 @@ textarea:focus-visible {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 63px;
-	align-items: start;
+	align-items: stretch; /* equal-height cards so the Enroll Now buttons line up */
 }
 
 .course {
@@ -707,6 +710,7 @@ textarea:focus-visible {
 
 .course__body {
 	display: flex;
+	flex: 1;
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 25px;
@@ -735,7 +739,7 @@ textarea:focus-visible {
 	text-decoration: underline;
 }
 
-.course__cta { margin-top: 5px; }
+.course__cta { margin-top: auto; }
 
 @media (max-width: 1200px) {
 	.courses__grid { gap: 30px; }
@@ -1467,27 +1471,27 @@ textarea:focus-visible {
 .advisory { padding: 80px 0; background: var(--cg-offwhite); }
 .advisory .sec-head__text { font-size: 16px; line-height: 32px; }
 .advisory__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 50px; }
-.advisor { display: flex; align-items: center; gap: 40px; padding: 26px 50px; background: var(--cg-offwhite); }
-.advisor--active { background: var(--cg-white); box-shadow: var(--cg-shadow-card); }
+.advisor { display: flex; align-items: center; gap: 40px; padding: 26px 50px; background: var(--cg-white); } /* Figma: every card has the white card */
+.advisor--active, .advisor:hover { box-shadow: var(--cg-shadow-card); }
 .advisor__img { flex: none; width: 160px; height: 160px; border-radius: 50%; object-fit: cover; }
 .advisor__text { display: flex; flex-direction: column; gap: 12px; }
-.advisor__name { margin: 0; font: 700 16px/1.3 var(--cg-font-heading); }
+.advisor__name { margin: 0; font: 600 20px/1.3 var(--cg-font-heading); }
 .advisor--active .advisor__name { color: var(--cg-green); }
-.advisor__role { font-size: 16px; line-height: 1.7; }
+.advisor__role { font-size: 20px; line-height: 32px; }
 
 /* 27. About: SDGs ------------------------------------------------------------ */
 .sdgs { padding: 80px 0; }
 .sdgs__inner { display: grid; grid-template-columns: minmax(0, 772fr) minmax(0, 684fr); gap: 140px; align-items: start; }
 .sdgs__intro { margin-bottom: 40px; font-size: 18px; line-height: 32px; }
 .sdgs__img { width: 100%; height: auto; }
-.sdgs__left .sdg { margin-bottom: 10px; background: #fafafa; }
+.sdgs__left .sdg { margin-bottom: 20px; background: #fafafa; }
 
 .sdg > summary {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 24px;
-	font: 700 16px/1.3 var(--cg-font-heading);
+	padding: 40px 50px; /* Figma: 108px row, title at 50px */
+	font: 600 20px/28px var(--cg-font-heading);
 	cursor: pointer;
 	list-style: none;
 }
@@ -1497,9 +1501,9 @@ textarea:focus-visible {
 .sdg[open] { background: var(--cg-white); box-shadow: var(--cg-shadow-card); }
 .sdg[open] > summary { color: var(--cg-green); }
 .sdg[open] > summary::after { content: "\2191"; }
-.sdg > :not(summary) { margin: 0; padding: 0 24px 24px; font-size: 16px; line-height: 28px; }
+.sdg > :not(summary) { margin: 0; padding: 0 50px 24px; font-size: 16px; line-height: 28px; }
 .sdg > .sdg__quote { padding-bottom: 16px; font-family: var(--cg-font-heading); font-size: 20px; line-height: 30px; font-style: italic; font-weight: 600; color: var(--cg-navy); }
-.sdg__list { list-style: none; padding: 0 24px 24px; }
+.sdg__list { list-style: none; padding: 0 50px 24px; }
 .sdg__list li { position: relative; padding-left: 28px; }
 .sdg__list li + li { margin-top: 16px; }
 .sdg__list li::before { content: "\25C6"; position: absolute; left: 0; color: #1a6fd6; font-size: 12px; }
@@ -1539,16 +1543,17 @@ textarea:focus-visible {
 .roots__row--flip { grid-template-columns: minmax(0, 1fr) minmax(0, 550px); }
 .roots__img { width: 100%; height: auto; }
 .roots__title { margin: 0 0 24px; font: 600 30px/1.3 var(--cg-font-heading); }
-.roots__p { font-size: 16px; line-height: 32px; }
+.roots__p { font-size: 20px; line-height: 32px; }
 .roots__p + .roots__p { margin-top: 32px; }
 
 /* 31. About: next chapter ---------------------------------------------------- */
 .next { padding: 80px 0; background: var(--cg-green); color: var(--cg-white); text-align: center; }
 .next__inner { display: flex; flex-direction: column; align-items: center; gap: 22px; }
-.next__title { margin: 0; font: 600 35px/1.3 var(--cg-font-heading); color: var(--cg-white); }
-.next__text { max-width: 1400px; font-size: 16px; line-height: 28px; }
-.next__lead { font-size: 20px; font-weight: 700; }
-.next__buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; margin-top: 8px; }
+.next__title { margin: 0; font: 700 38px/1.3 var(--cg-font-heading); color: var(--cg-white); }
+.next__text { max-width: 1400px; font-size: 18px; line-height: 28px; opacity: 0.9; }
+.next__lead { font-size: 24px; font-weight: 800; }
+.next__buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 8px; }
+.next__buttons .cg-btn { width: 275px; padding: 12px 35px; font-size: 16px; font-weight: 700; } /* Figma: equal 275px buttons */
 
 @media (max-width: 1100px) {
 	.about-hero { grid-template-columns: minmax(0, 1fr); }
@@ -1581,11 +1586,11 @@ textarea:focus-visible {
 
 .about-hero--plain .about-hero__media { padding: 0; }
 .about-hero--plain .about-hero__media::after { display: none; }
-.about-hero--plain .about-hero__text { max-width: 760px; }
+.about-hero--plain .about-hero__text { max-width: none; } /* half-width column so the title fits on one line (Figma) */
 .about-hero__buttons { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 12px; }
 
 .tiers { padding: 80px 0; }
-.tiers__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 37px; align-items: start; }
+.tiers__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 37px; align-items: stretch; } /* Figma: equal-height cards */
 
 .tier {
 	position: relative;
@@ -1619,7 +1624,7 @@ textarea:focus-visible {
 .ways__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 50px; align-items: start; }
 .bank { padding: 36px 50px 50px; background: var(--cg-white); box-shadow: var(--cg-shadow-card); }
 .bank__head { display: flex; align-items: center; gap: 18px; margin-bottom: 44px; }
-.bank__flag { width: 32px; height: auto; }
+.bank__flag { width: 64px; height: auto; }
 .bank__title { margin: 0; font: 600 20px/1.3 var(--cg-font-heading); }
 .bank__list { display: flex; flex-direction: column; gap: 20px; }
 .bank__row { display: grid; grid-template-columns: 205px minmax(0, 1fr); gap: 0; font-size: 18px; line-height: 32px; }
@@ -1627,7 +1632,8 @@ textarea:focus-visible {
 .bank__note { display: flex; align-items: center; gap: 10px; margin: 28px 0 22px; font-size: 14px; }
 .bank__info { width: 16px; height: 16px; }
 .bank__actions { display: flex; flex-wrap: wrap; gap: 14px; }
-.bank__copy { min-height: 44px; padding: 0 30px; font-size: 14px; }
+.bank__copy { gap: 10px; min-height: 44px; padding: 0 35px; font-size: 16px; }
+.bank__copy::before { content: ""; flex: none; width: 18px; height: 18px; background: url("../images/icon-copy.svg") center / contain no-repeat; } /* Figma copy icon */
 
 .journey { padding: 80px 0; background: var(--cg-offwhite); }
 .journey__list { display: flex; justify-content: space-between; gap: 20px; }
@@ -1675,9 +1681,12 @@ textarea:focus-visible {
 
 @media (min-width: 1101px) {
 	.companies__card { flex-wrap: nowrap; }
-	.companies__intro { flex: 0 1 480px; }
-	.companies__logos { flex-wrap: nowrap; gap: 24px 40px; }
-	.companies__img { height: 72px; max-width: 150px; }
+	.companies__card { padding-right: 63px; } /* Figma: last logo box ends 63px from the card edge */
+	.companies__intro { flex: 0 1 540px; }
+	.companies__logos { flex-wrap: nowrap; gap: 24px 29px; }
+	/* Figma: each logo sits centred in a 192x145 box, logo up to 148x82 */
+	.companies__logo { justify-content: center; width: 192px; height: 145px; }
+	.companies__img { height: 82px; max-width: 148px; }
 }
 
 /* 34. Recognitions ------------------------------------------------------------ */
@@ -1735,7 +1744,7 @@ textarea:focus-visible {
 
 /* 36. In The Press (reuses report cards) -------------------------------------- */
 .report__tile { padding: 17px 19px 0; line-height: 0; }
-.report--press .report__img { width: 100%; height: auto; aspect-ratio: 427 / 337; object-fit: cover; } /* same tile shape for every logo (Figma) */
+.report--press .report__img { width: 100%; height: auto; aspect-ratio: 427 / 337; object-fit: contain; background: var(--cg-white); } /* contain: bare logos (e.g. Aurat Raaj) are not cropped; tile images already have this ratio */ /* same tile shape for every logo (Figma) */
 .report--press .report__body { padding: 28px 38px 49px; }
 .reports--press { padding-top: 67px; }
 .report--press .report__title { font-size: 18px; line-height: 1.5; margin-bottom: 14px; }
@@ -1811,7 +1820,7 @@ textarea:focus-visible {
 }
 .vstory__main { max-width: 1180px; }
 .vstory__article { font-size: 20px; line-height: 35px; }
-.vstory__meta-icon { width: 24px; }
+.vstory__meta-icon { width: 36px; margin-block: -5px; } /* glyph fills ~half the image: 36px ≈ Figma's 26–30px icons */
 .vstory__meta-text { white-space: nowrap; }
 .voices__grid { max-width: 1596px; }
 
@@ -1997,7 +2006,7 @@ textarea:focus-visible {
 
 /* 39. Legal text pages --------------------------------------------------------- */
 .legal { padding: 40px 0 70px; background: var(--cg-offwhite); }
-.legal__body { font-size: 16px; line-height: 28px; }
+.legal__body { font-size: 20px; line-height: 35px; } /* Figma */
 .legal__body p { margin: 0 0 28px; }
 .legal__body h2 { margin: 40px 0 16px; font: 600 28px/1.3 var(--cg-font-heading); }
 .legal__body h2:first-child { margin-top: 0; }
@@ -2007,9 +2016,10 @@ textarea:focus-visible {
 
 /* 40. Header dropdowns + legal width fix --------------------------------------- */
 .legal__body, .legal__body > * { max-width: none; }
+.legal__body > .wp-block-group__inner-container { padding: 0; } /* Figma: text starts on the container edge (no 40px indent) */
 
 .cg-nav__list > li { position: relative; }
-.cg-nav__list > .menu-item-has-children > a { display: inline-flex; align-items: center; gap: 8px; }
+.cg-nav__list > .menu-item-has-children > a { display: inline-flex; align-items: center; gap: 4px; } /* Figma: 4px label → caret */
 .cg-nav__list > .menu-item-has-children > a::after {
 	content: "";
 	width: 0;
@@ -2183,7 +2193,7 @@ dialog.cg-modal::backdrop { background: rgba(34, 48, 68, 0.6); }
 	line-height: 1.4;
 }
 
-.cg-toast[hidden] { display: none; }
+.cg-toast[hidden], .cg-modal__field[hidden], .hero__toggle[hidden] { display: none; }
 .cg-toast--error { border-left-color: #e5484d; }
 .cg-toast__close { position: relative; flex: none; width: 24px; height: 24px; border: 0; background: transparent; cursor: pointer; }
 .cg-toast__close::before, .cg-toast__close::after { content: ""; position: absolute; top: 50%; left: 50%; width: 14px; height: 2px; background: var(--cg-white); }
@@ -2323,3 +2333,13 @@ html:not(.cg-js) .pathway__steps::before { background: var(--cg-green); }
 /* Slightly bolder track + fill so the line visibly "draws" (Figma: 2px track). */
 .pathway__steps::before, .cg-js .pathway__steps::after { height: 3px; top: 45px; }
 .pathway__steps::before { background: rgba(34, 48, 68, 0.14); }
+
+/* 50. QA round 3 ------------------------------------------------------------ */
+/* QA-09: the yellow focus ring vanished on yellow buttons (Hire a Codegirl / Sponsor Now…); use navy there. */
+.cg-btn:not(.cg-btn--navy):focus-visible { outline-color: var(--cg-navy); }
+
+/* QA-08: branded 404 page (404.php) — inner-page green banner + two buttons. */
+.not-found { padding: 80px 0 120px; }
+.not-found__code { margin: 0; font: 700 clamp(72px, 3rem + 5vw, 140px) / 1 var(--cg-font-heading); color: var(--cg-yellow); }
+.not-found__buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 36px; }
+.not-found__buttons .cg-btn { min-width: 200px; font-size: 16px; font-weight: 700; }

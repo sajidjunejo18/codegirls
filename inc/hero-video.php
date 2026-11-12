@@ -20,7 +20,7 @@ add_action(
 			'cg_hero_video',
 			array(
 				'title'       => __( 'Homepage hero video', 'generatepress-child' ),
-				'description' => __( 'The video behind the numbers (2000+, 70%, 55K+) at the top of the homepage. Use a short MP4 (about 10–30 seconds, under 15 MB). It plays without sound, on a loop. Leave it empty to show the photo instead.', 'generatepress-child' ),
+				'description' => __( 'The video behind the numbers (2000+, 70%, 55K+) at the top of the homepage. Use a short MP4 (about 10–30 seconds, 1080p, ideally under 3 MB). It plays without sound, on a loop. Leave it empty to show the photo instead.', 'generatepress-child' ),
 				'priority'    => 30,
 			)
 		);
@@ -65,8 +65,9 @@ function cg_hero_media_shortcode() {
 
 	ob_start();
 	?>
-	<video class="hero__img hero__video" autoplay muted loop playsinline preload="auto" poster="<?php echo esc_url( $photo ); ?>" aria-hidden="true" data-cg-hero-video>
-		<source src="<?php echo esc_url( wp_get_attachment_url( $video ) ); ?>" type="<?php echo esc_attr( get_post_mime_type( $video ) ); ?>">
+	<video class="hero__img hero__video" autoplay muted loop playsinline preload="none" poster="<?php echo esc_url( $photo ); ?>" aria-hidden="true" data-cg-hero-video>
+		<?php // The source is attached by main.js on wider screens only; phones (and visitors without JS) see the poster photo. ?>
+		<source data-src="<?php echo esc_url( wp_get_attachment_url( $video ) ); ?>" type="<?php echo esc_attr( get_post_mime_type( $video ) ); ?>">
 	</video>
 	<button type="button" class="hero__badge hero__toggle" aria-label="<?php esc_attr_e( 'Pause background video', 'generatepress-child' ); ?>" aria-pressed="false" data-cg-hero-toggle data-label-pause="<?php esc_attr_e( 'Pause background video', 'generatepress-child' ); ?>" data-label-play="<?php esc_attr_e( 'Play background video', 'generatepress-child' ); ?>">
 		<svg class="hero__toggle-pause" width="52" height="52" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="26" fill="#000" fill-opacity=".55"/><rect x="18" y="18" width="6" height="16" fill="#fff"/><rect x="27" y="18" width="6" height="16" fill="#fff"/></svg>

@@ -28,7 +28,7 @@
 <img class="tier__icon" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/sponsor-icon.webp' ) ); ?>" alt="" width="120" height="122" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 <!-- wp:generateblocks/text {"tagName":"h3","globalClasses":["tier__title"]} -->
-<h3 class="gb-text tier__title">Sponsor a Girl (Phase 1 / 2)</h3>
+<h3 class="gb-text tier__title">Sponsor a Girl (Phase&nbsp;1&nbsp;/&nbsp;2)</h3>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["tier__price"]} -->
 <p class="gb-text tier__price">$200</p>

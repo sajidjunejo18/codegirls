@@ -78,6 +78,11 @@
 			if ( phase ) {
 				phase.textContent = trigger.getAttribute( 'data-phase' ) ? '(' + trigger.getAttribute( 'data-phase' ).toUpperCase() + ')' : '';
 			}
+			// A course without a class schedule has no slots to pick: hide the field so it can't block submitting.
+			var hasSlots = slots.options.length > 1;
+			slots.required = hasSlots;
+			slots.disabled = ! hasSlots;
+			slots.closest( '.cg-modal__field' ).hidden = ! hasSlots;
 		}
 		dialog.showModal();
 		document.documentElement.classList.add( 'cg-modal-open' );
@@ -186,8 +191,21 @@
 		btn.setAttribute( 'aria-pressed', String( paused ) );
 		btn.setAttribute( 'aria-label', btn.getAttribute( paused ? 'data-label-play' : 'data-label-pause' ) );
 	}
-	if ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+	// Phones keep the poster photo: the video only downloads on screens at least 768px wide.
+	if ( ! window.matchMedia || ! window.matchMedia( '(min-width: 768px)' ).matches ) {
+		btn.hidden = true;
+		return;
+	}
+	var reduce = window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+	if ( reduce ) {
 		video.removeAttribute( 'autoplay' );
+	}
+	[].forEach.call( video.querySelectorAll( 'source[data-src]' ), function ( s ) {
+		s.src = s.getAttribute( 'data-src' );
+	} );
+	video.preload = reduce ? 'metadata' : 'auto';
+	video.load();
+	if ( reduce ) {
 		video.pause();
 	}
 	btn.addEventListener( 'click', function () {
