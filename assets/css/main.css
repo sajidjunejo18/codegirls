@@ -1070,7 +1070,8 @@ textarea:focus-visible {
 
 .cg-footer__links { display: flex; flex-direction: column; gap: 22px; margin: 0; padding: 0; list-style: none; }
 .cg-footer__links a { font: 700 16px/22px var(--cg-font-body); }
-.cg-footer__links .is-current a { color: var(--cg-green); }
+.cg-footer__links .is-current a,
+.cg-footer__links .current-menu-item a { color: var(--cg-green); }
 
 .cg-footer__locations { display: flex; flex-direction: column; gap: 40px; margin: 0; padding: 0; list-style: none; max-width: 335px; }
 .cg-footer__location { display: flex; gap: 19px; font-size: 16px; line-height: 27px; }

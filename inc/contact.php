@@ -28,7 +28,7 @@ function cg_contact_form_shortcode() {
 
 		<div class="cg-form__row">
 			<label class="cg-form__field">Your Name:
-				<input type="text" name="cg_name" required autocomplete="name">
+				<input type="text" name="cg_name" required autocomplete="name" <?php echo cg_text_attrs( 'name' ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped. ?>>
 			</label>
 			<label class="cg-form__field">Phone:
 				<input type="tel" name="cg_phone" autocomplete="tel" <?php echo cg_phone_attrs(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped. ?>>
@@ -60,7 +60,8 @@ function cg_handle_contact() {
 	$message = isset( $_POST['cg_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['cg_message'] ) ) : '';
 
 	$saved = 0;
-	if ( $ok && $name && is_email( $email ) && $message && ( '' === $phone || cg_is_phone( $phone ) ) ) {
+	$raw_name = isset( $_POST['cg_name'] ) ? (string) wp_unslash( $_POST['cg_name'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only checked for < >.
+	if ( $ok && $name && cg_is_valid_text( 'name', $raw_name, $name ) && is_email( $email ) && $message && ( '' === $phone || cg_is_phone( $phone ) ) ) {
 		$saved = cg_save_entry( 'contact', array( 'Name' => $name, 'Phone' => $phone, 'Email' => $email, 'Message' => $message ), $name, $email, $phone );
 		$sent  = cg_mail_admin(
 			sprintf( '[%s] New contact message from %s', wp_specialchars_decode( get_bloginfo( 'name' ) ), $name ),

@@ -3,9 +3,10 @@
  * Homepage "Friends of Codegirls" logo strip: all the partner logos from the live site
  * (codegirls.consulnet.net, "Friends Of Codegirls", newest first), not just the 8 in the pattern.
  *
- * The homepage keeps its partners pattern; this swaps the pattern's logo list for the full list
- * below when the page is shown. Logos are in assets/images/friends/{slug}.webp.
- * To add a partner: add its logo there and a line here.
+ * The homepage keeps its partners pattern; this swaps the pattern's logo list for the partners
+ * managed in wp-admin → "Friends of Codegirls" (see the bottom of this file). The list below is
+ * only the starting set, imported there once; its logos are in assets/images/friends/{slug}.webp.
+ * To add, remove or reorder a partner, use wp-admin → Friends of Codegirls.
  *
  * @package generatepress-child
  */
@@ -167,15 +168,15 @@ function cg_partners_track( $html, $block ) {
 	if ( empty( $block['attrs']['globalClasses'] ) || ! in_array( 'partners__track', (array) $block['attrs']['globalClasses'], true ) ) {
 		return $html;
 	}
-	$logos = cg_partner_logos();
+	$logos = cg_partner_items();
 	$items = '';
 	foreach ( array( false, true ) as $copy ) {
-		foreach ( $logos as $slug => $name ) {
+		foreach ( $logos as $logo ) {
 			$items .= sprintf(
 				'<li class="partners__logo"%s><img class="partners__img" src="%s" alt="%s" width="144" height="62" loading="lazy" decoding="async"></li>',
 				$copy ? ' aria-hidden="true"' : '',
-				esc_url( get_theme_file_uri( 'assets/images/friends/' . $slug . '.webp' ) ),
-				$copy ? '' : esc_attr( $name )
+				esc_url( $logo[0] ),
+				$copy ? '' : esc_attr( $logo[1] )
 			);
 		}
 	}
@@ -183,3 +184,150 @@ function cg_partners_track( $html, $block ) {
 	return sprintf( '<ul class="partners__track" style="animation-duration:%ds">%s</ul>', count( $logos ) * 5, $items );
 }
 add_filter( 'render_block_generateblocks/element', 'cg_partners_track', 10, 2 );
+
+/*
+ * Managing the logos in wp-admin (QA-11): the "Friends of Codegirls" menu.
+ * Each partner is one entry: the title is the organisation name (the logo's alt text), the
+ * Featured image is the logo, and "Order" sets its position (lower first; ties show newest first).
+ * The 134 logos above are imported once as entries that point at the theme's logo files;
+ * after that, the entries are the only source, so deleting one removes it from the homepage.
+ */
+function cg_register_partners() {
+	register_post_type(
+		'cg_partner',
+		array(
+			'labels'          => array(
+				'name'                  => __( 'Friends of Codegirls', 'generatepress-child' ),
+				'singular_name'         => __( 'Partner', 'generatepress-child' ),
+				'add_new_item'          => __( 'Add New Partner', 'generatepress-child' ),
+				'edit_item'             => __( 'Edit Partner', 'generatepress-child' ),
+				'featured_image'        => __( 'Logo', 'generatepress-child' ),
+				'set_featured_image'    => __( 'Set logo', 'generatepress-child' ),
+				'remove_featured_image' => __( 'Remove logo', 'generatepress-child' ),
+				'not_found'             => __( 'No partners yet.', 'generatepress-child' ),
+			),
+			'description'     => __( 'Logos in the scrolling "Friends of Codegirls" strip on the homepage.', 'generatepress-child' ),
+			'public'          => false, // No page of their own.
+			'show_ui'         => true,
+			'show_in_rest'    => false,
+			'menu_icon'       => 'dashicons-groups',
+			'menu_position'   => 29,
+			'supports'        => array( 'title', 'thumbnail', 'page-attributes' ),
+			'capability_type' => 'post',
+		)
+	);
+}
+add_action( 'init', 'cg_register_partners' );
+
+/**
+ * One time: turn the built-in list into "Friends of Codegirls" entries (same names, order and logos).
+ * Runs in batches of 25 per page load so no request gets near PHP's time limit, under a database
+ * lock so two simultaneous requests can't import the same logos twice. Logos that already have an
+ * entry (in any status, including Trash) are skipped. Until every logo has an entry, the homepage
+ * keeps using the built-in list.
+ */
+add_action(
+	'init',
+	function () {
+		global $wpdb;
+		if ( get_option( 'cg_partners_imported' ) ) {
+			return;
+		}
+		// INSERT IGNORE is atomic: only the request that creates the lock row goes on.
+		if ( ! $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO {$wpdb->options} (option_name, option_value, autoload) VALUES ('cg_partners_import_lock', %s, 'no')", (string) time() ) ) ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$since = (int) $wpdb->get_var( "SELECT option_value FROM {$wpdb->options} WHERE option_name = 'cg_partners_import_lock'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			if ( $since && time() - $since > 300 ) {
+				$wpdb->delete( $wpdb->options, array( 'option_name' => 'cg_partners_import_lock' ) ); // Stale lock from a request that died.
+			}
+			return;
+		}
+		$have = array_flip( $wpdb->get_col( "SELECT pm.meta_value FROM {$wpdb->postmeta} pm INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id WHERE pm.meta_key = '_cg_logo_file' AND p.post_type = 'cg_partner'" ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$added = 0;
+		$left  = 0;
+		$pos   = 0;
+		foreach ( cg_partner_logos() as $slug => $name ) {
+			$order = $pos++;
+			if ( isset( $have[ $slug ] ) ) {
+				continue;
+			}
+			if ( $added >= 25 ) {
+				++$left;
+				continue;
+			}
+			wp_insert_post(
+				array(
+					'post_type'   => 'cg_partner',
+					'post_status' => 'publish',
+					'post_title'  => $name,
+					'post_name'   => $slug,
+					'menu_order'  => $order,
+					'meta_input'  => array( '_cg_logo_file' => $slug ),
+				)
+			);
+			++$added;
+		}
+		if ( ! $left ) {
+			update_option( 'cg_partners_imported', '1' );
+		}
+		$wpdb->delete( $wpdb->options, array( 'option_name' => 'cg_partners_import_lock' ) );
+	},
+	20
+);
+
+/** Logo URL for a partner entry: its Featured image, else the imported theme file (empty if neither). */
+function cg_partner_logo_url( $id ) {
+	$thumb = get_post_thumbnail_id( $id );
+	if ( $thumb ) {
+		return (string) wp_get_attachment_image_url( $thumb, 'cg-partner' );
+	}
+	$slug = sanitize_file_name( (string) get_post_meta( $id, '_cg_logo_file', true ) );
+	return $slug && file_exists( CG_DIR . '/assets/images/friends/' . $slug . '.webp' ) ? get_theme_file_uri( 'assets/images/friends/' . $slug . '.webp' ) : '';
+}
+
+/** Logos for the strip: list of [ url, name ]. Entries once imported, otherwise the built-in list. */
+function cg_partner_items() {
+	if ( ! get_option( 'cg_partners_imported' ) ) {
+		$out = array();
+		foreach ( cg_partner_logos() as $slug => $name ) {
+			$out[] = array( get_theme_file_uri( 'assets/images/friends/' . $slug . '.webp' ), $name );
+		}
+		return $out;
+	}
+	$out = array();
+	foreach ( get_posts( array( 'post_type' => 'cg_partner', 'post_status' => 'publish', 'posts_per_page' => -1, 'orderby' => array( 'menu_order' => 'ASC', 'date' => 'DESC', 'ID' => 'DESC' ) ) ) as $p ) {
+		$url = cg_partner_logo_url( $p->ID );
+		if ( $url ) {
+			$out[] = array( $url, get_the_title( $p ) );
+		}
+	}
+	return $out;
+}
+
+/** Admin list: show each logo and its order. */
+add_filter(
+	'manage_cg_partner_posts_columns',
+	function ( $cols ) {
+		return array_merge( array_slice( $cols, 0, 1 ), array( 'cg_logo' => __( 'Logo', 'generatepress-child' ) ), array_slice( $cols, 1, 1 ), array( 'cg_order' => __( 'Order', 'generatepress-child' ) ), array_slice( $cols, 2 ) );
+	}
+);
+add_action(
+	'manage_cg_partner_posts_custom_column',
+	function ( $col, $id ) {
+		if ( 'cg_logo' === $col ) {
+			$url = cg_partner_logo_url( $id );
+			echo $url ? '<img src="' . esc_url( $url ) . '" alt="" style="max-width:144px;max-height:62px;object-fit:contain">' : '—';
+		} elseif ( 'cg_order' === $col ) {
+			echo (int) get_post_field( 'menu_order', $id );
+		}
+	},
+	10,
+	2
+);
+add_action(
+	'pre_get_posts',
+	function ( $q ) {
+		if ( is_admin() && $q->is_main_query() && 'cg_partner' === $q->get( 'post_type' ) && ! $q->get( 'orderby' ) ) {
+			$q->set( 'orderby', array( 'menu_order' => 'ASC', 'date' => 'DESC' ) );
+		}
+	}
+);

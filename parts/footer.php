@@ -11,32 +11,10 @@ $img = static function ( $file ) {
 	return esc_url( CG_URI . '/assets/images/' . $file );
 };
 
-$links = array(
-	'Home'       => home_url( '/' ),
-	'About'      => home_url( '/about/' ),
-	'Impact'     => home_url( '/recognitions/' ),
-	'Courses'    => home_url( '/courses/' ),
-	'Partners'   => home_url( '/#partners' ),
-	'Contact Us' => home_url( '/#contact' ),
-);
-
-// TODO(content): Skardu and South Africa reuse Karachi's address ("Tipu Sultan Rd, Block 7/8"),
-// and Skardu also reuses Karachi's email and phone. Replace with the real details from the client.
-$locations = array(
-	array( 'Karachi', 'Tipu Sultan Rd, Block 7/8', 'info@consulnet.net', '0333-3654348' ),
-	array( 'Skardu', 'Tipu Sultan Rd, Block 7/8', 'info@consulnet.net', '0333-3654348' ), // TODO(content): real Skardu address, email, phone.
-	array( 'South Africa', 'Tipu Sultan Rd, Block 7/8', 'info@codegirls.pro', '+2781 451 5347' ), // TODO(content): real South Africa address.
-);
-
-// Facebook and LinkedIn taken from the old site (codegirls.consulnet.net).
-// TODO(content): replace the remaining '#' with the real Instagram URL and WhatsApp as https://wa.me/<number>.
-// Real URLs open in a new tab automatically.
-$social = array(
-	'Facebook'  => array( 'https://www.facebook.com/CodeGirlsbyConsulNetCorp/', 'social-facebook.svg' ),
-	'Instagram' => array( '#', 'social-instagram.svg' ),
-	'Linkedin'  => array( 'https://www.linkedin.com/company/codegirlskhi/', 'social-linkedin.svg' ),
-	'Whatsapp'  => array( '#', 'social-whatsapp.svg' ),
-);
+// Editable in wp-admin (inc/footer-settings.php): quick links = Appearance → Menus → "CodeGirls Footer";
+// locations and social links = Appearance → Customize → Footer. Real URLs open in a new tab.
+$locations = cg_footer_locations();
+$social    = cg_footer_social();
 ?>
 <footer class="cg-footer">
 	<div class="cg-footer__cols">
@@ -59,11 +37,17 @@ $social = array(
 
 		<nav aria-label="<?php esc_attr_e( 'Quick links', 'generatepress-child' ); ?>">
 			<h2><?php esc_html_e( 'Quick links', 'generatepress-child' ); ?></h2>
-			<ul class="cg-footer__links">
-				<?php foreach ( $links as $label => $url ) : ?>
-					<li<?php echo is_front_page() && 'Home' === $label ? ' class="is-current"' : ''; ?>><a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $label ); ?></a></li>
-				<?php endforeach; ?>
-			</ul>
+			<?php
+			wp_nav_menu(
+				array(
+					'theme_location' => 'footer',
+					'container'      => false,
+					'menu_class'     => 'cg-footer__links',
+					'depth'          => 1,
+					'fallback_cb'    => 'cg_footer_links_fallback',
+				)
+			);
+			?>
 		</nav>
 
 		<div>

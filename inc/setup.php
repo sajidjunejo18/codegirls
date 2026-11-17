@@ -26,6 +26,7 @@ function cg_setup() {
 	register_nav_menus(
 		array(
 			'primary' => __( 'Primary (header)', 'generatepress-child' ),
+			'footer'  => __( 'Footer quick links', 'generatepress-child' ),
 		)
 	);
 	add_image_size( 'cg-card', 980, 502, true );

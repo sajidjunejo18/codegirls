@@ -105,6 +105,34 @@ function cg_is_phone( $val ) {
 	return (bool) preg_match( '/^[0-9+()\-\s]{7,20}$/', $val );
 }
 
+/** Fields that hold a person's name: letters (any language), spaces, . ' - only. */
+function cg_is_name_field( $key ) {
+	return in_array( $key, array( 'name', 'ec_name' ), true );
+}
+
+/**
+ * Browser rules for a free-text input: names allow letters, spaces and . ' - (2-60 characters);
+ * other text allows anything except < and > (up to 150 characters). The server repeats both checks.
+ * The pattern escapes the dash because browsers compile it with the regex "v" flag.
+ */
+function cg_text_attrs( $key ) {
+	if ( cg_is_name_field( $key ) ) {
+		return 'maxlength="60" pattern="[\p{L}\p{M}\s.\'\-]{2,60}" title="' . esc_attr__( 'Please use letters and spaces only (2-60 characters).', 'generatepress-child' ) . '"';
+	}
+	return 'maxlength="150" pattern="[^<>]*" title="' . esc_attr__( 'Please do not use < or > (up to 150 characters).', 'generatepress-child' ) . '"';
+}
+
+/** Server-side check matching cg_text_attrs(). $raw is the value before sanitizing. */
+function cg_is_valid_text( $key, $raw, $val ) {
+	if ( false !== strpbrk( $raw, '<>' ) ) {
+		return false;
+	}
+	if ( cg_is_name_field( $key ) ) {
+		return (bool) preg_match( "/^[\p{L}\p{M}\s.'\-]{2,60}$/u", $val );
+	}
+	return mb_strlen( $val ) <= 150;
+}
+
 function cg_form_field_html( $form, $key, $f ) {
 	$id  = "cg_{$form}_{$key}";
 	$req = ! empty( $f[2] );
@@ -118,7 +146,7 @@ function cg_form_field_html( $form, $key, $f ) {
 	} elseif ( 'file' === $f[1] ) {
 		echo '<div class="cg-form__filebox"><input class="cg-form__file" id="' . esc_attr( $id ) . '" type="file" name="cg_file" accept="' . esc_attr( cg_form_file_accept( $form ) ) . '"' . ( $req ? ' required' : '' ) . '><label class="cg-form__file-btn" for="' . esc_attr( $id ) . '">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span></div>';
 	} else {
-		echo '<input id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" type="' . esc_attr( $f[1] ) . '"' . ( $req ? ' required' : '' ) . ( 'tel' === $f[1] ? ' ' . cg_phone_attrs() : '' ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput -- cg_phone_attrs() is escaped.
+		echo '<input id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" type="' . esc_attr( $f[1] ) . '"' . ( $req ? ' required' : '' ) . ( 'tel' === $f[1] ? ' ' . cg_phone_attrs() : '' ) . ( 'text' === $f[1] ? ' ' . cg_text_attrs( $key ) : '' ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput -- cg_phone_attrs() / cg_text_attrs() are escaped.
 	}
 	echo '</div>';
 }
@@ -229,9 +257,13 @@ function cg_handle_form() {
 		if ( 'file' === $f[1] ) {
 			continue;
 		}
-		$val = isset( $_POST[ "cg_{$form}_{$key}" ] ) ? sanitize_text_field( wp_unslash( $_POST[ "cg_{$form}_{$key}" ] ) ) : '';
+		$raw = isset( $_POST[ "cg_{$form}_{$key}" ] ) ? (string) wp_unslash( $_POST[ "cg_{$form}_{$key}" ] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only checked for < >, then sanitized below.
+		$val = sanitize_text_field( $raw );
 		if ( ! empty( $f[2] ) && '' === $val ) {
 			$ok = false;
+		}
+		if ( 'text' === $f[1] && '' !== $raw && ! cg_is_valid_text( $key, $raw, $val ) ) {
+			$ok = false; // HTML, a name with digits/symbols, or too long (same rules as the browser).
 		}
 		if ( 'select' === $f[1] && ! empty( $f[3] ) && '' !== $val && ! in_array( $val, $f[3], true ) ) {
 			$ok = false; // Value is not one of the offered choices.

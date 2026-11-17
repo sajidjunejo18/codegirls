@@ -27,7 +27,7 @@ $field = static function ( $form, $key, $label, $type = 'text', $req = true, $at
 		esc_html( $label ),
 		esc_attr( $type ),
 		$req ? ' required' : '',
-		$attrs // phpcs:ignore WordPress.Security.EscapeOutput -- fixed literals and cg_phone_attrs() only.
+		$attrs // phpcs:ignore WordPress.Security.EscapeOutput -- fixed literals, cg_phone_attrs() and cg_text_attrs() only.
 	);
 };
 
@@ -62,9 +62,9 @@ $hidden = static function ( $form ) use ( $redirect ) {
 			<input type="hidden" name="cg_enroll_course" data-cg-course>
 			<div class="cg-modal__grid">
 				<?php
-				$field( 'enroll', 'name', 'Your Name:', 'text', true, 'autocomplete="name" autofocus' );
+				$field( 'enroll', 'name', 'Your Name:', 'text', true, 'autocomplete="name" autofocus ' . cg_text_attrs( 'name' ) );
 				$field( 'enroll', 'age', 'Age', 'number', true, 'min="18" max="80" inputmode="numeric"' );
-				$field( 'enroll', 'city', 'City/Country', 'text', true, 'autocomplete="address-level2"' );
+				$field( 'enroll', 'city', 'City/Country', 'text', true, 'autocomplete="address-level2" ' . cg_text_attrs( 'city' ) );
 				$field( 'enroll', 'phone', 'Contact No.', 'tel', true, 'autocomplete="tel" ' . cg_phone_attrs() );
 				$field( 'enroll', 'email', 'Email', 'email', true, 'autocomplete="email"' );
 				$select( 'enroll', 'education', 'Highest Education', $education, 'Select your education' );
@@ -85,9 +85,9 @@ $hidden = static function ( $form ) use ( $redirect ) {
 				<legend><?php esc_html_e( 'Emergency Contact', 'generatepress-child' ); ?></legend>
 				<div class="cg-modal__grid">
 					<?php
-					$field( 'enroll', 'ec_name', 'Contact Name', 'text', true );
+					$field( 'enroll', 'ec_name', 'Contact Name', 'text', true, cg_text_attrs( 'ec_name' ) );
 					$select( 'enroll', 'ec_relation', 'Relationship', $relations, 'Select relationship' );
-					$field( 'enroll', 'referral', 'Referral Source', 'text', false, 'placeholder="How did you hear about us?"' );
+					$field( 'enroll', 'referral', 'Referral Source', 'text', false, 'placeholder="How did you hear about us?" ' . cg_text_attrs( 'referral' ) );
 					?>
 				</div>
 			</fieldset>
@@ -109,9 +109,9 @@ $hidden = static function ( $form ) use ( $redirect ) {
 			<input type="hidden" name="cg_notify_course" data-cg-course>
 			<div class="cg-modal__grid">
 				<?php
-				$field( 'notify', 'name', 'Your Name:', 'text', true, 'autocomplete="name" autofocus' );
+				$field( 'notify', 'name', 'Your Name:', 'text', true, 'autocomplete="name" autofocus ' . cg_text_attrs( 'name' ) );
 				$field( 'notify', 'age', 'Age', 'number', true, 'min="18" max="80" inputmode="numeric"' );
-				$field( 'notify', 'city', 'City/Country', 'text', true, 'autocomplete="address-level2"' );
+				$field( 'notify', 'city', 'City/Country', 'text', true, 'autocomplete="address-level2" ' . cg_text_attrs( 'city' ) );
 				$field( 'notify', 'phone', 'Contact No.', 'tel', true, 'autocomplete="tel" ' . cg_phone_attrs() );
 				$field( 'notify', 'email', 'Email', 'email', true, 'autocomplete="email"' );
 				$select( 'notify', 'education', 'Highest Education', $education, 'Select your education' );
