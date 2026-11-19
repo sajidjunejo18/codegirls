@@ -25,7 +25,7 @@
 <p class="gb-text story-text__p">One of those people was <strong>Shamim Rajani,</strong> COO of Genetech Solutions.</p>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["story-text__p"]} -->
-<p class="gb-text story-text__p">Around that time, one of Shamim's business client, <strong>Dr. Hasnain Walji,</strong> Executive Director of United Global Initiative, approached her with a simple question:</p>
+<p class="gb-text story-text__p">Around that time, one of Shamim's business clients, <strong>Dr. Hasnain Walji,</strong> Executive Director of United Global Initiative, approached her with a simple question:</p>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["story-text__p"]} -->
 <p class="gb-text story-text__p"><strong>“How can we make 100 more women tech professionals like you?”</strong></p>

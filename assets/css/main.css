@@ -178,6 +178,10 @@ textarea:focus-visible {
 	outline-offset: 2px;
 }
 
+/* A yellow outline is invisible around the yellow buttons (QA-09). */
+.cg-btn:focus-visible { outline-color: var(--cg-navy); }
+.cg-btn--navy:focus-visible { outline-color: var(--cg-yellow); }
+
 /* 5. Header --------------------------------------------------------------- */
 .cg-header {
 	position: relative;
@@ -231,7 +235,9 @@ textarea:focus-visible {
 }
 
 .cg-nav__list a:hover,
-.cg-nav__list .current-menu-item > a {
+.cg-nav__list .current-menu-item > a,
+.cg-nav__list .current-menu-parent > a,
+.cg-nav__list .current-menu-ancestor > a {
 	color: var(--cg-green);
 }
 
@@ -682,6 +688,7 @@ textarea:focus-visible {
 	display: flex;
 	flex-direction: column;
 	gap: 30px;
+	height: 100%;
 }
 
 .course__media {
@@ -756,7 +763,7 @@ textarea:focus-visible {
 }
 
 /* 11. Story --------------------------------------------------------------- */
-.story { padding: 100px 0; }
+.story { padding: 100px 0; overflow-x: clip; } /* The avatar rings are wider than their boxes; at 320px the last one caused a sideways scroll (QA-65). */
 
 .story__inner {
 	display: flex;
@@ -998,6 +1005,7 @@ textarea:focus-visible {
 	background: var(--cg-white);
 	color: var(--cg-navy);
 	font: 400 16px/1.4 var(--cg-font-body);
+	cursor: pointer;
 }
 
 .cg-form input { height: 53px; }
@@ -1020,7 +1028,21 @@ textarea:focus-visible {
 	background: var(--cg-white);
 }
 
-.cg-form__notice--error { border-color: #c0392b; }
+.cg-form__notice--error { border-color: #c0392b; color: #c0392b; }
+.cg-form__field--error input,
+.cg-form__field--error select,
+.cg-form__field--error textarea,
+.cg-form [aria-invalid="true"],
+.cg-modal__form [aria-invalid="true"],
+.cg-form__filebox:has([aria-invalid="true"]) .cg-form__file-btn,
+.cg-form__filebox--error .cg-form__file-btn {
+	border-color: #c0392b !important;
+	outline: 1px solid #c0392b !important;
+}
+.cg-field-error { display: block; margin-top: 4px; color: #c0392b; font: 400 14px/1.4 var(--cg-font-body); }
+.cg-form__filebox:has(.cg-field-error) { flex-wrap: wrap; row-gap: 4px; }
+.cg-form__filebox .cg-field-error { flex-basis: 100%; margin-top: 0; }
+.cg-req { margin-left: 2px; color: #c0392b; }
 
 @media (max-width: 1100px) {
 	.contact { grid-template-columns: minmax(0, 1fr); }
@@ -1066,6 +1088,7 @@ textarea:focus-visible {
 }
 
 .cg-footer a { color: var(--cg-navy); text-decoration: none; }
+.cg-footer__links a, .cg-footer__social a, .cg-footer__bottom a { display: inline-flex; align-items: center; min-height: 24px; }
 .cg-footer a:hover { color: var(--cg-green); }
 
 .cg-footer__links { display: flex; flex-direction: column; gap: 22px; margin: 0; padding: 0; list-style: none; }
@@ -1076,6 +1099,7 @@ textarea:focus-visible {
 .cg-footer__locations { display: flex; flex-direction: column; gap: 40px; margin: 0; padding: 0; list-style: none; max-width: 335px; }
 .cg-footer__location { display: flex; gap: 19px; font-size: 16px; line-height: 27px; }
 .cg-footer__location img { flex: none; width: 24px; height: 33px; }
+.cg-footer__location a { display: inline-block; min-height: 24px; } /* WCAG 2.2 target size: inline links were only ~21px tall. */
 
 .cg-footer__social { display: flex; flex-direction: column; gap: 22px; margin: 0; padding: 0; list-style: none; }
 .cg-footer__social a { display: flex; align-items: center; gap: 12px; font: 700 16px/27px var(--cg-font-body); }
@@ -1216,6 +1240,7 @@ textarea:focus-visible {
 	background: var(--cg-white);
 	color: var(--cg-navy);
 	font: 400 16px/1.4 var(--cg-font-body);
+	cursor: pointer;
 }
 
 .cg-form--hire select:focus { border-color: var(--cg-green); box-shadow: 0 0 0 1px var(--cg-green); outline: 0; }
@@ -1343,11 +1368,12 @@ textarea:focus-visible {
 .completed { padding: 80px 0; background: var(--cg-offwhite); }
 .completed__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 63px; }
 .done { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
+.done { display: flex; flex-direction: column; align-items: flex-start; height: 100%; }
 .done__icon { width: 132px; height: auto; margin-bottom: 4px; }
 .done__title { margin: 0; font: 700 20px/1.25 var(--cg-font-heading); }
 .done--active .done__title { color: var(--cg-green); }
 .done__text { font-size: 20px; line-height: 32px; }
-.done__link { color: var(--cg-navy); font: 700 15px/1 var(--cg-font-body); text-decoration: none; }
+.done__link { margin-top: auto; color: var(--cg-navy); font: 700 15px/1.4 var(--cg-font-body); text-decoration: none; white-space: nowrap; }
 .done__link::after { content: "\2197"; margin-left: 10px; }
 .done--active .done__link { color: var(--cg-yellow); }
 
@@ -1841,6 +1867,7 @@ textarea:focus-visible {
 	background: var(--cg-white);
 	color: var(--cg-navy);
 	font: 400 16px/1.4 var(--cg-font-body);
+	cursor: pointer;
 }
 
 .blog-filters select:focus, .blog-filters input:focus { border-color: var(--cg-green); box-shadow: 0 0 0 1px var(--cg-green); outline: 0; }
@@ -2161,6 +2188,7 @@ dialog.cg-modal::backdrop { background: rgba(34, 48, 68, 0.6); }
 	background: var(--cg-white);
 	color: var(--cg-navy);
 	font: 400 16px/1.4 var(--cg-font-body);
+	cursor: pointer;
 }
 
 .cg-modal__field input:focus, .cg-modal__field select:focus { border-color: var(--cg-green); box-shadow: 0 0 0 1px var(--cg-green); outline: 0; }

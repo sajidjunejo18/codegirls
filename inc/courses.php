@@ -102,7 +102,7 @@ function cg_course_box( $post ) {
 		<div>
 			<label for="cg_duration"><?php esc_html_e( 'Duration', 'generatepress-child' ); ?></label>
 			<div class="cg-weeks">
-				<input type="text" id="cg_duration" name="cg_duration" inputmode="numeric" pattern="[0-9]*" maxlength="3" value="<?php echo esc_attr( (string) absint( $v( 'duration', '12' ) ) ?: '' ); ?>">
+				<input type="number" id="cg_duration" name="cg_duration" inputmode="numeric" min="1" required value="<?php echo esc_attr( (string) absint( $v( 'duration', '12' ) ) ?: '' ); ?>">
 				<span><?php esc_html_e( 'Weeks', 'generatepress-child' ); ?></span>
 			</div>
 		</div>
@@ -189,9 +189,9 @@ add_action(
 		$phase = isset( $_POST['cg_phase'] ) ? sanitize_text_field( wp_unslash( $_POST['cg_phase'] ) ) : '';
 		update_post_meta( $post_id, '_cg_phase', in_array( $phase, cg_course_phases(), true ) ? $phase : 'Phase 1' );
 
-		// Stored as "12 weeks" so the cards print it as-is.
+		// Stored as "12 Weeks" so the cards print it as-is.
 		$weeks = isset( $_POST['cg_duration'] ) ? absint( preg_replace( '/\D+/', '', wp_unslash( $_POST['cg_duration'] ) ) ) : 0; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-		update_post_meta( $post_id, '_cg_duration', $weeks ? sprintf( _n( '%d week', '%d weeks', $weeks, 'generatepress-child' ), $weeks ) : '' );
+		update_post_meta( $post_id, '_cg_duration', $weeks ? sprintf( _n( '%d Week', '%d Weeks', $weeks, 'generatepress-child' ), $weeks ) : '' );
 		$mode = isset( $_POST['cg_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['cg_mode'] ) ) : '';
 		update_post_meta( $post_id, '_cg_mode', in_array( $mode, cg_course_modes(), true ) ? $mode : 'On Site' );
 
@@ -314,7 +314,10 @@ function cg_course_lines( $id, $key ) {
 }
 
 function cg_course_img( $id, $class ) {
-	return has_post_thumbnail( $id ) ? get_the_post_thumbnail( $id, 'large', array( 'class' => $class, 'alt' => '', 'loading' => 'lazy' ) ) : '';
+	if ( has_post_thumbnail( $id ) ) {
+		return get_the_post_thumbnail( $id, 'large', array( 'class' => $class, 'alt' => sprintf( __( '%s course illustration', 'generatepress-child' ), get_the_title( $id ) ), 'loading' => 'lazy' ) );
+	}
+	return sprintf( '<img class="%1$s" src="%2$s" alt="%3$s" loading="lazy">', esc_attr( $class ), esc_url( get_theme_file_uri( 'assets/images/course-upcoming.webp' ) ), esc_attr( sprintf( __( '%s course illustration', 'generatepress-child' ), get_the_title( $id ) ) ) );
 }
 
 /**
@@ -411,7 +414,7 @@ function cg_courses_shortcode( $atts ) {
 					<h3 class="course__title"><?php echo esc_html( $title ); ?></h3>
 					<ul class="course__meta-list">
 						<?php if ( $start ) : ?><li class="course__meta"><?php echo cg_svg_icon( 'icon-calendar.svg', 'course__meta-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Starting From', 'generatepress-child' ); ?></strong> <?php echo esc_html( $start ); ?></p></li><?php endif; ?>
-						<?php if ( get_post_meta( $id, '_cg_duration', true ) ) : ?><li class="course__meta"><?php echo cg_svg_icon( 'icon-clock.svg', 'course__meta-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Duration', 'generatepress-child' ); ?></strong> <?php echo esc_html( get_post_meta( $id, '_cg_duration', true ) ); ?></p></li><?php endif; ?>
+						<?php if ( get_post_meta( $id, '_cg_duration', true ) ) : ?><li class="course__meta"><?php echo cg_svg_icon( 'icon-clock.svg', 'course__meta-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Duration', 'generatepress-child' ); ?></strong> <?php echo esc_html( ucwords( get_post_meta( $id, '_cg_duration', true ) ) ); ?></p></li><?php endif; ?>
 						<?php if ( get_post_meta( $id, '_cg_mode', true ) ) : ?><li class="course__meta"><?php echo cg_svg_icon( 'icon-book.svg', 'course__meta-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Mode of Teaching', 'generatepress-child' ); ?></strong> <?php echo esc_html( get_post_meta( $id, '_cg_mode', true ) ); ?></p></li><?php endif; ?>
 						<?php if ( $slots ) : ?><li class="course__meta"><?php echo cg_svg_icon( 'icon-schedule.svg', 'course__meta-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><p class="course__meta-text"><strong><?php esc_html_e( 'Class Schedule', 'generatepress-child' ); ?></strong> <?php echo esc_html( implode( "\u{00A0} | \u{00A0}", $slots ) ); ?></p></li><?php endif; ?>
 					</ul>
@@ -442,13 +445,13 @@ function cg_courses_shortcode( $atts ) {
 			<?php
 		} else {
 			?>
-			<article class="done<?php echo 0 === $i ? ' done--active' : ''; ?>">
+			<article class="done">
 				<span class="done__icons">
 					<?php echo cg_icon( 'course-done-2.webp', 'done__icon', 132, 144 ) . cg_icon( 'course-done-1.webp', 'done__icon done__icon--active', 132, 144 ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 				</span>
 				<h3 class="done__title"><?php echo esc_html( $title ); ?></h3>
 				<p class="done__text"><?php echo esc_html( get_the_excerpt() ); ?></p>
-				<a class="done__link" href="#contact" data-cg-notify data-course="<?php echo esc_attr( $title ); ?>"><?php esc_html_e( 'I’m Interested', 'generatepress-child' ); ?></a>
+				<a class="done__link" href="#contact" data-cg-notify data-course="<?php echo esc_attr( $title ); ?>" data-course-status="completed"><?php esc_html_e( 'I’m Interested', 'generatepress-child' ); ?></a>
 			</article>
 			<?php
 		}

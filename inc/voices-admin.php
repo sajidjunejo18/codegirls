@@ -98,7 +98,7 @@ function cg_voice_clean_inline( $html ) {
 	$html = wp_kses(
 		(string) $html,
 		array(
-			'a'      => array( 'href' => true ),
+			'a'      => array( 'href' => true, 'target' => true, 'rel' => true ),
 			'strong' => array(),
 			'b'      => array(),
 			'br'     => array(),
@@ -446,7 +446,7 @@ add_action(
 
 			<section class="cgv-card">
 				<h2 class="cgv-step"><em>2</em> <?php esc_html_e( 'Short intro', 'generatepress-child' ); ?></h2>
-				<textarea name="excerpt" rows="4" data-bind="intro" class="cgv-intro" maxlength="600" placeholder="<?php esc_attr_e( 'Two or three sentences in her words…', 'generatepress-child' ); ?>"><?php echo esc_textarea( $post->post_excerpt ); ?></textarea>
+				<textarea name="excerpt" rows="4" data-bind="intro" class="cgv-intro" maxlength="400" placeholder="<?php esc_attr_e( 'Two or three sentences in her words…', 'generatepress-child' ); ?>"><?php echo esc_textarea( $post->post_excerpt ); ?></textarea>
 				<p class="cgv-hint"><?php esc_html_e( 'Shown next to her photo when she is featured at the top of the Voices page.', 'generatepress-child' ); ?> <span data-cgv-count></span></p>
 			</section>
 

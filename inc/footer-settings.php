@@ -14,6 +14,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/** Convert phone string to an international tel: link. */
+function cg_phone_tel_link( $phone ) {
+	$clean = preg_replace( '/[^0-9+]/', '', $phone );
+	if ( 0 === strpos( $clean, '03' ) ) {
+		$clean = '+92' . substr( $clean, 1 );
+	}
+	return 'tel:' . $clean;
+}
+
 /** Quick links shown when no menu is assigned to "Footer quick links" (and used to create that menu). */
 function cg_footer_default_links() {
 	return array(

@@ -23,6 +23,142 @@
 		}
 	}
 
+	// Inline validation (QA-17): instead of the browser's one-at-a-time tooltip, every invalid field
+	// gets a red message under it naming the field, aria-invalid, and the first one is focused.
+	// Without JS the browser's own validation still runs, and the server checks everything again.
+	function fieldName( el ) {
+		var legend = 'radio' === el.type && el.closest( 'fieldset' ) && el.closest( 'fieldset' ).querySelector( 'legend' );
+		var label = legend || ( el.labels && el.labels[ 0 ] );
+		var text = '';
+		if ( label ) {
+			label.childNodes.forEach( function ( n ) {
+				if ( 3 === n.nodeType ) {
+					text += n.textContent;
+				}
+			} );
+		}
+		text = text.replace( /[:*?]/g, '' ).trim();
+		return text || 'This field';
+	}
+
+	function fieldMessage( el ) {
+		var v = el.validity, name = fieldName( el );
+		if ( v.valueMissing ) {
+			return 'radio' === el.type ? 'Please choose an answer for "' + name + '".' : name + ' is required.';
+		}
+		if ( v.typeMismatch ) {
+			return 'email' === el.type ? 'Please enter a valid email address.' : 'Please enter a valid website address (e.g. example.com).';
+		}
+		if ( v.patternMismatch ) {
+			return name + ': ' + ( el.title || 'please check the format.' );
+		}
+		if ( v.rangeUnderflow || v.rangeOverflow ) {
+			if ( 'date' === el.type ) {
+				return name + ' cannot be in the past.';
+			}
+			return name + ' must be between ' + el.min + ' and ' + el.max + '.';
+		}
+		if ( v.badInput ) {
+			return name + ' must be a number.';
+		}
+		if ( v.tooLong ) {
+			return name + ' is too long.';
+		}
+		return el.validationMessage;
+	}
+
+	function showFieldError( el, msg ) {
+		var box = el.closest( '.cg-form__filebox, .cg-modal__field, .cg-form__field' ) || el.parentNode;
+		var id = ( 'radio' === el.type ? el.name : el.id || el.name ) + '-error';
+		var group = 'radio' === el.type && el.form ? el.form.querySelectorAll( 'input[type="radio"][name="' + el.name + '"]' ) : [ el ];
+		var err = document.getElementById( id );
+		if ( ! msg ) {
+			Array.prototype.forEach.call( group, function ( g ) {
+				g.removeAttribute( 'aria-invalid' );
+			} );
+			if ( err ) {
+				err.remove();
+			}
+			return;
+		}
+		if ( ! err ) {
+			err = document.createElement( 'span' );
+			err.className = 'cg-field-error';
+			err.id = id;
+			box.appendChild( err );
+		}
+		err.textContent = msg;
+		Array.prototype.forEach.call( group, function ( g ) {
+			g.setAttribute( 'aria-invalid', 'true' );
+			g.setAttribute( 'aria-describedby', id );
+		} );
+	}
+
+	document.querySelectorAll( 'form.cg-form, form.cg-modal__form' ).forEach( function ( form ) {
+		form.noValidate = true;
+		form.addEventListener( 'submit', function ( e ) {
+			var first = null;
+			Array.prototype.forEach.call( form.elements, function ( el ) {
+				if ( ! el.willValidate ) {
+					return;
+				}
+				var ok = el.checkValidity();
+				showFieldError( el, ok ? '' : fieldMessage( el ) );
+				if ( ! ok && ! first ) {
+					first = el;
+				}
+			} );
+			if ( first ) {
+				e.preventDefault();
+				e.stopImmediatePropagation();
+				first.focus();
+			}
+		} );
+		// Re-check a flagged field as soon as the user fixes it.
+		[ 'input', 'change' ].forEach( function ( type ) {
+			form.addEventListener( type, function ( e ) {
+				var el = e.target;
+				if ( el.getAttribute && 'true' === el.getAttribute( 'aria-invalid' ) ) {
+					showFieldError( el, el.checkValidity() ? '' : fieldMessage( el ) );
+				}
+			} );
+		} );
+	} );
+
+	// Auto-prefix URL inputs if protocol is missing.
+	function normalizeUrlInput( input ) {
+		if ( ! input ) {
+			return;
+		}
+		var v = input.value.trim();
+		if ( v && ! /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test( v ) ) {
+			if ( /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test( v ) ) {
+				input.value = 'https://' + v;
+			}
+		}
+	}
+	document.addEventListener( 'change', function ( e ) {
+		if ( e.target && ( e.target.type === 'url' || e.target.name === 'cg_hire_website' ) ) {
+			normalizeUrlInput( e.target );
+		}
+	} );
+	document.addEventListener( 'blur', function ( e ) {
+		if ( e.target && ( e.target.type === 'url' || e.target.name === 'cg_hire_website' ) ) {
+			normalizeUrlInput( e.target );
+		}
+	}, true );
+	document.addEventListener( 'click', function ( e ) {
+		if ( e.target && e.target.matches && e.target.matches( 'button[type="submit"], input[type="submit"]' ) ) {
+			var form = e.target.closest( 'form' );
+			if ( form ) {
+				var urls = form.querySelectorAll( 'input[type="url"], input[name="cg_hire_website"]' );
+				for ( var i = 0; i < urls.length; i++ ) {
+					normalizeUrlInput( urls[ i ] );
+				}
+			}
+		}
+	}, true );
+
 	// "/#contact" links: scroll to this page's own contact section when it has one,
 	// instead of jumping to the homepage.
 	document.addEventListener( 'click', function ( e ) {
@@ -44,9 +180,18 @@
 		}
 		var src = btn.closest( 'article' ).querySelector( btn.getAttribute( 'data-copy' ) );
 		var label = btn.textContent;
+		var live = btn.parentNode.querySelector( '[data-copy-status]' );
+		if ( ! live ) {
+			live = document.createElement( 'span' );
+			live.setAttribute( 'data-copy-status', '' );
+			live.setAttribute( 'aria-live', 'polite' );
+			live.className = 'screen-reader-text'; // Announced only; the button itself shows "Copied!".
+			btn.parentNode.appendChild( live );
+		}
 		navigator.clipboard.writeText( src.innerText.replace( /\n{2,}/g, '\n' ) ).then( function () {
 			btn.textContent = 'Copied!';
-			setTimeout( function () { btn.textContent = label; }, 1800 );
+			live.textContent = 'Bank details copied to clipboard.';
+			setTimeout( function () { btn.textContent = label; live.textContent = ''; }, 1800 );
 		} );
 	} );
 
@@ -59,6 +204,13 @@
 		var title = dialog.querySelector( '[data-cg-title]' );
 		if ( title && course ) {
 			title.textContent = course;
+		}
+		if ( dialog.id === 'cg-notify' ) {
+			var completed = trigger.getAttribute( 'data-course-status' ) === 'completed';
+			var eyebrow = dialog.querySelector( '[data-cg-notify-eyebrow]' );
+			var sub = dialog.querySelector( '[data-cg-notify-sub]' );
+			if ( eyebrow ) { eyebrow.textContent = completed ? 'Completed Course' : 'Upcoming Course'; }
+			if ( sub ) { sub.textContent = completed ? 'We’ll notify you when this course reopens.' : 'You’ll be notified once admissions open.'; }
 		}
 		var hidden = dialog.querySelector( '[data-cg-course]' );
 		if ( hidden ) {

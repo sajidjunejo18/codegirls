@@ -223,7 +223,7 @@ function cg_voice_featured_shortcode() {
 					<p class="voice-featured__text"><?php echo esc_html( get_the_excerpt( $id ) ); ?></p>
 				<?php endif; ?>
 				<?php if ( cg_voice_has_story( $id ) ) : ?>
-					<a class="cg-btn cg-btn--navy" href="<?php echo esc_url( get_permalink( $id ) ); ?>"><?php esc_html_e( 'Discover her Voice', 'generatepress-child' ); ?></a>
+					<a class="cg-btn cg-btn--navy" href="<?php echo esc_url( get_permalink( $id ) ); ?>"><?php esc_html_e( 'Discover her Voice', 'generatepress-child' ); ?><span class="screen-reader-text"> — <?php echo esc_html( get_the_title( $id ) ); ?></span></a>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -256,7 +256,7 @@ function cg_voices_shortcode() {
 								<p class="voice__role"><?php echo esc_html( get_post_meta( $id, '_cg_role', true ) ); ?></p>
 							<?php endif; ?>
 							<?php if ( cg_voice_has_story( $id ) ) : ?>
-								<a class="voice__link" href="<?php echo esc_url( get_permalink( $id ) ); ?>"><?php esc_html_e( 'Discover her Voice', 'generatepress-child' ); ?></a>
+								<a class="voice__link" href="<?php echo esc_url( get_permalink( $id ) ); ?>"><?php esc_html_e( 'Discover her Voice', 'generatepress-child' ); ?><span class="screen-reader-text"> — <?php echo esc_html( get_the_title( $id ) ); ?></span></a>
 							<?php endif; ?>
 						</div>
 					</article>

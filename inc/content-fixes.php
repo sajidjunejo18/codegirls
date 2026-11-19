@@ -221,3 +221,87 @@ add_action(
 	},
 	33
 );
+
+/**
+ * Fix 5 (QA-54 Courses fee and duration formatting):
+ * - Courses page hero: "Registration Fees 2500/-" -> "Registration Fees Rs. 2,500"
+ * - Course duration meta: "12 weeks" -> "12 Weeks"
+ */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'cg_content_fix_5' ) === '1' ) {
+			return;
+		}
+		global $wpdb;
+		$rows = $wpdb->get_results( "SELECT ID, post_content FROM {$wpdb->posts} WHERE post_type <> 'revision' AND post_content LIKE '%2500/-%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		foreach ( $rows as $row ) {
+			$fixed = str_replace( '2500/-', 'Rs. 2,500', $row->post_content );
+			if ( $fixed !== $row->post_content ) {
+				$wpdb->update( $wpdb->posts, array( 'post_content' => $fixed ), array( 'ID' => $row->ID ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				clean_post_cache( $row->ID );
+			}
+		}
+
+		foreach ( get_posts( array( 'post_type' => 'cg_course', 'post_status' => 'any', 'numberposts' => -1 ) ) as $c ) {
+			$dur = (string) get_post_meta( $c->ID, '_cg_duration', true );
+			if ( $dur ) {
+				update_post_meta( $c->ID, '_cg_duration', ucwords( $dur ) );
+			}
+		}
+		update_option( 'cg_content_fix_5', '1' );
+	},
+	34
+);
+
+/**
+ * Fix 6 (QA round 3): the pattern files were corrected, but these pages keep their own saved copy
+ * of the pattern markup, so the same text changes are applied to the saved pages here.
+ * - QA-35 About: the Karachi / Skardu / Cape Town photos get descriptive alt text (block JSON and HTML).
+ * - QA-44 About: "one of Shamim's business client" -> "business clients".
+ * - QA-48 Courses CTA heading grammar.
+ * - QA-71 Support breadcrumb shows the page name instead of "Sponsorship".
+ * - QA-72 Support: the United States bank card no longer shows the Pakistan SRB tax note.
+ */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'cg_content_fix_6' ) === '1' ) {
+			return;
+		}
+		$alts = array(
+			'karachi'  => 'CodeGirls learning and community work in Karachi',
+			'skardu'   => 'CodeGirls community work in Skardu',
+			'capetown' => 'CodeGirls community work in Cape Town, South Africa',
+		);
+		global $wpdb;
+		$rows = $wpdb->get_results( "SELECT ID, post_content FROM {$wpdb->posts} WHERE post_type <> 'revision' AND ( post_content LIKE '%about-karachi.webp%' OR post_content LIKE '%business client,%' OR post_content LIKE '%Still Confused with the right tech track%' OR post_content LIKE '%aria-current=\"page\">Sponsorship<%' OR post_content LIKE '%United States of America%' )" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		foreach ( $rows as $row ) {
+			$fixed = $row->post_content;
+			foreach ( $alts as $place => $alt ) {
+				$fixed = str_replace(
+					array( 'about-' . $place . '.webp","alt":""', 'about-' . $place . '.webp" alt=""' ),
+					array( 'about-' . $place . '.webp","alt":' . wp_json_encode( $alt ), 'about-' . $place . '.webp" alt="' . esc_attr( $alt ) . '"' ),
+					$fixed
+				);
+			}
+			$fixed = str_replace(
+				array( "Shamim's business client,", 'Still Confused with the right tech track for yourself?', 'aria-current="page">Sponsorship<' ),
+				array( "Shamim's business clients,", 'Still confused about the right tech track for you?', 'aria-current="page">Support CodeGirls<' ),
+				$fixed
+			);
+			// Drop the tax note block that follows the "United States of America" card title.
+			$us = strpos( $fixed, 'United States of America</h3>' );
+			if ( false !== $us ) {
+				$fixed = substr( $fixed, 0, $us ) . preg_replace( '#<!-- wp:generateblocks/element \{"tagName":"div","globalClasses":\["bank__note"\]\} -->\s*<div class="bank__note">.*?</div>\s*<!-- /wp:generateblocks/element -->\s*#s', '', substr( $fixed, $us ), 1 );
+			}
+			if ( $fixed !== $row->post_content ) {
+				$wpdb->update( $wpdb->posts, array( 'post_content' => $fixed ), array( 'ID' => $row->ID ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				clean_post_cache( $row->ID );
+			}
+		}
+		update_option( 'cg_content_fix_6', '1' );
+	},
+	35
+);
+

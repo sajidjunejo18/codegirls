@@ -58,7 +58,7 @@ $social    = cg_footer_social();
 						<img src="<?php echo $img( 'icon-pin-yellow.svg' ); ?>" alt="" width="24" height="33" loading="lazy">
 						<span>
 							<strong><?php echo esc_html( $loc[0] ); ?>:</strong> <?php echo esc_html( $loc[1] ); ?><br>
-							<a href="mailto:<?php echo esc_attr( $loc[2] ); ?>"><?php echo esc_html( $loc[2] ); ?></a> &nbsp;|&nbsp; <?php echo esc_html( $loc[3] ); ?>
+							<a href="mailto:<?php echo esc_attr( $loc[2] ); ?>"><?php echo esc_html( $loc[2] ); ?></a> &nbsp;|&nbsp; <a href="<?php echo esc_attr( cg_phone_tel_link( $loc[3] ) ); ?>"><?php echo esc_html( $loc[3] ); ?></a>
 						</span>
 					</li>
 				<?php endforeach; ?>

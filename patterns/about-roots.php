@@ -23,7 +23,7 @@
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["roots__row"]} -->
 <div class="roots__row">
 <!-- wp:generateblocks/media {"tagName":"img","globalClasses":["roots__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/about-karachi.webp' ) ); ?>","alt":"","width":"550","height":"380","loading":"lazy"}} -->
-<img class="roots__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/about-karachi.webp' ) ); ?>" alt="" width="550" height="380" loading="lazy"/>
+<img class="roots__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/about-karachi.webp' ) ); ?>" alt="CodeGirls learning and community work in Karachi" width="550" height="380" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["roots__text"]} -->
 <div class="roots__text">
@@ -59,14 +59,14 @@
 </div>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/media {"tagName":"img","globalClasses":["roots__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/about-skardu.webp' ) ); ?>","alt":"","width":"550","height":"380","loading":"lazy"}} -->
-<img class="roots__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/about-skardu.webp' ) ); ?>" alt="" width="550" height="380" loading="lazy"/>
+<img class="roots__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/about-skardu.webp' ) ); ?>" alt="CodeGirls community work in Skardu" width="550" height="380" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 </div>
 <!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["roots__row"]} -->
 <div class="roots__row">
 <!-- wp:generateblocks/media {"tagName":"img","globalClasses":["roots__img"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/about-capetown.webp' ) ); ?>","alt":"","width":"550","height":"380","loading":"lazy"}} -->
-<img class="roots__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/about-capetown.webp' ) ); ?>" alt="" width="550" height="380" loading="lazy"/>
+<img class="roots__img" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/about-capetown.webp' ) ); ?>" alt="CodeGirls community work in Cape Town, South Africa" width="550" height="380" loading="lazy"/>
 <!-- /wp:generateblocks/media -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["roots__text"]} -->
 <div class="roots__text">

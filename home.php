@@ -63,6 +63,9 @@ $blog_url   = get_permalink( get_option( 'page_for_posts' ) ) ? get_permalink( g
 					<button type="submit" class="blog-filters__go" aria-label="<?php esc_attr_e( 'Search', 'generatepress-child' ); ?>"></button>
 				</div>
 			</form>
+			<?php if ( $sel_author || $sel_cat || $sel_date || '' !== $sel_q ) : ?>
+				<p class="blog__clear-filters"><a href="<?php echo esc_url( $blog_url ); ?>"><?php esc_html_e( 'Clear filters', 'generatepress-child' ); ?></a></p>
+			<?php endif; ?>
 
 			<?php if ( have_posts() ) : ?>
 				<div class="blog__grid">

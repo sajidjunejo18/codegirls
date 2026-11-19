@@ -13,7 +13,7 @@
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["cta__box"]} -->
 <div class="cta__box">
 <!-- wp:generateblocks/text {"tagName":"h2","globalClasses":["cta__title"]} -->
-<h2 class="gb-text cta__title">Still Confused with the right tech track for yourself?</h2>
+<h2 class="gb-text cta__title">Still confused about the right tech track for you?</h2>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"p","globalClasses":["cta__text"]} -->
 <p class="gb-text cta__text">Book a free career consultation with our expert mentors to find your perfect fit in the tech world.</p>

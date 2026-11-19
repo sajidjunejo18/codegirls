@@ -111,7 +111,7 @@
 	} );
 	var intro = document.querySelector( '.cgv-intro' ), count = document.querySelector( '[data-cgv-count]' );
 	function countIntro() {
-		if ( intro && count ) { count.textContent = '(' + intro.value.length + ' / 600)'; }
+		if ( intro && count ) { count.textContent = '(' + intro.value.length + ' / 400)'; }
 	}
 	if ( intro ) { intro.addEventListener( 'input', countIntro ); countIntro(); }
 

@@ -119,6 +119,24 @@ function cg_blogs_url() {
 	return $page ? get_permalink( $page ) : home_url( '/' );
 }
 
+/**
+ * "Our Blogs" is a normal page that pages with ?cg_page=N, so WordPress-style /blog/page/N/ URLs
+ * would show page 1 again (duplicate URL). Send them to the matching ?cg_page=N, or to the
+ * listing itself when that page doesn't exist.
+ */
+add_action(
+	'template_redirect',
+	function () {
+		$paged = (int) get_query_var( 'paged' );
+		if ( $paged < 2 || ! ( is_home() || is_page( 'blog' ) ) ) {
+			return;
+		}
+		$pages = (int) ceil( (int) wp_count_posts( 'cg_blog' )->publish / 9 ); // 9 per page, as in [cg_blogs].
+		wp_safe_redirect( $paged <= $pages ? add_query_arg( 'cg_page', $paged, cg_blogs_url() ) : cg_blogs_url(), 301 );
+		exit;
+	}
+);
+
 /** Author name of a blog ('' if none). */
 function cg_blog_author_name( $id ) {
 	$t = get_the_terms( $id, 'cg_blog_author' );
@@ -215,6 +233,9 @@ function cg_blogs_shortcode() {
 					<button type="submit" class="blog-filters__go" aria-label="<?php esc_attr_e( 'Search', 'generatepress-child' ); ?>"></button>
 				</div>
 			</form>
+			<?php if ( $sel_author || $sel_cat || $sel_date || '' !== $sel_q ) : ?>
+				<p class="blog__clear-filters"><a href="<?php echo esc_url( $blog_url ); ?>"><?php esc_html_e( 'Clear filters', 'generatepress-child' ); ?></a></p>
+			<?php endif; ?>
 
 			<?php if ( $q->have_posts() ) : ?>
 				<div class="blog__grid">

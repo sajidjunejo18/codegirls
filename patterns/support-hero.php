@@ -19,7 +19,7 @@
 <span class="gb-text page-hero__sep" aria-hidden="true">&gt;</span>
 <!-- /wp:generateblocks/text -->
 <!-- wp:generateblocks/text {"tagName":"span","globalClasses":["page-hero__crumb page-hero__crumb--current"],"htmlAttributes":{"aria-current":"page"}} -->
-<span class="gb-text page-hero__crumb page-hero__crumb--current" aria-current="page">Sponsorship</span>
+<span class="gb-text page-hero__crumb page-hero__crumb--current" aria-current="page">Support CodeGirls</span>
 <!-- /wp:generateblocks/text -->
 </nav>
 <!-- /wp:generateblocks/element -->

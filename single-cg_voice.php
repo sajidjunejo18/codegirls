@@ -41,7 +41,26 @@ get_header();
 						}
 						?>
 						<div class="vstory__article entry-content">
-							<?php the_content(); ?>
+							<?php
+							$story = get_the_content();
+			$story = preg_replace_callback(
+				'~<a\b([^>]*href\s*=\s*(["\'])https?://(?:www\.)?linkedin\.com/[^"\']+\2[^>]*)>(https?://(?:www\.)?linkedin\.com/[^<]*)</a>~i',
+				static function ( $match ) {
+					return '<a' . $match[1] . '>LinkedIn</a>';
+				},
+				$story
+			);
+							$story = preg_replace_callback(
+								'/<a\b([^>]*\bhref\s*=\s*(["\'])(https?:\/\/[^"\']+)\2[^>]*)>/i',
+								static function ( $match ) {
+									$attrs = preg_replace( '/\s+target\s*=\s*(["\']).*?\1/i', '', $match[1] );
+									$attrs = preg_replace( '/\s+rel\s*=\s*(["\']).*?\1/i', '', $attrs );
+									return '<a' . $attrs . ' target="_blank" rel="noopener noreferrer">';
+								},
+								$story
+							);
+							echo apply_filters( 'the_content', $story ); // phpcs:ignore WordPress.Security.EscapeOutput
+							?>
 						</div>
 					</div>
 				</div>

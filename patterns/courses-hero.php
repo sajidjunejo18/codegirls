@@ -37,7 +37,7 @@
 <img class="page-hero__chip-icon" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/chip-1.webp' ) ); ?>" alt="" width="24" height="24"/>
 <!-- /wp:generateblocks/media -->
 <!-- wp:generateblocks/text {"tagName":"span","globalClasses":["page-hero__chip-text"]} -->
-<span class="gb-text page-hero__chip-text">Registration Fees <strong>2500/-</strong> (No extra Tuition Fees)</span>
+<span class="gb-text page-hero__chip-text">Registration Fees <strong>Rs. 2,500</strong> (No extra Tuition Fees)</span>
 <!-- /wp:generateblocks/text -->
 </li>
 <!-- /wp:generateblocks/element -->

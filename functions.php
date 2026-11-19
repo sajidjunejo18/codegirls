@@ -9,6 +9,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// Keep the WordPress version out of public page metadata.
+remove_action( 'wp_head', 'wp_generator' );
+
 define( 'CG_VERSION', '0.2.0' );
 define( 'CG_DIR', get_stylesheet_directory() );
 define( 'CG_URI', get_stylesheet_directory_uri() );

@@ -101,6 +101,24 @@ function cg_phone_attrs() {
 	return 'pattern="[0-9\+\(\)\-\s]{7,20}" title="' . esc_attr__( 'Please enter a valid phone number (digits, spaces, + ( ) - only).', 'generatepress-child' ) . '"';
 }
 
+function cg_url_attrs() {
+	// "-" is escaped inside [...]: browsers compile pattern="" with the regex v flag, where a bare "-" there is invalid and the whole pattern is ignored.
+	return 'pattern="https?://[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)+.*" title="' . esc_attr__( 'Please enter a valid website URL (e.g. example.com or https://example.com).', 'generatepress-child' ) . '"';
+}
+
+function cg_autocomplete_attr( $key ) {
+	$map = array(
+		'name'    => 'name',
+		'company' => 'organization',
+		'org'     => 'organization',
+		'email'   => 'email',
+		'phone'   => 'tel',
+		'role'    => 'organization-title',
+		'city'    => 'address-level2',
+	);
+	return isset( $map[ $key ] ) ? ' autocomplete="' . esc_attr( $map[ $key ] ) . '"' : '';
+}
+
 function cg_is_phone( $val ) {
 	return (bool) preg_match( '/^[0-9+()\-\s]{7,20}$/', $val );
 }
@@ -133,20 +151,21 @@ function cg_is_valid_text( $key, $raw, $val ) {
 	return mb_strlen( $val ) <= 150;
 }
 
-function cg_form_field_html( $form, $key, $f ) {
+function cg_form_field_html( $form, $key, $f, $val = '', $is_bad = false ) {
 	$id  = "cg_{$form}_{$key}";
 	$req = ! empty( $f[2] );
-	echo '<div class="cg-form__field' . ( $req ? ' is-required' : '' ) . ( ! empty( $f[4] ) ? ' cg-form__field--full' : '' ) . '"><label for="' . esc_attr( $id ) . '">' . esc_html( $f[0] ) . '</label>';
+	$cls = 'cg-form__field' . ( $req ? ' is-required' : '' ) . ( ! empty( $f[4] ) ? ' cg-form__field--full' : '' ) . ( $is_bad ? ' cg-form__field--error' : '' );
+	echo '<div class="' . esc_attr( $cls ) . '"><label for="' . esc_attr( $id ) . '">' . esc_html( $f[0] ) . '</label>';
 	if ( 'select' === $f[1] ) {
 		echo '<select id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '"' . ( $req ? ' required' : '' ) . '><option value="">Select…</option>';
 		foreach ( $f[3] as $opt ) {
-			echo '<option>' . esc_html( $opt ) . '</option>';
+			echo '<option value="' . esc_attr( $opt ) . '"' . selected( $val, $opt, false ) . '>' . esc_html( $opt ) . '</option>';
 		}
 		echo '</select>';
 	} elseif ( 'file' === $f[1] ) {
-		echo '<div class="cg-form__filebox"><input class="cg-form__file" id="' . esc_attr( $id ) . '" type="file" name="cg_file" accept="' . esc_attr( cg_form_file_accept( $form ) ) . '"' . ( $req ? ' required' : '' ) . '><label class="cg-form__file-btn" for="' . esc_attr( $id ) . '">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span></div>';
+		echo '<div class="cg-form__filebox' . ( $is_bad ? ' cg-form__filebox--error' : '' ) . '"><input class="cg-form__file" id="' . esc_attr( $id ) . '" type="file" name="cg_file" accept="' . esc_attr( cg_form_file_accept( $form ) ) . '"' . ( $req ? ' required' : '' ) . '><label class="cg-form__file-btn" for="' . esc_attr( $id ) . '">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span></div>';
 	} else {
-		echo '<input id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" type="' . esc_attr( $f[1] ) . '"' . ( $req ? ' required' : '' ) . ( 'tel' === $f[1] ? ' ' . cg_phone_attrs() : '' ) . ( 'text' === $f[1] ? ' ' . cg_text_attrs( $key ) : '' ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput -- cg_phone_attrs() / cg_text_attrs() are escaped.
+		echo '<input id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" type="' . esc_attr( $f[1] ) . '" value="' . esc_attr( $val ) . '"' . ( $req ? ' required' : '' ) . ( 'tel' === $f[1] ? ' ' . cg_phone_attrs() : '' ) . ( 'text' === $f[1] ? ' ' . cg_text_attrs( $key ) : '' ) . ( 'url' === $f[1] ? ' ' . cg_url_attrs() : '' ) . ( 'date' === $f[1] ? ' min="' . esc_attr( current_time( 'Y-m-d' ) ) . '"' : '' ) . cg_autocomplete_attr( $key ) . '>'; // phpcs:ignore WordPress.Security.EscapeOutput -- cg_phone_attrs() / cg_text_attrs() / cg_url_attrs() / cg_autocomplete_attr() are escaped.
 	}
 	echo '</div>';
 }
@@ -169,13 +188,31 @@ function cg_form_render( $form ) {
 	$cfg    = cg_forms_config()[ $form ];
 	$status = isset( $_GET['cg_form'] ) ? sanitize_key( wp_unslash( $_GET['cg_form'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$only   = isset( $_GET['cg_id'] ) ? sanitize_key( wp_unslash( $_GET['cg_id'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$token  = isset( $_GET['cg_tok'] ) ? sanitize_key( wp_unslash( $_GET['cg_tok'] ) ) : '';
+
+	$saved_vals = array();
+	$bad_fields = array();
+	$error_msg  = '';
+
+	if ( $token ) {
+		$flash = get_transient( 'cg_form_err_' . $token );
+		if ( is_array( $flash ) ) {
+			$saved_vals = isset( $flash['values'] ) && is_array( $flash['values'] ) ? $flash['values'] : array();
+			$bad_fields = isset( $flash['bad_fields'] ) && is_array( $flash['bad_fields'] ) ? $flash['bad_fields'] : array();
+			$error_msg  = isset( $flash['error'] ) ? $flash['error'] : '';
+			delete_transient( 'cg_form_err_' . $token );
+		}
+	}
 
 	ob_start();
 
 	if ( $only === $form && 'sent' === $status ) {
 		echo '<p class="cg-form__notice" role="status">' . esc_html( $cfg['thanks'] ) . '</p>';
 	} elseif ( $only === $form && 'error' === $status ) {
-		echo '<p class="cg-form__notice cg-form__notice--error" role="alert">' . esc_html( sprintf( /* translators: %s: allowed file types */ __( 'Sorry, we could not send your message. Please check the fields (and that any file is a %s under 2MB) and try again.', 'generatepress-child' ), implode( '/', explode( ',', cg_form_file_accept( $form ) ) ) ) ) . '</p>';
+		if ( empty( $error_msg ) ) {
+			$error_msg = sprintf( /* translators: %s: allowed file types */ __( 'Sorry, we could not send your message. Please check the fields (and that any file is a %s under 2MB) and try again.', 'generatepress-child' ), implode( '/', explode( ',', cg_form_file_accept( $form ) ) ) );
+		}
+		echo '<p class="cg-form__notice cg-form__notice--error" role="alert">' . esc_html( $error_msg ) . '</p>';
 	}
 	?>
 	<form class="cg-form cg-form--hire" method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -187,18 +224,20 @@ function cg_form_render( $form ) {
 		<?php
 		$row = array();
 		foreach ( $cfg['fields'] as $key => $f ) {
+			$f_val = isset( $saved_vals[ $key ] ) ? $saved_vals[ $key ] : '';
+			$f_bad = in_array( $key, $bad_fields, true );
 			if ( ! empty( $f[4] ) ) { // Full-width field: flush the open row first.
 				if ( $row ) {
 					echo '<div class="cg-form__row">' . implode( '', $row ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput
 					$row = array();
 				}
 				echo '<div class="cg-form__row">';
-				cg_form_field_html( $form, $key, $f );
+				cg_form_field_html( $form, $key, $f, $f_val, $f_bad );
 				echo '</div>';
 				continue;
 			}
 			ob_start();
-			cg_form_field_html( $form, $key, $f );
+			cg_form_field_html( $form, $key, $f, $f_val, $f_bad );
 			$row[] = ob_get_clean();
 			if ( 2 === count( $row ) ) {
 				echo '<div class="cg-form__row">' . implode( '', $row ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput
@@ -210,8 +249,11 @@ function cg_form_render( $form ) {
 		}
 
 		if ( ! empty( $cfg['textarea'] ) ) {
-			echo '<div class="cg-form__field is-required"><label for="cg_' . esc_attr( $form ) . '_description">' . esc_html( $cfg['textarea'] ) . '</label><textarea id="cg_' . esc_attr( $form ) . '_description" name="cg_' . esc_attr( $form ) . '_description"></textarea></div>';
-			echo '<div class="cg-form__actions"><input class="cg-form__file" id="cg_' . esc_attr( $form ) . '_file" type="file" name="cg_file" accept="' . esc_attr( cg_form_file_accept( $form ) ) . '"><label class="cg-form__file-btn" for="cg_' . esc_attr( $form ) . '_file">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span><button class="cg-btn cg-form__submit" type="submit">' . esc_html__( 'Submit', 'generatepress-child' ) . '</button></div>';
+			$desc_val = isset( $saved_vals['description'] ) ? $saved_vals['description'] : '';
+			$desc_bad = in_array( 'description', $bad_fields, true );
+			$file_bad = in_array( 'file', $bad_fields, true );
+			echo '<div class="cg-form__field is-required' . ( $desc_bad ? ' cg-form__field--error' : '' ) . '"><label for="cg_' . esc_attr( $form ) . '_description">' . esc_html( $cfg['textarea'] ) . '</label><textarea id="cg_' . esc_attr( $form ) . '_description" name="cg_' . esc_attr( $form ) . '_description">' . esc_textarea( $desc_val ) . '</textarea></div>';
+			echo '<div class="cg-form__actions"><div class="cg-form__filebox' . ( $file_bad ? ' cg-form__filebox--error' : '' ) . '"><input class="cg-form__file" id="cg_' . esc_attr( $form ) . '_file" type="file" name="cg_file" accept="' . esc_attr( cg_form_file_accept( $form ) ) . '"><label class="cg-form__file-btn" for="cg_' . esc_attr( $form ) . '_file">' . esc_html__( 'Choose File', 'generatepress-child' ) . '</label><span class="cg-form__file-name">' . esc_html__( 'No File Chosen', 'generatepress-child' ) . '</span></div><button class="cg-btn cg-form__submit" type="submit">' . esc_html__( 'Submit', 'generatepress-child' ) . '</button></div>';
 		} else {
 			echo '<div class="cg-form__actions cg-form__actions--end"><button class="cg-btn cg-form__submit" type="submit">' . esc_html__( 'Submit', 'generatepress-child' ) . '</button></div>';
 		}
@@ -248,34 +290,79 @@ function cg_handle_form() {
 	$ok = isset( $_POST['cg_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cg_nonce'] ) ), 'cg_form_' . $form );
 	$ok = $ok && empty( $_POST['cg_website'] ); // Honeypot.
 
-	$pairs  = array();
-	$name   = '';
-	$email  = '';
-	$phone  = '';
-	$course = '';
+	$pairs        = array();
+	$saved_inputs = array();
+	$bad_fields   = array();
+	$error_msg    = '';
+	$name         = '';
+	$email        = '';
+	$phone        = '';
+	$course       = '';
 	foreach ( $cfg['fields'] as $key => $f ) {
 		if ( 'file' === $f[1] ) {
 			continue;
 		}
 		$raw = isset( $_POST[ "cg_{$form}_{$key}" ] ) ? (string) wp_unslash( $_POST[ "cg_{$form}_{$key}" ] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- only checked for < >, then sanitized below.
 		$val = sanitize_text_field( $raw );
+		$saved_inputs[ $key ] = $val;
+
 		if ( ! empty( $f[2] ) && '' === $val ) {
-			$ok = false;
+			$ok           = false;
+			$bad_fields[] = $key;
+			if ( ! $error_msg ) {
+				$error_msg = sprintf( __( 'Please fill in the required field "%s".', 'generatepress-child' ), rtrim( $f[0], ':' ) );
+			}
 		}
 		if ( 'text' === $f[1] && '' !== $raw && ! cg_is_valid_text( $key, $raw, $val ) ) {
-			$ok = false; // HTML, a name with digits/symbols, or too long (same rules as the browser).
+			$ok           = false; // HTML, a name with digits/symbols, or too long (same rules as the browser).
+			$bad_fields[] = $key;
+			if ( ! $error_msg ) {
+				$error_msg = sprintf( __( 'Please check the "%s" field. HTML tags (< or >) are not allowed.', 'generatepress-child' ), rtrim( $f[0], ':' ) );
+			}
 		}
 		if ( 'select' === $f[1] && ! empty( $f[3] ) && '' !== $val && ! in_array( $val, $f[3], true ) ) {
-			$ok = false; // Value is not one of the offered choices.
+			$ok           = false; // Value is not one of the offered choices.
+			$bad_fields[] = $key;
 		}
 		if ( 'radio' === $f[1] && '' !== $val && ! in_array( $val, array( 'Yes', 'No' ), true ) ) {
-			$ok = false;
+			$ok           = false;
+			$bad_fields[] = $key;
 		}
 		if ( 'tel' === $f[1] && '' !== $val && ! cg_is_phone( $val ) ) {
-			$ok = false;
+			$ok           = false;
+			$bad_fields[] = $key;
+			if ( ! $error_msg ) {
+				$error_msg = __( 'Please enter a valid phone number (digits, spaces, + ( ) - only).', 'generatepress-child' );
+			}
+		}
+		if ( ( 'url' === $f[1] || 'website' === $key ) && '' !== $val ) {
+			if ( ! preg_match( '#^[a-z]+://#i', $val ) ) {
+				$val = 'https://' . $val;
+				$saved_inputs[ $key ] = $val;
+			}
+			if ( ! filter_var( $val, FILTER_VALIDATE_URL ) || ! preg_match( '#^https?://[a-z0-9-]+(\.[a-z0-9-]+)+#i', $val ) ) {
+				$ok           = false;
+				$bad_fields[] = $key;
+				if ( ! $error_msg ) {
+					$error_msg = __( 'Please enter a valid website URL (e.g. example.com or https://example.com).', 'generatepress-child' );
+				}
+			}
+		}
+		if ( 'date' === $f[1] && '' !== $val ) {
+			if ( $val < current_time( 'Y-m-d' ) ) {
+				$ok           = false;
+				$bad_fields[] = $key;
+				if ( ! $error_msg ) {
+					$error_msg = __( 'Apply By Date cannot be in the past.', 'generatepress-child' );
+				}
+			}
 		}
 		if ( 'age' === $key && '' !== $val && ( ! ctype_digit( $val ) || (int) $val < 18 || (int) $val > 80 ) ) {
-			$ok = false; // Courses are for ages 18+ (see the Courses hero).
+			$ok           = false; // Courses are for ages 18+ (see the Courses hero).
+			$bad_fields[] = $key;
+			if ( ! $error_msg ) {
+				$error_msg = __( 'Age must be between 18 and 80.', 'generatepress-child' );
+			}
 		}
 		if ( 'name' === $key ) {
 			$name = $val;
@@ -291,19 +378,35 @@ function cg_handle_form() {
 		}
 		$pairs[ rtrim( $f[0], ':' ) ] = $val;
 	}
-	$ok = $ok && is_email( $email );
+	if ( ! is_email( $email ) ) {
+		$ok           = false;
+		$bad_fields[] = 'email';
+		if ( ! $error_msg ) {
+			$error_msg = __( 'Please enter a valid email address.', 'generatepress-child' );
+		}
+	}
 
 	if ( ! empty( $cfg['textarea'] ) ) {
-		$desc    = isset( $_POST[ "cg_{$form}_description" ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ "cg_{$form}_description" ] ) ) : '';
+		$desc = isset( $_POST[ "cg_{$form}_description" ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ "cg_{$form}_description" ] ) ) : '';
+		$saved_inputs['description'] = $desc;
 		if ( '' === $desc && empty( $_FILES['cg_file']['name'] ) ) {
-			$ok = false; // A job description or an uploaded document is required.
+			$ok           = false; // A job description or an uploaded document is required.
+			$bad_fields[] = 'description';
+			$bad_fields[] = 'file';
+			if ( ! $error_msg ) {
+				$error_msg = __( 'Please provide a job description or upload a document.', 'generatepress-child' );
+			}
 		}
 	}
 
 	// A required file field (e.g. the trainer resume) must actually be uploaded.
-	foreach ( $cfg['fields'] as $f ) {
+	foreach ( $cfg['fields'] as $key => $f ) {
 		if ( 'file' === $f[1] && ! empty( $f[2] ) && empty( $_FILES['cg_file']['name'] ) ) {
-			$ok = false;
+			$ok           = false;
+			$bad_fields[] = $key;
+			if ( ! $error_msg ) {
+				$error_msg = __( 'Please upload your resume (PDF under 2MB).', 'generatepress-child' );
+			}
 		}
 	}
 
@@ -313,7 +416,9 @@ function cg_handle_form() {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		$file = $_FILES['cg_file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		if ( $file['size'] > 2 * MB_IN_BYTES ) {
-			$ok = false;
+			$ok           = false;
+			$bad_fields[] = 'file';
+			$error_msg    = __( 'The uploaded file exceeds the 2MB limit. Please upload a smaller file.', 'generatepress-child' );
 		} else {
 			$res = wp_handle_upload(
 				$file,
@@ -326,7 +431,9 @@ function cg_handle_form() {
 				$attachments[] = $res['file'];
 				$uploaded      = $res['file'];
 			} else {
-				$ok = false;
+				$ok           = false;
+				$bad_fields[] = 'file';
+				$error_msg    = ! empty( $res['error'] ) ? $res['error'] : __( 'File upload failed. Please ensure the file is an accepted format under 2MB.', 'generatepress-child' );
 			}
 		}
 	}
@@ -368,7 +475,29 @@ function cg_handle_form() {
 		wp_delete_file( $uploaded ); // The public copy is removed; the private one stays with the entry.
 	}
 
-	wp_safe_redirect( add_query_arg( array( 'cg_form' => $saved ? 'sent' : 'error', 'cg_id' => $form ), $redirect ) . '#' . ( isset( $cfg['anchor'] ) ? $cfg['anchor'] : 'form' ) );
+	$token = '';
+	if ( ! $saved ) {
+		$token = wp_generate_password( 16, false );
+		set_transient(
+			'cg_form_err_' . $token,
+			array(
+				'values'     => $saved_inputs,
+				'bad_fields' => array_values( array_unique( $bad_fields ) ),
+				'error'      => $error_msg,
+			),
+			300
+		);
+	}
+
+	$query_args = array(
+		'cg_form' => $saved ? 'sent' : 'error',
+		'cg_id'   => $form,
+	);
+	if ( $token ) {
+		$query_args['cg_tok'] = $token;
+	}
+
+	wp_safe_redirect( add_query_arg( $query_args, $redirect ) . '#' . ( isset( $cfg['anchor'] ) ? $cfg['anchor'] : 'form' ) );
 	exit;
 }
 add_action( 'admin_post_nopriv_cg_form', 'cg_handle_form' );

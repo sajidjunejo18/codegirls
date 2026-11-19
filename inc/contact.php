@@ -11,13 +11,24 @@ defined( 'ABSPATH' ) || exit;
 function cg_contact_form_shortcode() {
 	global $wp;
 	$status = isset( $_GET['cg_contact'] ) ? sanitize_key( wp_unslash( $_GET['cg_contact'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$token  = isset( $_GET['cg_ctok'] ) ? sanitize_key( wp_unslash( $_GET['cg_ctok'] ) ) : '';
+
+	$flash = array();
+	if ( $token ) {
+		$data = get_transient( 'cg_contact_err_' . $token );
+		if ( is_array( $data ) ) {
+			$flash = $data;
+			delete_transient( 'cg_contact_err_' . $token );
+		}
+	}
 
 	ob_start();
 
 	if ( 'sent' === $status ) {
 		echo '<p class="cg-form__notice" role="status">' . esc_html__( 'Thank you! Your message has been sent.', 'generatepress-child' ) . '</p>';
 	} elseif ( 'error' === $status ) {
-		echo '<p class="cg-form__notice cg-form__notice--error" role="alert">' . esc_html__( 'Sorry, something went wrong. Please check the fields and try again.', 'generatepress-child' ) . '</p>';
+		$err_msg = ! empty( $flash['error'] ) ? $flash['error'] : __( 'Sorry, something went wrong. Please check the fields and try again.', 'generatepress-child' );
+		echo '<p class="cg-form__notice cg-form__notice--error" role="alert">' . esc_html( $err_msg ) . '</p>';
 	}
 	?>
 	<form class="cg-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -27,18 +38,18 @@ function cg_contact_form_shortcode() {
 		<div class="cg-form__hp" aria-hidden="true"><label>Leave empty<input type="text" name="cg_website" tabindex="-1" autocomplete="off"></label></div>
 
 		<div class="cg-form__row">
-			<label class="cg-form__field">Your Name:
-				<input type="text" name="cg_name" required autocomplete="name" <?php echo cg_text_attrs( 'name' ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped. ?>>
+			<label class="cg-form__field">Your Name<span class="cg-req" aria-hidden="true">*</span>:
+				<input type="text" name="cg_name" value="<?php echo esc_attr( $flash['name'] ?? '' ); ?>" required autocomplete="name" <?php echo cg_text_attrs( 'name' ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped. ?>>
 			</label>
 			<label class="cg-form__field">Phone:
-				<input type="tel" name="cg_phone" autocomplete="tel" <?php echo cg_phone_attrs(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped. ?>>
+				<input type="tel" name="cg_phone" value="<?php echo esc_attr( $flash['phone'] ?? '' ); ?>" autocomplete="tel" <?php echo cg_phone_attrs(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped. ?>>
 			</label>
 		</div>
-		<label class="cg-form__field">Email Address:
-			<input type="email" name="cg_email" required autocomplete="email">
+		<label class="cg-form__field">Email Address<span class="cg-req" aria-hidden="true">*</span>:
+			<input type="email" name="cg_email" value="<?php echo esc_attr( $flash['email'] ?? '' ); ?>" required autocomplete="email">
 		</label>
-		<label class="cg-form__field">Message:
-			<textarea name="cg_message" required></textarea>
+		<label class="cg-form__field">Message<span class="cg-req" aria-hidden="true">*</span>:
+			<textarea name="cg_message" required><?php echo esc_textarea( $flash['message'] ?? '' ); ?></textarea>
 		</label>
 		<button class="cg-btn cg-form__submit" type="submit"><?php esc_html_e( 'Submit', 'generatepress-child' ); ?></button>
 	</form>
@@ -76,7 +87,28 @@ function cg_handle_contact() {
 		}
 	}
 
-	wp_safe_redirect( add_query_arg( 'cg_contact', $saved ? 'sent' : 'error', $redirect ) . '#contact' );
+	$token = '';
+	if ( ! $saved ) {
+		$token = wp_generate_password( 16, false );
+		set_transient(
+			'cg_contact_err_' . $token,
+			array(
+				'name'    => $name,
+				'phone'   => $phone,
+				'email'   => $email,
+				'message' => $message,
+				'error'   => ! is_email( $email ) ? __( 'Please enter a valid email address.', 'generatepress-child' ) : __( 'Please check your information and try again.', 'generatepress-child' ),
+			),
+			300
+		);
+	}
+
+	$args = array( 'cg_contact' => $saved ? 'sent' : 'error' );
+	if ( $token ) {
+		$args['cg_ctok'] = $token;
+	}
+
+	wp_safe_redirect( add_query_arg( $args, $redirect ) . '#contact' );
 	exit;
 }
 add_action( 'admin_post_nopriv_cg_contact', 'cg_handle_contact' );

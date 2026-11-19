@@ -173,16 +173,6 @@
 <!-- /wp:generateblocks/element -->
 </div>
 <!-- /wp:generateblocks/element -->
-<!-- wp:generateblocks/element {"tagName":"div","globalClasses":["bank__note"]} -->
-<div class="bank__note">
-<!-- wp:generateblocks/media {"tagName":"img","globalClasses":["bank__info"],"htmlAttributes":{"src":"<?php echo esc_url( get_theme_file_uri( 'assets/images/icon-info.svg' ) ); ?>","alt":"","width":"16","height":"16","loading":"lazy"}} -->
-<img class="bank__info" src="<?php echo esc_url( get_theme_file_uri( 'assets/images/icon-info.svg' ) ); ?>" alt="" width="16" height="16" loading="lazy"/>
-<!-- /wp:generateblocks/media -->
-<!-- wp:generateblocks/text {"tagName":"span","globalClasses":["bank__note-text"]} -->
-<span class="gb-text bank__note-text">These rates are exclusive of taxes. A 15% SRB applies to all locally made transactions</span>
-<!-- /wp:generateblocks/text -->
-</div>
-<!-- /wp:generateblocks/element -->
 <!-- wp:generateblocks/element {"tagName":"div","globalClasses":["bank__actions"]} -->
 <div class="bank__actions">
 <!-- wp:generateblocks/text {"tagName":"a","globalClasses":["cg-btn"],"htmlAttributes":{"href":"#contact"}} -->
