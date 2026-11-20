@@ -23,21 +23,20 @@ define( 'CG_HOMEPAGE_ONLY', false );
 require_once CG_DIR . '/inc/enqueue.php';
 require_once CG_DIR . '/inc/setup.php';
 require_once CG_DIR . '/inc/hooks.php';
-require_once CG_DIR . '/inc/entries.php';
-require_once CG_DIR . '/inc/email.php';
-require_once CG_DIR . '/inc/contact.php';
-require_once CG_DIR . '/inc/forms.php';
 require_once CG_DIR . '/inc/blog.php';
-require_once CG_DIR . '/inc/blogs.php';
-require_once CG_DIR . '/inc/enroll.php';
-require_once CG_DIR . '/inc/courses.php';
-require_once CG_DIR . '/inc/voices.php';
-require_once CG_DIR . '/inc/reports.php';
-require_once CG_DIR . '/inc/recognitions.php';
-require_once CG_DIR . '/inc/press.php';
-require_once CG_DIR . '/inc/partners.php';
 require_once CG_DIR . '/inc/footer-settings.php';
-require_once CG_DIR . '/inc/stats.php';
 require_once CG_DIR . '/inc/hero-video.php';
 require_once CG_DIR . '/inc/homepage-only.php';
-require_once CG_DIR . '/inc/content-fixes.php';
+
+// Content types, forms, Form Entries, email and Site Stats live in the "CodeGirls Core" plugin
+// (wp-content/plugins/codegirls-core). The theme only presents them.
+if ( ! defined( 'CGC_VERSION' ) ) {
+	add_action(
+		'admin_notices',
+		function () {
+			if ( current_user_can( 'activate_plugins' ) ) {
+				echo '<div class="notice notice-error"><p>' . esc_html__( 'The CodeGirls theme needs the "CodeGirls Core" plugin. Please activate it in Plugins: courses, forms, form entries and other site content depend on it.', 'generatepress-child' ) . '</p></div>';
+			}
+		}
+	);
+}
